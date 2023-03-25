@@ -1,4 +1,4 @@
-import { BigIntTransformer, DtoBase, DtoTransformer, UIntValue, ValueObject, ValueObjectTransformer } from '@';
+import { BigIntTransformer, Dto, DtoTransformer, UIntValue, ValueObject, ValueObjectTransformer } from '@';
 import path from 'path';
 
 /**
@@ -8,11 +8,11 @@ import path from 'path';
 @ValueObject('Test')
 class TestValueObject extends UIntValue {}
 
-class OtherTestDto extends DtoBase {
+class OtherTestDto extends Dto {
   public primitiveField?: number;
 }
 
-class TestDto extends DtoBase {
+class TestDto extends Dto {
   public primitiveField?: number;
 
   @BigIntTransformer()

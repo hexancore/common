@@ -101,7 +101,7 @@ export const OK = <T>(v: T): R<T> => {
   return new Result<T>(v);
 };
 
-export const ERR = <T>(error: AppError | Partial<AppError> | string, code = 400, data?: any): R<T> => {
+export const ERR = <T>(error: AppError | AppErrorProps | string, code = 400, data?: any): R<T> => {
   let e: AppError;
   if (typeof error === 'string') {
     e = new AppError({ type: error, code, data });

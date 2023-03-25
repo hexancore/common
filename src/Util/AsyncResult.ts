@@ -1,4 +1,4 @@
-import { AppError, AppErrorProps, INTERNAL_ERROR } from './AppError';
+import { AppError, AppErrorCode, AppErrorProps, INTERNAL_ERROR } from './AppError';
 import { isIterable } from './functions';
 import { ERR, INTERNAL_ERR, OK, R, Result } from './Result';
 import { DropLastParam, ExtractIterableType } from './types';
@@ -83,7 +83,6 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
   public mapErr(f: (e: AppError) => AppError | AppErrorProps | Promise<AppError | AppErrorProps>): AR<T> {
     return new AsyncResult(
       this.p.then(async (res: Result<T>) => {
-
         if (res.isSuccess()) {
           return OK<T>(res.v);
         }
@@ -193,7 +192,7 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
 export const OKA = <T>(v: T): AR<T> => new AsyncResult(Promise.resolve(OK<T>(v)));
 export const OKAP = <T>(v: T): ARP<T> => OKA(v).p;
 
-export const ERRA = <T>(error: AppError | Partial<AppError> | string, code = 400, data?: any): AR<T> => {
+export const ERRA = <T>(error: AppError | AppErrorProps | string, code = AppErrorCode.BAD_REQUEST, data?: any): AR<T> => {
   let e: AppError;
   if (typeof error === 'string') {
     e = new AppError({ type: error, code, data });
@@ -202,7 +201,7 @@ export const ERRA = <T>(error: AppError | Partial<AppError> | string, code = 400
   }
   return new AsyncResult(Promise.resolve(ERR<T>(error)));
 };
-export const ERRAP = <T>(error: AppError | Partial<AppError> | string, code = 400, data?: any): ARP<T> => ERRA<T>(error, code, data).p;
+export const ERRAP = <T>(error: AppError | AppErrorProps | string, code = 400, data?: any): ARP<T> => ERRA<T>(error, code, data).p;
 
 export const P = AsyncResult.fromPromise;
 export const PS = AsyncResult.fromSafePromise;
