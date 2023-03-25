@@ -5,11 +5,15 @@ import { ERR, OK, Result } from './Result';
 
 export const INVALID_PLAIN_OBJECT_ERROR_TYPE = 'core.dto.invalid_plain_object';
 
-export type DtoBaseConstructor<T extends DtoBase> = {
-  new (props?: Partial<T>): T;
-};
-
+/**
+ * Alias type
+ */
 export const TT = TransformationType;
+/**
+ * Is Class to plain transform
+ * @param type
+ * @returns
+ */
 export const isPT = (type: TransformationType) => type === TransformationType.CLASS_TO_PLAIN;
 
 export function ValueObjectTransformer<T extends AbstractValueObject<any>>(t: { c: (value: any) => Result<T> }) {
@@ -26,7 +30,7 @@ export function ValueObjectTransformer<T extends AbstractValueObject<any>>(t: { 
   });
 }
 
-export function DtoTransformer<T extends DtoBase>(t: { new (): T }) {
+export function DtoTransformer<T extends Dto>(t: { new (): T }) {
   return Transform(({ value, type }) => {
     if (value) {
       if (isPT(type)) {
@@ -54,13 +58,33 @@ export function BigIntTransformer() {
   });
 }
 
-export abstract class DtoBase {
-  public static cs<T extends DtoBase>(this: DtoBaseConstructor<T>, props: Partial<T>): T {
+export type DtoConstructor<T extends Dto> = {
+  new (props?: Partial<T>): T;
+};
+
+/**
+ * Class with support for transform plain json object to object with rich types like ValueObject
+ */
+export abstract class Dto {
+  /**
+   * Create from safe props
+   * @param this
+   * @param props
+   * @returns
+   */
+  public static cs<T extends Dto>(this: DtoConstructor<T>, props: Partial<T>): T {
     const i = new this();
     Object.assign(i, props);
     return i;
   }
-  public static fromPlain<T extends DtoBase>(this: DtoBaseConstructor<T>, plain: any): Result<T> {
+
+  /**
+   * Creates DTO from plain form using defined transformators on props
+   * @param this
+   * @param plain
+   * @returns
+   */
+  public static fromPlain<T extends Dto>(this: DtoConstructor<T>, plain: any): Result<T> {
     try {
       const i: any = plainToInstance(this, plain);
       return (this as any).processFromPlain(i);
@@ -73,7 +97,7 @@ export abstract class DtoBase {
    * @param i
    * @returns Result of tranformation from plain
    */
-  protected static processFromPlain<T extends DtoBase>(this: DtoBaseConstructor<T>, i: any): Result<any> {
+  protected static processFromPlain<T extends Dto>(this: DtoConstructor<T>, i: any): Result<any> {
     const errors = [];
 
     for (const p in i) {

@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["jest", "reflect-metadata", "node"],
-    "incremental": true,
+    "incremental": false,
     "lib": ["ES2022"],
     "outDir": "./lib",
     "baseUrl": "./",

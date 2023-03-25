@@ -6,4 +6,5 @@ export * from './SanitizeHelper';
 export * from './functions';
 export * from './types';
 export * from './CurrentTime';
-export * from './DtoBase';
+export * from './Dto';
+export * from '../Log';
