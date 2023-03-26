@@ -1,6 +1,9 @@
-import { LogLevel, LogRecord } from '@/Util';
+import { LogLevel, LogRecord } from '../Util';
 import { AbstractLogger } from './AbstractLogger';
 
+/**
+ * Used for testing things
+ */
 export class TestLogger extends AbstractLogger {
   public records: Array<LogRecord> = [];
 

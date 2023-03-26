@@ -1,4 +1,4 @@
-import { AppMeta } from '@/Util/AppMeta';
+import { AppMeta } from '../Util/AppMeta';
 import { LambdaLog } from 'lambda-log';
 import { AbstractLogger } from './AbstractLogger';
 

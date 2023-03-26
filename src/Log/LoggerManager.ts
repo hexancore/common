@@ -1,8 +1,8 @@
-import { LogicError } from '@/Util/Error/LogicError';
+import { LogicError } from '../Util/Error/LogicError';
 import { AppMeta } from '../Util/AppMeta';
 import { ConsoleLogger } from './ConsoleLogger';
 import { checkTagsAreSame, isSameLogTags, Logger, LogTags } from './Logger';
-import { NullLogger } from './NullLogger';
+import { NoopLogger } from './NoopLogger';
 import { TestLogger } from './TestLogger';
 
 export type LoggerProvider = (name: string, tags: LogTags) => Logger;
@@ -11,11 +11,6 @@ export class LoggerManager {
   private loggers: Map<string, { logger: Logger; tags: string[] }>;
 
   public static i: LoggerManager;
-
-  static {
-    const appMeta = AppMeta.get();
-    LoggerManager.i = new LoggerManager(LoggerManager.getDefaultLoggerProvider(), appMeta.isTest());
-  }
 
   public constructor(private loggerProvider: LoggerProvider, private alwaysNew: boolean = false) {
     this.loggers = new Map<string, { logger: Logger; tags: string[] }>();
@@ -39,7 +34,7 @@ export class LoggerManager {
   public static getDefaultLoggerProvider(): LoggerProvider {
     const appMeta = AppMeta.get();
     if (appMeta.logSilent) {
-      return () => new NullLogger();
+      return () => new NoopLogger();
     }
 
     switch (appMeta.env) {
@@ -54,6 +49,10 @@ export class LoggerManager {
 }
 
 export function getLogger(name: string, tags: string[] = []): Logger {
+  if (LoggerManager.i === undefined) {
+    const appMeta = AppMeta.get();
+    LoggerManager.i = new LoggerManager(LoggerManager.getDefaultLoggerProvider(), appMeta.isTest());
+  }
   return LoggerManager.i.getLogger(name, tags);
 }
 
@@ -70,7 +69,6 @@ export function InjectLogger(name: string, tags: string[] = []) {
         return getLogger(name, tags);
       },
       enumerable: false,
-      writable: false,
     });
   };
 }
