@@ -8,3 +8,5 @@ export * from './types';
 export * from './CurrentTime';
 export * from './Dto';
 export * from '../Log';
+export * from './AppMeta';
+export * from './Error';

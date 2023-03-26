@@ -1,3 +1,6 @@
+import { cwd } from 'process';
+import { parseBoolean } from './functions';
+
 export interface AppMetaProps {
   env: EnvType;
   id: string;
@@ -35,7 +38,6 @@ export class AppMeta implements AppMetaProps {
   public readonly extra: Record<string, any>;
 
   private constructor(private props: AppMetaProps) {
-
     this.env = props.env;
     this.id = props.id;
     this.version = props.version;
@@ -77,3 +79,19 @@ export class AppMeta implements AppMetaProps {
     return this.env === 'prod';
   }
 }
+
+export const envAppMetaProvider: AppMetaPropsProvider = () => {
+  return {
+    env: process.env.NODE_ENV as EnvType,
+    id: process.env.APP_ID ?? 'App',
+    version: process.env.APP_VERSION ?? 'latest',
+    debug: parseBoolean(process.env.APP_DEBUG),
+    logPretty: parseBoolean(process.env.APP_LOG_PRETTY),
+    logSilent: parseBoolean(process.env.APP_LOG_SILENT),
+    ci: parseBoolean(process.env.CI),
+
+    home: process.env.APP_HOME ?? cwd(),
+    envFilePath: process.env.APP_ENV_FILE_PATH ?? cwd() + '/.env',
+    extra: {},
+  };
+};

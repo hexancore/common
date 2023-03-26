@@ -19,3 +19,10 @@ export function pascalCaseToSnakeCase(s: string): string {
 export function pascalCaseToCamelCase(s: string): string {
   return s.charAt(0).toLowerCase() + s.slice(1);
 }
+
+export function parseBoolean(value: string | undefined): boolean {
+  if (value === undefined) {
+    return false;
+  }
+  return new Boolean(parseInt(value)).valueOf();
+}

@@ -1,5 +1,4 @@
-import { LogicError } from '@/Util/Error/LogicError';
-import { ErrorHelper } from '@/Util/Error/ErrorHelper';
+import { ErrorHelper, LogicError } from '../Util';
 import { AppError } from '../Util/AppError';
 import { LogContext, Logger, LogLevel, LogMessage, LogTags } from './Logger';
 

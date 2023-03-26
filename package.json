@@ -1,12 +1,12 @@
 {
   "name": "@hexancore/common",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "engines": {
     "node": ">=18"
   },
   "engine-strict": true,
   "description": "Core to build hexagonal architecture designed apps",
-  "author": "Mararok",
+  "author": "Andrzej Wasiak <Mararok>",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -85,7 +85,6 @@
     "url": "https://github.com/hexancore/common/issues"
   },
   "directories": {
-    "lib": "lib",
-    "test": "test"
+    "lib": "lib"
   }
 }
