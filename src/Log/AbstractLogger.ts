@@ -1,12 +1,23 @@
-import { ErrorHelper, LogicError } from '../Util';
+import { AppMeta, ErrorHelper, LogicError } from '../Util';
 import { AppError } from '../Util/AppError';
-import { LogContext, Logger, LogLevel, LogMessage, LogTags } from './Logger';
+import { LogContext, Logger, LogLevel, LogMessage, LogTags, LogTagsFactory } from './Logger';
+
+export interface LoggerGlobalOptions {
+  debug: boolean;
+  silent: boolean;
+}
 
 export abstract class AbstractLogger implements Logger {
-  public constructor(protected isDebug: boolean, protected silent: boolean) {}
+  public constructor(protected channel: string, protected tags: Exclude<LogTags, LogTagsFactory> = []) {}
 
-  public log(levelOrAppError: LogLevel | AppError, messageOrTags?: LogMessage | LogTags, context?: LogContext, tags: LogTags = []): void {
-    if (this.silent) {
+  private static globalOptions: LoggerGlobalOptions;
+
+  public static setGlobalOptions(options: LoggerGlobalOptions): void {
+    this.globalOptions = options;
+  }
+
+  public log(levelOrAppError: LogLevel | AppError, messageOrTags?: LogMessage | LogTags, context?: LogContext, tags?: LogTags): void {
+    if (AbstractLogger.globalOptions.silent) {
       return;
     }
 
@@ -29,16 +40,16 @@ export abstract class AbstractLogger implements Logger {
   }
 
   protected canLog(level: LogLevel): boolean {
-    return (level === 'debug' && this.isDebug) || true;
+    return (level === 'debug' && AbstractLogger.globalOptions.debug) || true;
   }
 
-  protected logAppError(error: AppError, tags: LogTags = []) {
+  protected logAppError(error: AppError, tags?: LogTags) {
     const record = error.getLogRecord();
     if (!this.canLog(record.level)) {
       return;
     }
     tags = this.processTags(record.context, tags);
-    this.pushRecord(record.level, record.message, record.context, tags);
+    this.pushRecord(record.level, record.message, {context: record.context, channel: this.channel}, tags);
   }
 
   protected processContext(context?: LogContext): Record<string, any> {
@@ -46,17 +57,22 @@ export abstract class AbstractLogger implements Logger {
     if (typeof context === 'object' && context.error instanceof Error) {
       context.error = ErrorHelper.toPlain(context.error);
     }
-    return context;
+    return { context: context ?? {}, channel: this.channel };
   }
 
-  protected abstract pushRecord(level: LogLevel, message: string, context?: Record<string, any>, tags?: string[]): void;
+  protected abstract pushRecord(level: LogLevel, message: string, context: Record<string, any>, tags: string[]): void;
 
   protected processMessage(message: LogMessage, context?: Record<string, any>): string {
     return typeof message === 'function' ? message(context) : message;
   }
 
   protected processTags(context?: Record<string, any>, tags?: LogTags): string[] {
-    return typeof tags === 'function' ? tags(context) : tags;
+    tags = typeof tags === 'function' ? tags(context) : tags;
+    if (tags) {
+      return [...this.tags, ...tags];
+    }
+
+    return this.tags;
   }
 
   public debug(message: LogMessage, context?: LogContext, tags?: LogTags): void {

@@ -1,5 +1,6 @@
 import { cwd } from 'process';
-import { parseBoolean } from './functions';
+import { LogicError, MissingError } from './Error';
+import { getEnvOrError as getRequiredEnv, parseBoolean } from './functions';
 
 export interface AppMetaProps {
   env: EnvType;
@@ -18,11 +19,21 @@ export interface AppMetaProps {
 
 export type EnvType = 'dev' | 'test' | 'prod';
 
-export type AppMetaPropsProvider = () => AppMetaProps;
+export type AppMetaProvider = () => AppMetaProps;
 
 export class AppMeta implements AppMetaProps {
-  private static instance: AppMeta;
-  public static propsProvider: AppMetaPropsProvider;
+  protected static instance: AppMeta;
+  protected static provider?: AppMetaProvider;
+
+  public static setProvider(p: AppMetaProvider) {
+    if (this.provider === undefined) {
+      this.provider = p;
+    } else {
+      if (!this.get().isTest()) {
+        throw new LogicError('AppMeta.provider can be sets once');
+      }
+    }
+  }
 
   public readonly env: EnvType;
   public readonly id: string;
@@ -35,7 +46,7 @@ export class AppMeta implements AppMetaProps {
   public readonly home: string;
   public readonly envFilePath: string;
 
-  public readonly extra: Record<string, any>;
+  public readonly extra: Readonly<Record<string, any>>;
 
   private constructor(private props: AppMetaProps) {
     this.env = props.env;
@@ -54,10 +65,10 @@ export class AppMeta implements AppMetaProps {
 
   public static get(): AppMeta {
     if (AppMeta.instance === undefined) {
-      if (AppMeta.propsProvider === undefined) {
+      if (AppMeta.provider === undefined) {
         throw Error('AppMeta.instanceFactory is not sets before first get() call, check your code');
       }
-      AppMeta.instance = new AppMeta(AppMeta.propsProvider());
+      AppMeta.instance = new AppMeta(AppMeta.provider());
     }
 
     return AppMeta.instance;
@@ -78,15 +89,25 @@ export class AppMeta implements AppMetaProps {
   public isProd(): boolean {
     return this.env === 'prod';
   }
+
+  public static checkEnvIsValid(env: string, errorMessage: string) {
+    if (['dev', 'test', 'prod'].indexOf(env) === -1) {
+      throw new Error(errorMessage);
+    }
+  }
 }
 
-export const envAppMetaProvider: AppMetaPropsProvider = () => {
-  return {
-    env: process.env.NODE_ENV as EnvType,
-    id: process.env.APP_ID ?? 'App',
-    version: process.env.APP_VERSION ?? 'latest',
-    debug: parseBoolean(process.env.APP_DEBUG),
-    logPretty: parseBoolean(process.env.APP_LOG_PRETTY),
+export const EnvAppMetaProvider: AppMetaProvider = (): AppMetaProps => {
+  const env = getRequiredEnv('APP_ENV');
+  AppMeta.checkEnvIsValid(env, 'Invalid env.APP_ENV: ' + env);
+  const isProd = env === 'prod';
+
+  const props = {
+    env: env as EnvType,
+    id: getRequiredEnv('APP_ID'),
+    version: isProd ? getRequiredEnv('APP_VERSION') : 'latest',
+    debug: parseBoolean(process.env.APP_DEBUG, isProd ? false : true),
+    logPretty: parseBoolean(process.env.APP_LOG_PRETTY, !isProd),
     logSilent: parseBoolean(process.env.APP_LOG_SILENT),
     ci: parseBoolean(process.env.CI),
 
@@ -94,4 +115,6 @@ export const envAppMetaProvider: AppMetaPropsProvider = () => {
     envFilePath: process.env.APP_ENV_FILE_PATH ?? cwd() + '/.env',
     extra: {},
   };
+
+  return props;
 };

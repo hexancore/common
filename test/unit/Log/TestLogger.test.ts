@@ -23,7 +23,7 @@ describe('TestLogger', () => {
         level: 'info',
         message: 'test message',
         context: { test_context: 1 },
-        tags: ['test_log_tag'],
+        tags: ['test_tag','test_log_tag'],
       };
       expect(logger.records).toEqual([expected]);
     });
@@ -35,7 +35,7 @@ describe('TestLogger', () => {
         level: 'warn',
         message: 'test_type',
         context: { code: 400, type: 'test_type' },
-        tags: ['test_log_tag'],
+        tags: ['test_tag','test_log_tag'],
       };
       expect(logger.records).toEqual([expected]);
     });
@@ -48,7 +48,7 @@ describe('TestLogger', () => {
         level: 'error',
         message: 'test_error_message',
         context: { type: 'test_type', code: AppErrorCode.INTERNAL_ERROR, error: ErrorHelper.toPlain(error) },
-        tags: ['test_log_tag'],
+        tags: ['test_tag', 'test_log_tag'],
       };
       expect(logger.records).toEqual([expected]);
     });

@@ -10,7 +10,7 @@ describe('AppMeta', () => {
       const current = AppMeta.get();
 
       expect(current).toBeInstanceOf(AppMeta);
-      expect(current.getProps()).toEqual(AppMeta.propsProvider());
+      expect(current.getProps().env).toEqual("test");
     });
 
     test('when second time', () => {
