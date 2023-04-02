@@ -30,7 +30,7 @@ export interface LogRecord {
   level: LogLevel;
   message: string;
   context: Record<string, any>;
-  tags?: string[];
+  tags: string[];
 }
 
 export interface Logger {

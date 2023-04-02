@@ -4,6 +4,7 @@ import { ConsoleLogger } from './ConsoleLogger';
 import { checkTagsAreSame, isSameLogTags, Logger, LogTags } from './Logger';
 import { NoopLogger } from './NoopLogger';
 import { TestLogger } from './TestLogger';
+import { AbstractLogger } from './AbstractLogger';
 
 export type LoggerProvider = (name: string, tags: LogTags) => Logger;
 
@@ -36,6 +37,8 @@ export class LoggerManager {
     if (appMeta.logSilent) {
       return () => new NoopLogger();
     }
+
+    AbstractLogger.setGlobalOptions({ debug: appMeta.debug, silent: appMeta.logSilent });
 
     switch (appMeta.env) {
       case 'dev':

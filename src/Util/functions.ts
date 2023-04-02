@@ -1,3 +1,5 @@
+import { MissingError } from './Error';
+
 export function isIterable(obj: any): boolean {
   return typeof obj[Symbol.iterator] === 'function';
 }
@@ -20,9 +22,18 @@ export function pascalCaseToCamelCase(s: string): string {
   return s.charAt(0).toLowerCase() + s.slice(1);
 }
 
-export function parseBoolean(value: string | undefined): boolean {
+export function parseBoolean(value: string | undefined, defaultValue = false): boolean {
   if (value === undefined) {
-    return false;
+    return defaultValue;
   }
   return new Boolean(parseInt(value)).valueOf();
+}
+
+export function getEnvOrError(name: string): string {
+  const value = process.env[name];
+  if (value === undefined) {
+    throw new MissingError(`Missing env.${name}`);
+  }
+
+  return value;
 }

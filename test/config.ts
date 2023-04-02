@@ -1,6 +1,6 @@
 import { AppMeta } from '@/Util/AppMeta';
 
-AppMeta.propsProvider = () => {
+AppMeta.setProvider(() => {
   return {
     id: 'App',
     ci: false,
@@ -10,7 +10,7 @@ AppMeta.propsProvider = () => {
     logSilent: false,
     version: 'test',
   };
-};
+});
 
 process.on('unhandledRejection', (err) => {
   fail(err);
