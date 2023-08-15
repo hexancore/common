@@ -12,3 +12,4 @@ export type FilterStartsWith<Set, Needle extends string> = Set extends `${Needle
 export type StripPrefix<T extends string, prefix extends string> = T extends `${prefix}${infer Prefix}` ? Prefix : never;
 
 export type ExtractIterableType<T extends Iterable<any>> = T extends Iterable<infer U> ? U : T;
+

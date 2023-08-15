@@ -193,15 +193,14 @@ export const OKA = <T>(v: T): AR<T> => new AsyncResult(Promise.resolve(OK<T>(v))
 export const OKAP = <T>(v: T): ARP<T> => OKA(v).p;
 
 export const ERRA = <T>(error: AppError | AppErrorProps | string, code = AppErrorCode.BAD_REQUEST, data?: any): AR<T> => {
-  let e: AppError;
-  if (typeof error === 'string') {
-    e = new AppError({ type: error, code, data });
-  } else {
-    e = error instanceof AppError ? error : new AppError(error);
-  }
-  return new AsyncResult(Promise.resolve(ERR<T>(error)));
+  return new AsyncResult(Promise.resolve(ERR<T>(error, code, data)));
 };
-export const ERRAP = <T>(error: AppError | AppErrorProps | string, code = 400, data?: any): ARP<T> => ERRA<T>(error, code, data).p;
+export const ERRAP = <T>(error: AppError | AppErrorProps | string, code = AppErrorCode.BAD_REQUEST, data?: any): ARP<T> =>
+  ERRA<T>(error, code, data).p;
+
+export const INTERNAL_ERRA = <T>(error: Error): AR<T> => {
+  return new AsyncResult(Promise.resolve(INTERNAL_ERR(error)));
+};
 
 export const P = AsyncResult.fromPromise;
 export const PS = AsyncResult.fromSafePromise;

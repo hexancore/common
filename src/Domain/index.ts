@@ -1,2 +1,2 @@
-export * from './Error/DomainError';
+export * from './Error/DomainErrors';
 export * from './ValueObject';
