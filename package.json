@@ -1,6 +1,6 @@
 {
   "name": "@hexancore/common",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "engines": {
     "node": ">=18"
   },
@@ -41,7 +41,7 @@
     "xss": "^1.0.10"
   },
   "devDependencies": {
-    "@hexcore/mocker": "*",
+    "@hexancore/mocker": "*",
     "@types/jest": "27.0.*",
     "@types/lambda-log": "^3.0.0",
     "@types/node": "^18.0",
