@@ -1,4 +1,5 @@
 import { AppMeta } from '@/Util/AppMeta';
+import '@/Test';
 
 AppMeta.setProvider(() => {
   return {
@@ -11,6 +12,7 @@ AppMeta.setProvider(() => {
     version: 'test',
   };
 });
+
 
 process.on('unhandledRejection', (err) => {
   fail(err);

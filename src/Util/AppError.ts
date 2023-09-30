@@ -1,8 +1,9 @@
-import { LogLevel, LogRecord, LogTags } from '.';
+import { JsonSerialize, LogLevel, LogRecord, LogTags } from '.';
 import { ErrorHelper, ErrorPlain } from './Error/ErrorHelper';
 
 export const IGNORE_ERROR_TYPE = 'core.ignore_error';
 export const INTERNAL_ERROR_TYPE = 'core.internal_error';
+export const UNKNOWN_ERROR_TYPE = 'core.unknown_error';
 
 export enum AppErrorCode {
   BAD_REQUEST = 400,
@@ -37,7 +38,7 @@ export interface AppErrorLogContext {
 /**
  * Represents app error like invalid user input data
  */
-export class AppError<ET extends Error = Error> implements AppErrorProps {
+export class AppError<ET extends Error = Error> implements AppErrorProps, JsonSerialize {
   /**
    * unique string for error type, format: `<module>.<scope>.[subscopes].<error_type>`.
    * module - module name(in snake case)
@@ -46,29 +47,37 @@ export class AppError<ET extends Error = Error> implements AppErrorProps {
    * Example `my_module.domain.person.invalid_plain`.
    */
   public readonly type: string;
-  public readonly code?: number | AppErrorCode;
-  public readonly data?: any;
-  public readonly i18n?: string;
-  public readonly message?: string;
-  public readonly error?: ET;
-  public readonly cause?: AppError<ET>;
+  public readonly code: number | AppErrorCode;
+  public readonly data: any;
+  public readonly i18n: string;
+  public readonly message: string;
+  public readonly error: ET;
+  public readonly cause: AppError<ET>;
 
   public constructor(props: AppErrorProps) {
-    Object.assign(this, props);
-    if (this.error && this.code === undefined) {
-      this.code = AppErrorCode.INTERNAL_ERROR;
+
+    if (props.error && props.code === undefined) {
+      props.code = AppErrorCode.INTERNAL_ERROR;
     }
 
-    if (this.code === undefined) {
-      this.code = AppErrorCode.BAD_REQUEST;
+    if (props.code === undefined) {
+      props.code = AppErrorCode.BAD_REQUEST;
     }
+
+    props.i18n = props.i18n ?? '';
+    props.message = props.message ?? '';
+    props.data = props.data ?? null;
+    props.error = props.error ?? null;
+    props.cause = props.cause ?? null;
+
+    Object.assign(this, props);
   }
 
-  public static IGNORE() {
+  public static IGNORE(): AppError {
     return new this({ type: IGNORE_ERROR_TYPE });
   }
 
-  public static INTERNAL() {
+  public static INTERNAL(): AppError {
     return new this({ type: INTERNAL_ERROR_TYPE });
   }
 
@@ -80,7 +89,7 @@ export class AppError<ET extends Error = Error> implements AppErrorProps {
     return this.type === INTERNAL_ERROR_TYPE;
   }
 
-  public toJSON() {
+  public toJSON(): any {
     const r: any = Object.assign({}, this);
     if (this.error) {
       r.error = ErrorHelper.toPlain(this.error);

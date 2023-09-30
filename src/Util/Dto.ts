@@ -2,6 +2,7 @@ import { AbstractValueObject } from '@/Domain';
 import { instanceToPlain, plainToInstance, Transform, TransformationType } from 'class-transformer';
 import { INTERNAL_ERROR } from './AppError';
 import { ERR, OK, Result } from './Result';
+import { JsonSerialize } from './JsonSerialize';
 
 export const INVALID_PLAIN_OBJECT_ERROR_TYPE = 'core.dto.invalid_plain_object';
 
@@ -65,7 +66,7 @@ export type DtoConstructor<T extends Dto> = {
 /**
  * Class with support for transform plain json object to object with rich types like ValueObject
  */
-export abstract class Dto {
+export abstract class Dto implements JsonSerialize {
   /**
    * Create from safe props
    * @param this
@@ -119,7 +120,7 @@ export abstract class Dto {
     return OK(i);
   }
 
-  public toJSON() {
+  public toJSON(): any {
     return instanceToPlain(this);
   }
 }

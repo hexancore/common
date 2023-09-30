@@ -10,3 +10,8 @@ export * from './Dto';
 export * from '../Log';
 export * from './AppMeta';
 export * from './Error';
+
+export * from './JsonSerialize';
+export * from './StringTemplate';
+
+export * from './functions';
