@@ -10,6 +10,38 @@
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./lib/index.d.ts"
+      ],
+      "testutil": [
+        "./lib/Test/index.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      },
+      "default": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
+    },
+    "./testutil": {
+      "import": {
+        "types": "./lib/Test/index.d.ts",
+        "default": "./lib/Test/index.js"
+      },
+      "default": {
+        "types": "./lib/Test/index.d.ts",
+        "default": "./lib/Test/index.js"
+      }
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hexancore/common.git"
@@ -31,29 +63,33 @@
     "prepublish": "yarn test && yarn run build"
   },
   "dependencies": {
+    "axios": "^1.5.0",
     "class-transformer": "^0.5.1",
     "fastest-validator": "^1.11.1",
     "lambda-log": "^3.1.0",
     "luxon": "^3.0.1",
     "nanoid": "^3.1.28",
+    "string.prototype.matchall": "^4.0.10",
     "tslib": "^2.5.0",
-    "uuid": "^8.3.1",
     "xss": "^1.0.10"
   },
   "devDependencies": {
     "@hexancore/mocker": "*",
-    "@types/jest": "27.0.*",
+    "@types/jest": "29.0.*",
     "@types/lambda-log": "^3.0.0",
+    "@types/luxon": "^3.3.2",
     "@types/node": "^18.0",
+    "@types/string.prototype.matchall": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
+    "axios-mock-adapter": "^1.22.0",
     "eslint": "^8.3.0",
-    "jest": "27.0.*",
-    "jest-docblock": "27.0.*",
-    "jest-runner": "27.0.*",
+    "jest": "29.0.*",
+    "jest-docblock": "29.0.*",
+    "jest-runner": "29.0.*",
     "jest-runner-groups": "^2.1.0",
     "reflect-metadata": "0.1.13",
-    "ts-jest": "27.0.*",
+    "ts-jest": "29.0.*",
     "typescript": "4.9.5"
   },
   "jest": {
@@ -75,7 +111,7 @@
       "<rootDir>/test/unit/**/*.test.ts",
       "<rootDir>/test/integration/**/*.test.ts"
     ],
-    "setupFiles": [
+    "setupFilesAfterEnv": [
       "<rootDir>/test/config.ts"
     ],
     "coverageDirectory": "./test/coverage",

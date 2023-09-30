@@ -1,4 +1,4 @@
-import { AppError, ERR, pascalCaseToSnakeCase, Result } from '../../Util';
+import { AppError, ERR, JsonSerialize, pascalCaseToSnakeCase, Result } from '../../Util';
 
 export interface ValueObjectMeta {
   readonly module: string;
@@ -35,7 +35,7 @@ export function checkEnumValueObject(value: any, enumType: any, meta: ValueObjec
   return null;
 }
 
-export abstract class AbstractValueObject<T extends AbstractValueObject<any>> {
+export abstract class AbstractValueObject<T extends AbstractValueObject<any>> implements JsonSerialize {
   /**
    * @deprecated use invalidRaw
    * @param meta

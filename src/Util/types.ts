@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+
 export type DeepPartial<T> = Partial<{ [P in keyof T]: DeepPartial<T[P]> }>;
 
 /**
@@ -13,3 +15,4 @@ export type StripPrefix<T extends string, prefix extends string> = T extends `${
 
 export type ExtractIterableType<T extends Iterable<any>> = T extends Iterable<infer U> ? U : T;
 
+export type HasAnyRequiredProperty<T> = {[K in keyof T]-?: {} extends Pick<T, K> ? never : K;}[keyof T] extends never? false: true;

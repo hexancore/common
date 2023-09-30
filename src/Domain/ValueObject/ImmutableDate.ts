@@ -74,7 +74,7 @@ export class ImmutableDate extends AbstractValueObject<ImmutableDate> {
     return this.value.toUTCString();
   }
 
-  public toJSON() {
+  public toJSON(): any {
     return this.t;
   }
 }

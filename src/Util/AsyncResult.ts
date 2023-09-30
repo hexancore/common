@@ -13,40 +13,62 @@ export type ARP<T> = Promise<Result<T>>;
  */
 export type BoolAsyncResultPromise = Promise<Result<boolean>>;
 
-export type SAR<U> = Result<U> | AsyncResult<U> | ARP<U>;
+/**
+ * Used as return callbacks inside AsyncResult
+ */
+export type INSAR<U> = Result<U> | AsyncResult<U> | ARP<U>;
+
+/**
+ * Type used for return sync or async result
+ */
+export type SAR<U> = Result<U> | AsyncResult<U>;
+
+/**
+ * Type used for return async result
+ */
 export type AR<T> = AsyncResult<T>;
 
 type CastToIterable<T> = T extends Iterable<any> ? ExtractIterableType<T> : never;
+export type ErrorFn = (e: unknown) => AppError | AppErrorProps;
 
+export const DEFAULT_ERROR_FN: ErrorFn = (e) => (e instanceof AppError ? e : INTERNAL_ERROR(e as Error));
+
+/**
+ * Async version of Result with powerfull api :)
+ */
 export class AsyncResult<T> implements PromiseLike<Result<T>> {
   private callbackThis: any;
 
   public constructor(public readonly p: ARP<T>) {}
 
   public static fromSafePromise<T>(promise: Promise<T>): AsyncResult<T> {
-    const newPromise = promise.then((value: T) => OK<T>(value));
+    const newPromise = promise.then((value: T) => (value instanceof Result ? value :OK<T>(value)));
     return new AsyncResult(newPromise);
   }
 
-  public static fromPromise<T>(promise: Promise<T>, errorFn?: (e: unknown) => AppError | AppErrorProps): AsyncResult<T> {
-    errorFn = errorFn ?? ((e: unknown) => INTERNAL_ERROR(e as Error));
+  public static fromPromise<T>(promise: Promise<T>, errorFn?: ErrorFn): AsyncResult<T> {
+    errorFn = errorFn ?? DEFAULT_ERROR_FN;
 
     const newPromise = promise
-      .then((value: T) => OK<T>(value))
+      .then((value: T) => (value instanceof Result ? value : OK<T>(value)))
       .catch((e) => {
-        return ERR<T>(errorFn(e));
+        e = errorFn(e);
+        e = e instanceof AppError ? e : new AppError(e);
+        return ERR<T>(e);
       });
 
     return new AsyncResult(newPromise);
   }
 
-  public static fromPromiseOkTrue(promise: Promise<any>, errorFn?: (e: unknown) => AppError | AppErrorProps): AsyncResult<boolean> {
-    errorFn = errorFn ?? ((e: unknown) => INTERNAL_ERROR(e as Error));
+  public static fromPromiseOkTrue(promise: Promise<any>, errorFn?: ErrorFn): AsyncResult<boolean> {
+    errorFn = errorFn ?? DEFAULT_ERROR_FN;
 
     const newPromise = promise
       .then(() => OK<boolean>(true))
       .catch((e) => {
-        return ERR<boolean>(errorFn(e));
+        e = errorFn(e);
+        e = e instanceof AppError ? e : new AppError(e);
+        return ERR<boolean>(e);
       });
 
     return new AsyncResult(newPromise).mapToTrue();
@@ -92,7 +114,7 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
     );
   }
 
-  public onOk<U>(f: (v: T) => SAR<U>): AR<U> {
+  public onOk<U>(f: (v: T) => INSAR<U>): AR<U> {
     return new AsyncResult(
       this.p.then((res) => {
         if (res.isError()) {
@@ -108,7 +130,7 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
     );
   }
 
-  public onEachAsArray<U, IT = CastToIterable<T>>(onEach: (v: IT) => SAR<U>): AR<U[]> {
+  public onEachAsArray<U, IT = CastToIterable<T>>(onEach: (v: IT) => INSAR<U>): AR<U[]> {
     return this.onOk(async (it) => {
       if (!isIterable(it)) {
         return INTERNAL_ERR(new Error('Result value is not Iterable'));
@@ -136,11 +158,11 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
     });
   }
 
-  public onOkBind<F extends (...args: [...any, T]) => SAR<U>, U = any | T>(f: F, thisArg: any, ...argArray: DropLastParam<F>): AR<U> {
+  public onOkBind<F extends (...args: [...any, T]) => INSAR<U>, U = any | T>(f: F, thisArg: any, ...argArray: DropLastParam<F>): AR<U> {
     return this.onOk(f.bind(thisArg, ...argArray));
   }
 
-  public onOkThis<F extends (...args: [...any, T]) => SAR<U>, U = any | T>(f: F, ...argArray: DropLastParam<F>): AsyncResult<U> {
+  public onOkThis<F extends (...args: [...any, T]) => INSAR<U>, U = any | T>(f: F, ...argArray: DropLastParam<F>): AsyncResult<U> {
     return this.onOkBind(f, this.callbackThis, ...argArray).bind(this.callbackThis);
   }
 
@@ -150,7 +172,7 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
    * @param f Callback
    * @returns this
    */
-  public onErr<U = T>(f: ((e: AppError) => SAR<U>) | Record<string, (e: AppError) => SAR<U>>): AR<U> {
+  public onErr<U = T>(f: ((e: AppError) => INSAR<U>) | Record<string, (e: AppError) => INSAR<U>>): AR<U> {
     return new AsyncResult<U>(
       this.p.then(async (res: Result<T>): Promise<any> => {
         if (res.isError()) {
@@ -170,14 +192,14 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
   /**
    *  Use callback function binded to thisArg with some args
    */
-  public onErrBind<F extends (...args: [...any, AppError]) => SAR<T>>(f: F, thisArg: any, ...argArray: DropLastParam<F>): AR<T> {
+  public onErrBind<F extends (...args: [...any, AppError]) => INSAR<T>>(f: F, thisArg: any, ...argArray: DropLastParam<F>): AR<T> {
     return this.onErr(f.bind(thisArg, ...argArray));
   }
 
   /**
    *  Use callback function binded to this binded with that result with some args
    */
-  public onErrThis<F extends (...args: [...any, AppError]) => SAR<T>>(f: F, ...argArray: DropLastParam<F>): AR<T> {
+  public onErrThis<F extends (...args: [...any, AppError]) => INSAR<T>>(f: F, ...argArray: DropLastParam<F>): AR<T> {
     return this.onErrBind(f, this.callbackThis, ...argArray);
   }
 
@@ -189,19 +211,65 @@ export class AsyncResult<T> implements PromiseLike<Result<T>> {
   }
 }
 
+/**
+ * Shortcut for create Success AsyncResult
+ * @param v - Result value
+ * @returns AsyncResult with value
+ */
 export const OKA = <T>(v: T): AR<T> => new AsyncResult(Promise.resolve(OK<T>(v)));
+/**
+ * Shortcut for create Success AsyncResult and get promise of it
+ * @param v - Result value
+ * @returns AsyncResult promise
+ */
 export const OKAP = <T>(v: T): ARP<T> => OKA(v).p;
 
+/**
+ * Shortcut for create Error AsyncResult
+ * @param error - AppError or AppErrorProps or string as error type
+ * @param code - Error code used when first param is string
+ * @param data - Error data used when first param is string
+ * @returns AsyncResult with AppError
+ */
 export const ERRA = <T>(error: AppError | AppErrorProps | string, code = AppErrorCode.BAD_REQUEST, data?: any): AR<T> => {
   return new AsyncResult(Promise.resolve(ERR<T>(error, code, data)));
 };
+
+/**
+ * Shortcut for create Error AsyncResult and get promise of it
+ * @param error - AppError or AppErrorProps or string as error type
+ * @param code - Error code used when first param is string
+ * @param data - Error data used when first param is string
+ * @returns Promise from AsyncResult
+ */
 export const ERRAP = <T>(error: AppError | AppErrorProps | string, code = AppErrorCode.BAD_REQUEST, data?: any): ARP<T> =>
   ERRA<T>(error, code, data).p;
 
+/**
+ * Shortcut for create internal error AsyncResult
+ * @param error
+ * @returns AsyncResult
+ */
 export const INTERNAL_ERRA = <T>(error: Error): AR<T> => {
   return new AsyncResult(Promise.resolve(INTERNAL_ERR(error)));
 };
 
+/**
+ * Shortcut AsyncResult.fromPromise
+ * @param p Promise for wrap in AsyncResult
+ * @param errorFn Error mapper to AppError
+ * @returns
+ */
 export const P = AsyncResult.fromPromise;
+/**
+ * Shortcut AsyncResult.fromSafePromise
+ * @param p
+ * @returns
+ */
 export const PS = AsyncResult.fromSafePromise;
+/**
+ * Shortcut AsyncResult.fromPromiseOkTrue
+ * @param  p
+ * @returns
+ */
 export const PB = AsyncResult.fromPromiseOkTrue;
