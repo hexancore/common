@@ -23,7 +23,7 @@ export class EnumEntityErrorTypeWrapper<EntityErrorTypes> {
     return ERRA(this.t(type), this.code(type), data);
   }
 
-  public code(type: EntityErrorTypes) {
+  public code(type: EntityErrorTypes): number {
     return (type as any) == 'not_found' ? 404 : 400;
   }
 
@@ -60,8 +60,9 @@ export type DomainErrors<T> = DomainErrorTypes<T> & EntityErrorType<T>;
  * @param obj instance of local class
  * @returns Object with error type property wrappers.
  */
-export function DefineDomainErrors<T>(obj: T): DomainErrors<T> {
-  const module = pascalCaseToSnakeCase(obj.constructor.name);
+
+export function DefineDomainErrors<T>(module: string, obj: T): DomainErrors<T> {
+  module = pascalCaseToSnakeCase(module);
   const moduleErrorTypePrefix = module + '.domain.';
   const moduleEntityErrorTypePrefix = moduleErrorTypePrefix + 'entity.';
   const errors: any = {
