@@ -35,6 +35,12 @@ export interface AppErrorLogContext {
   code?: any;
 }
 
+export class PanicError extends Error {
+  public constructor(e: AppError<any>) {
+    super(e.getLogMessage()+': '+JSON.stringify(e.data), e.error ? {cause: e.error} : undefined);
+  }
+}
+
 /**
  * Represents app error like invalid user input data
  */
@@ -148,6 +154,10 @@ export class AppError<ET extends Error = Error> implements AppErrorProps, JsonSe
     }
 
     return 'warn';
+  }
+
+  public panic(): void {
+    throw new PanicError(this);
   }
 }
 

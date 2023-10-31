@@ -6,11 +6,11 @@ import { ERR } from '@';
 import { DefineDomainErrors, standard_entity_errors } from '@/Domain/Error/DomainErrors';
 
 describe('DomainErrors', () => {
-  const errors = DefineDomainErrors(
-    new (class Test {
-      entity_test_1: standard_entity_errors = 'not_found';
-      entity_test_2: standard_entity_errors | 'custom_1' = 'not_found';
-      other_error = '';
+  const errors = DefineDomainErrors("test",
+    new (class {
+      public entity_test_1: standard_entity_errors = 'not_found';
+      public entity_test_2: standard_entity_errors | 'custom_1' = 'not_found';
+      public other_error = '';
     })(),
   );
   test('t()', () => {
@@ -35,7 +35,7 @@ describe('DomainErrors', () => {
     expect(errors.other_error.err()).toEqual(ERR('test.domain.other_error', 400));
   });
 
-  test('erra()', async() => {
+  test('erra()', async () => {
     expect(await errors.entity.test_1.erra('not_found', 'test_data')).toEqual(ERR('test.domain.entity.test_1.not_found', 404, 'test_data'));
     expect(await errors.entity.test_1.erra('duplicate')).toEqual(ERR('test.domain.entity.test_1.duplicate', 400));
 
