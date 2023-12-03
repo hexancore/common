@@ -39,7 +39,7 @@ jobs:
       - name: Bump package version
         run: |
           echo "OLD_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
-          yarn version --$RELEASE_TYPE --no-git-tag-version
+          yarn version $RELEASE_TYPE
           echo "NEW_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
           echo "RELEASE_TAG=latest" >> $GITHUB_ENV
         env:
