@@ -28,6 +28,9 @@ jobs:
           node-version: 20.x
           scope: '@hexancore'
           always-auth: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
 
       - name: Install dependencies
         run: yarn install --immutable
