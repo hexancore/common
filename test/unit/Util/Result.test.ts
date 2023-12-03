@@ -87,7 +87,6 @@ describe(path.basename(__filename, '.test.ts'), () => {
         result_2: ERR("test"),
       };
       const current = Result.all(results, "test_main");
-      console.log(current);
       expect(current).toMatchAppError({type: "test_main", code: 500, data:{result_1: null, result_2: results.result_2.e}});
     });
   });
