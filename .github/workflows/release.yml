@@ -48,7 +48,7 @@ jobs:
           RELEASE_TYPE: ${{ inputs.releaseType }}
 
       - name: Update CHANGELOG.md
-        uses: 'zen8sol/update-changelog-action@0.1.0'
+        uses: 'zen8sol/update-changelog-action@0.1.1'
 
       - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
