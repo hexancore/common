@@ -26,9 +26,7 @@ jobs:
         with:
           registry-url: 'https://registry.npmjs.org'
           node-version: 20.x
-          scope: '@hexancore'
           cache: 'yarn'
-          always-auth: true
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -58,7 +56,7 @@ jobs:
 
       - name: Publish
         run: |
-          echo "npmAuthToken: '${{ env.NODE_AUTH_TOKEN }}'" >> ./yarnrc.yml
+          echo -e "\nnpmAuthToken: '${{ env.NODE_AUTH_TOKEN }}'" >> ./yarnrc.yml
           yarn npm publish --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
