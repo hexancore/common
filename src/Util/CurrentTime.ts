@@ -1,15 +1,15 @@
-import { ImmutableDate } from '../Domain';
+import { DateTime } from '../Domain';
 
 export class CurrentTime {
   public static i: CurrentTime;
 
-  private constNow?: ImmutableDate;
+  private constNow?: DateTime;
 
-  get now(): ImmutableDate {
-    return this.constNow ?? ImmutableDate.now();
+  public get now(): DateTime {
+    return this.constNow ?? DateTime.now();
   }
 
-  set now(now: ImmutableDate | null) {
+  public set now(now: DateTime | null) {
     this.constNow = now;
   }
 }

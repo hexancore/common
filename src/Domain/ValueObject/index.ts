@@ -8,11 +8,10 @@ export * from './EmailHash';
 export * from './MailContent';
 
 // TIME
-export * from './ImmutableDate';
+export * from './DateTime';
 
 // PRIMITIVE
 export * from './StringValue';
 export * from './UBigIntValue';
 export * from './UIntValue';
 export * from './RegexStringValue';
-

@@ -1,44 +1,53 @@
 {
   "name": "@hexancore/common",
-  "version": "0.11.0",
+  "version": "0.10.4",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "engine-strict": true,
   "description": "Core to build hexagonal architecture designed apps",
   "author": "Andrzej Wasiak <Mararok>",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "lib/mjs/index.d.ts",
   "typesVersions": {
     "*": {
       ".": [
-        "./lib/index.d.ts"
+        "./lib/mjs/index.d.ts"
       ],
       "testutil": [
-        "./lib/Test/index.d.ts"
+        "./lib/mjs/Test/index.d.ts"
       ]
     }
   },
+  "main": "lib/cjs/index.js",
+  "module": "lib/mjs/index.js",
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./lib/mjs/index.d.ts",
+        "default": "./lib/mjs/index.js"
+      },
+      "require": {
+        "types": "./lib/cjs/index.d.ts",
+        "default": "./lib/cjs/index.js"
       },
       "default": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./lib/mjs/index.d.ts",
+        "default": "./lib/mjs/index.js"
       }
     },
     "./testutil": {
       "import": {
-        "types": "./lib/Test/index.d.ts",
-        "default": "./lib/Test/index.js"
+        "types": "./lib/mjs/Test/index.d.ts",
+        "default": "./lib/mjs/Test/index.js"
+      },
+      "require": {
+        "types": "./lib/cjs/Test/index.d.ts",
+        "default": "./lib/cjs/Test/index.js"
       },
       "default": {
-        "types": "./lib/Test/index.d.ts",
-        "default": "./lib/Test/index.js"
+        "types": "./lib/mjs/Test/index.d.ts",
+        "default": "./lib/mjs/Test/index.js"
       }
     }
   },
@@ -51,7 +60,7 @@
   },
   "homepage": "https://hexancore.github.io/hexancore",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest --maxWorkers=50%",
@@ -63,18 +72,18 @@
     "prepublish": "yarn test && yarn run build"
   },
   "dependencies": {
+    "@js-joda/core": "^5.6.1",
     "axios": "^1.5.0",
     "class-transformer": "^0.5.1",
     "fastest-validator": "^1.11.1",
     "lambda-log": "^3.1.0",
-    "luxon": "^3.0.1",
     "nanoid": "^3.1.28",
     "string.prototype.matchall": "^4.0.10",
     "tslib": "^2.5.0",
     "xss": "^1.0.10"
   },
   "devDependencies": {
-    "@hexancore/mocker": "*",
+    "@hexancore/mocker": "1.*",
     "@types/jest": "29.0.*",
     "@types/lambda-log": "^3.0.0",
     "@types/luxon": "^3.3.2",

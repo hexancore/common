@@ -75,6 +75,6 @@ export class AxiosHttpResponse<D = any> implements HttpResponse<D> {
   }
 
   public get headers(): RawHttpResponseHeaders {
-    return (this.wrapped.headers as AxiosHeaders).toJSON();
+    return (this.wrapped.headers as any).toJSON();
   }
 }
