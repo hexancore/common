@@ -58,7 +58,7 @@ jobs:
 
       - name: Publish
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ env.NPM_AUTH_TOKEN }}" > ~/.npmrc
+          echo "npmAuthToken: ${{ env.NPM_AUTH_TOKEN }}" >> ./yarnrc.yml
           yarn npm publish --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
