@@ -64,7 +64,9 @@ export class Result<T> {
     if (this.isSuccess()) {
       return this;
     }
-    return ERR(fn(this.value));
+    const v = fn(this.value);
+
+    return ERR(v instanceof AppError ? v : new AppError(v));
   }
 
   public onErr<U>(fn: ((e: AppError) => R<U>) | Record<string, (e: AppError) => R<U>>): R<U | T> {
@@ -80,9 +82,36 @@ export class Result<T> {
     return c ? c(this.value) : this;
   }
 
-  public static all<T extends readonly R<unknown>[] | []>(results: T): R<any> | R<{ -readonly [P in keyof T]: ExtractInnerResultType<T[P]> }> {
+  public static all<T extends Record<string, R<unknown>>>(
+    results: T,
+    error: { type: string; code: number } | string,
+  ): R<{ [P in keyof T]: ExtractInnerResultType<T[P]> }> {
+    const out: any = { ...results };
+
+    let hasAnyError = false;
+    for (const r in results) {
+      hasAnyError = hasAnyError || results[r].isError();
+      out[r] = results[r].isSuccess() ? results[r].v : results[r].e;
+    }
+
+    if (hasAnyError) {
+      for (const r in results) {
+        if (results[r].isSuccess()) {
+          out[r] = null;
+        }
+      }
+
+      return typeof error === 'string' ? ERR(error, 500, out) : ERR(error.type, error.code, out);
+    }
+
+    return OK(out) as any;
+  }
+
+  public static allToFirstError<T extends readonly R<unknown>[] | []>(
+    results: T,
+  ): R<any> | R<{ -readonly [P in keyof T]: ExtractInnerResultType<T[P]> }> {
     const values = [];
-    for (let r of results) {
+    for (const r of results) {
       if (r.isError()) {
         return r;
       }
@@ -109,6 +138,24 @@ export const ERR = <T>(error: AppError | AppErrorProps | string, code = 400, dat
     e = error instanceof AppError ? error : new AppError(error);
   }
   return new Result<T>(e);
+};
+
+export const ResultFrom = {
+  all: <T>(results: Record<string, R<any>>): R<T> => {
+    for (const r in results) {
+      if (results[r].isError()) {
+        return;
+      }
+    }
+
+    const out = { ...results };
+
+    for (const r in results) {
+      out[r] = results[r];
+    }
+
+    return OK(out) as any;
+  },
 };
 
 export const INTERNAL_ERR = <T>(error: Error): R<T> => {

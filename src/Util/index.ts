@@ -9,7 +9,7 @@ export * from './CurrentTime';
 export * from './Dto';
 export * from '../Log';
 export * from './AppMeta';
-export * from './Error';
+export * from './Error/index';
 
 export * from './JsonSerialize';
 export * from './StringTemplate';

@@ -1,11 +1,13 @@
-./test
-tsconfig.build.json
-tsconfig.common.json
-tsconfig.json
+test/**
 src
 *.tsbuildinfo
 yarn-error.log
 .yalc
+.yarn
+.yarnrc.yml
+tsconfig.*
+yalc.sig
+.github
 yalc.lock
 yarn.lock
 .prettierrc.js

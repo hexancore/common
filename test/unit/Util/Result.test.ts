@@ -55,16 +55,40 @@ describe(path.basename(__filename, '.test.ts'), () => {
     expect(current.e.cause).toBe(error);
   });
 
-  test('all() when all success', () => {
-    const results = [OK(1), OK(2), OK(3)];
-    const current = Result.all(results);
+  describe('allToFirstError()', () => {
+    test('when all success', () => {
+      const results = [OK(1), OK(2), OK(3)];
+      const current = Result.allToFirstError(results);
 
-    expect(current).toEqual(OK([1, 2, 3]));
+      expect(current).toEqual(OK([1, 2, 3]));
+    });
+
+    test('when one error', () => {
+      const error = ERR<boolean>('test_error');
+      const current = Result.allToFirstError([OK(1), error, OK(3)]);
+      expect(current).toEqual(error);
+    });
   });
 
-  test('all() when one error', () => {
-    const error = ERR<boolean>('test_error');
-    const current = Result.all([OK(1), error, OK(3)]);
-    expect(current).toEqual(error);
+  describe('all()', () => {
+    test('when all success', () => {
+      const results = {
+        result_1: OK(10),
+        result_2: OK('test'),
+      };
+      const current = Result.all(results, "test");
+
+      expect(current).toEqual(OK({result_1: 10, result_2: 'test'}));
+    });
+
+    test('when one error', () => {
+      const results = {
+        result_1: OK(10),
+        result_2: ERR("test"),
+      };
+      const current = Result.all(results, "test_main");
+      console.log(current);
+      expect(current).toMatchAppError({type: "test_main", code: 500, data:{result_1: null, result_2: results.result_2.e}});
+    });
   });
 });
