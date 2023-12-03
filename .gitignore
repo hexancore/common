@@ -7,7 +7,7 @@
 !.yarn/sdks
 !.yarn/versions
 node_modules
-\
+
 # YALC
 .yalc
 yalc.lock
