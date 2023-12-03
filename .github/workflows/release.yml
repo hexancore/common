@@ -65,4 +65,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git tag -d '${{ env.NEW_VERSION }}'
           git tag -m 'new version' '${{ env.NEW_VERSION }}' && git push --follow-tags
