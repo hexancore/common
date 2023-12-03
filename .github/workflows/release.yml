@@ -38,8 +38,6 @@ jobs:
 
       - name: Bump package version
         run: |
-          yarn config set version-tag-prefix ''
-          yarn config set version-git-tag false
           echo "OLD_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
           yarn version --$RELEASE_TYPE --no-git-tag-version
           echo "NEW_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
