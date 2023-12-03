@@ -10,7 +10,6 @@ yalc.sig
 .github
 yalc.lock
 yarn.lock
-.yarnrc.yml
 .prettierrc.js
 .git
 .gitattributes
