@@ -1,4 +1,4 @@
-import { LogLevel, LogRecord } from '../Util';
+import { LogLevel, LogRecord } from './';
 import { AbstractLogger } from './AbstractLogger';
 
 /**

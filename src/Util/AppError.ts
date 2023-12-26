@@ -1,4 +1,5 @@
-import { JsonSerialize, LogLevel, LogRecord, LogTags } from '.';
+import { LogLevel, LogRecord } from '../Log';
+import { JsonSerialize, } from '.';
 import { ErrorHelper, ErrorPlain } from './Error/ErrorHelper';
 
 export const IGNORE_ERROR_TYPE = 'core.ignore_error';
