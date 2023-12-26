@@ -1,5 +1,6 @@
 import { AppError, AppErrorProps, INTERNAL_ERROR } from './AppError';
 import { AR, ERRA } from './AsyncResult';
+import { LogicError } from './Error';
 
 export type R<T> = Result<T>;
 
@@ -17,7 +18,7 @@ export class Result<T> {
 
   public get v(): T {
     if (this.isError()) {
-      throw new ReferenceError("Can't use on ErrorResult: " + this.value.type);
+      throw new LogicError("Can't use v() on ErrorResult: " + this.value.type);
     }
 
     return this.value;
@@ -57,7 +58,7 @@ export class Result<T> {
       return this.value;
     }
 
-    throw new ReferenceError("Can't use on SuccessResult");
+    throw new LogicError("Can't use e() on SuccessResult");
   }
 
   public mapErr(fn: (e: AppError) => AppError | AppErrorProps): R<T> {
