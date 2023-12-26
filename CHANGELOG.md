@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.4] - 2023-12-26
+
 ### Added
 
 - Jest matcher: toMatchSuccessResult
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes
 
-[unreleased] https://github.com/hexancore/common/compare/0.12.3...HEAD  
+[unreleased] https://github.com/hexancore/common/compare/0.12.4...HEAD
+[0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4
 [0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3  
 [0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4  
