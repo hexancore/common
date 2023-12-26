@@ -1,5 +1,4 @@
 # Changelog
-ąęłó
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -32,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes
 
-[unreleased] https://github.com/hexancore/common/compare/0.12.4...HEAD
-[0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4
-[0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3  
-[0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4  
+[unreleased] https://github.com/hexancore/common/compare/0.12.4...HEAD  
+[0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
+[0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3   
+[0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4   
