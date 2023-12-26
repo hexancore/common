@@ -64,10 +64,10 @@
     "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
-    "test": "jest --maxWorkers=50%",
+    "test": "jest --runInBand",
     "test:clearCache": "jest --clearCache",
-    "test:unit": "jest --maxWorkers=50% --group=unit",
-    "test:watch": "jest --maxWorkers=50% --watchAll",
+    "test:unit": "jest --runInBand --group=unit",
+    "test:watch": "jest --runInBand --watchAll",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "prepublish": "yarn test && yarn run build"

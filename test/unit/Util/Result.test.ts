@@ -11,7 +11,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
 
     expect(current.isSuccess()).toBeTruthy();
     expect(current.v).toBe('test_data');
-    expect(() => current.e).toThrow("Can't use on SuccessResult");
+    expect(() => current.e).toThrow("Can't use e() on SuccessResult");
   });
 
   test('ERR()', () => {
@@ -22,7 +22,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     expect(current.e.type).toBe('test_type');
     expect(current.e.code).toBe(400);
     expect(current.e.data).toBe('test_data');
-    expect(() => current.v).toThrow("Can't use on ErrorResult: test_type");
+    expect(() => current.v).toThrow("Can't use v() on ErrorResult: test_type");
   });
 
   test('map() when SuccessResult', () => {
