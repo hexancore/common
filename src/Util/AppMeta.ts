@@ -1,8 +1,7 @@
-import { cwd } from 'process';
-import { LogicError, MissingError } from './Error';
+import { LogicError } from './Error';
 import { getEnvOrError as getRequiredEnv, parseBoolean } from './functions';
 
-export interface AppMetaProps {
+export interface AppMetaProps<ET extends Record<string, any> = Record<string, any>> {
   env: EnvType;
   id: string;
   version: string;
@@ -10,18 +9,14 @@ export interface AppMetaProps {
   logPretty: boolean;
   logSilent: boolean;
   ci: boolean;
-
-  home?: string;
-  envFilePath?: string;
-
-  extra?: Record<string, any>;
+  extra?: ET;
 }
 
 export type EnvType = 'dev' | 'test' | 'prod';
 
 export type AppMetaProvider = () => AppMetaProps;
 
-export class AppMeta implements AppMetaProps {
+export class AppMeta<ET extends Record<string, any> = Record<string, any>> implements AppMetaProps {
   protected static instance: AppMeta;
   protected static provider?: AppMetaProvider;
 
@@ -44,11 +39,10 @@ export class AppMeta implements AppMetaProps {
   public readonly ci: boolean;
 
   public readonly home: string;
-  public readonly envFilePath: string;
 
   public readonly extra: Readonly<Record<string, any>>;
 
-  private constructor(private props: AppMetaProps) {
+  private constructor(private props: AppMetaProps<ET>) {
     this.env = props.env;
     this.id = props.id;
     this.version = props.version;
@@ -57,13 +51,10 @@ export class AppMeta implements AppMetaProps {
     this.logSilent = props.logSilent;
     this.ci = props.ci;
 
-    this.home = props.home ?? '';
-    this.envFilePath = props.envFilePath ?? '';
-
     this.extra = props.extra ?? {};
   }
 
-  public static get(): AppMeta {
+  public static get<ET>(): AppMeta<ET> {
     if (AppMeta.instance === undefined) {
       if (AppMeta.provider === undefined) {
         throw Error('AppMeta.instanceFactory is not sets before first get() call, check your code');
@@ -71,10 +62,10 @@ export class AppMeta implements AppMetaProps {
       AppMeta.instance = new AppMeta(AppMeta.provider());
     }
 
-    return AppMeta.instance;
+    return AppMeta.instance as AppMeta<ET>;
   }
 
-  public getProps(): AppMetaProps {
+  public getProps(): AppMetaProps<ET> {
     return this.props;
   }
 
@@ -110,9 +101,6 @@ export const EnvAppMetaProvider: AppMetaProvider = (): AppMetaProps => {
     logPretty: parseBoolean(process.env.APP_LOG_PRETTY, !isProd),
     logSilent: parseBoolean(process.env.APP_LOG_SILENT),
     ci: parseBoolean(process.env.CI),
-
-    home: process.env.APP_HOME ?? cwd(),
-    envFilePath: process.env.APP_ENV_FILE_PATH ?? cwd() + '/.env',
     extra: {},
   };
 
