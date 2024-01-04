@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - type DropFirstItem
 - type TupleTail
 - type ParamsTail
+- AccountId and UserId value Objects
 
 ## [0.12.3] - 2023-12-03
 
