@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.5] - 2024-01-05
+
 ### Added
 
 - AccountId and UserId
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes
 
-[unreleased] https://github.com/hexancore/common/compare/0.12.4...HEAD  
+[unreleased] https://github.com/hexancore/common/compare/0.12.5...HEAD
+[0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5
 [0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
 [0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3   
 [0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4   
