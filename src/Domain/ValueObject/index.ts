@@ -2,6 +2,10 @@
 export * from './ValueObject';
 export * from './SimpleValueObject';
 
+// Account
+export * from './AccountId';
+export * from './UserId';
+
 // MAILING
 export * from './Email';
 export * from './EmailHash';
