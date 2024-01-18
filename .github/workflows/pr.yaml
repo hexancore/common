@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout-yarn-install
+        uses: actions/checkout@v4
+      - name: Yarn install
+        uses: ./.github/actions/yarn-install
       - name: Lint
         run: yarn lint
 
@@ -17,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout-yarn-install
+        uses: actions/checkout@v4
+      - name: Yarn install
+        uses: ./.github/actions/yarn-install
       - name: test
         run: yarn test

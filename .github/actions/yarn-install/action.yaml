@@ -1,5 +1,5 @@
-name: 'checkout-yarn-install'
-description: "Checkout + yarn install"
+name: 'yarn-install'
+description: "yarn install"
 outputs:
   random-number:
     description: 'Random number'
@@ -7,9 +7,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
