@@ -15,12 +15,12 @@ runs:
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       shell: bash
-      run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      run:  echo "yarn_cache_path=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
     - name: Restore yarn cache
       uses: actions/cache@v4
       id: yarn-cache
       with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        path: ${{ steps.yarn-cache-dir-path.outputs.yarn_cache_path }}
         key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
         restore-keys: |
           yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
