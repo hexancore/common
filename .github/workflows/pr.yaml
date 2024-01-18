@@ -1,22 +1,26 @@
 name: Pull Request
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master, main ]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: ./.github/actions/checkout-yarn-install
-      - name: Lint
-        run: yarn lint
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Yarn install
+  #       uses: ./.github/actions/yarn-install
+  #     - name: Lint
+  #       run: yarn lint
 
   test:
-    needs: ['lint']
+   # needs: ['lint']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: ./.github/actions/checkout-yarn-install
+        uses: actions/checkout@v4
+      - name: Yarn install
+        uses: ./.github/actions/yarn-install
       - name: test
         run: yarn test

@@ -1,4 +1,5 @@
-name: 'yarn_checkout'
+name: 'yarn-install'
+description: "yarn install"
 outputs:
   random-number:
     description: 'Random number'
@@ -6,9 +7,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -17,12 +15,12 @@ runs:
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
       shell: bash
-      run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      run:  echo "yarn_cache_path=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
     - name: Restore yarn cache
       uses: actions/cache@v4
       id: yarn-cache
       with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        path: ${{ steps.yarn-cache-dir-path.outputs.yarn_cache_path }}
         key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
         restore-keys: |
           yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
