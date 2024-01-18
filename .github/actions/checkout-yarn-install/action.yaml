@@ -1,4 +1,5 @@
-name: 'yarn_checkout'
+name: 'checkout-yarn-install'
+description: "Checkout + yarn install"
 outputs:
   random-number:
     description: 'Random number'
