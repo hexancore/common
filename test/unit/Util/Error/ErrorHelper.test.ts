@@ -17,7 +17,7 @@ describe('ErrorHelper', () => {
         type: "LogicError",
         message: "test",
         stacktrace: ErrorHelper.convertStackTraceToArray(error.stack),
-      }
+      };
       expect(current).toEqual(expected);
     });
 

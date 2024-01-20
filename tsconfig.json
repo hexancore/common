@@ -21,6 +21,7 @@
     "outDir": "./lib",
     "baseUrl": "./",
     "paths": {
+      "@test/helper/*": ["test/helper/*"],
       "@": ["src"],
       "@/*": ["src/*"],
     },

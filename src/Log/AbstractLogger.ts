@@ -1,5 +1,5 @@
 import { AppMeta, ErrorHelper, LogicError } from '../Util';
-import { AppError } from '../Util/AppError';
+import { AppError } from '../Util/Error/AppError';
 import { LogContext, Logger, LogLevel, LogMessage, LogTags, LogTagsFactory } from './Logger';
 
 export interface LoggerGlobalOptions {

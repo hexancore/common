@@ -1,5 +1,5 @@
-import { AppError, AppErrorCode } from './AppError';
-import { AR, ARP, OKA, ERRA, PS } from './AsyncResult';
+import { AppError, AppErrorCode } from './Error/AppError';
+import { AR, ARP, OKA, ERRA, PS } from './Result';
 
 export interface RetryOptions {
   id: string;

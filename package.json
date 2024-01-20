@@ -115,7 +115,8 @@
     },
     "moduleNameMapper": {
       "^@$": "<rootDir>/src",
-      "^@/(.*)$": "<rootDir>/src/$1"
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^@test/helper/(.*)$": "<rootDir>/test/helper/$1"
     },
     "testMatch": [
       "<rootDir>/test/unit/**/*.test.ts",

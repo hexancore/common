@@ -1,5 +1,4 @@
-import { AR, ERRA } from '../AsyncResult';
-import { R, ERR } from '../Result';
+import { R, ERR,  AR, ERRA } from '../Result';
 
 export type RawErrorEnum = Record<string, any>;
 
@@ -17,7 +16,7 @@ export class EnumErrorTypeWrapper {
     return ERRA(this.t, 400, data);
   }
 
-  public toString() {
+  public toString(): string {
     return this.t;
   }
 }

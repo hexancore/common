@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { AxiosHttpResponse, HttpRequestConfig, HttpResponse, RawFormData } from './HttpSupport';
-import { AppError, AR, P, AppErrorProps, UNKNOWN_ERROR_TYPE, AppErrorCode } from '../Util';
+import { AppError, AR, P, AppErrorProps, AppErrorCode, ErrorFn, StdErrors } from '../Util';
 
 export interface I18nHttpClient {
   t(key: string, context?: Record<string, any>): string;
@@ -16,7 +16,7 @@ export interface HttpClient {
 }
 
 export class AxiosHttpClient implements HttpClient {
-  private errorMapper: (error) => AppError;
+  private errorMapper: ErrorFn;
   private axios: AxiosInstance;
 
   public constructor(private options: HttpClientOptions, axiosInstance: AxiosInstance) {
@@ -36,7 +36,7 @@ export class AxiosHttpClient implements HttpClient {
 
   public send(req: HttpRequestConfig): AR<HttpResponse> {
     this.prepareRequest(req);
-    return P(this.axios.request(req), this.errorMapper).map((r) => new AxiosHttpResponse(r));
+    return P(this.axios.request(req), this.errorMapper).onOk((r) => new AxiosHttpResponse(r));
   }
 
   protected prepareRequest(req: HttpRequestConfig): void {
@@ -48,21 +48,21 @@ export class AxiosHttpClient implements HttpClient {
     }
   }
 
-  protected createErrorMapper(): any {
+  protected createErrorMapper(): ErrorFn {
     return ((e: AxiosError) => {
       const appError: AppErrorProps = {
-        type: UNKNOWN_ERROR_TYPE,
+        type: StdErrors.internal,
         code: 999,
         error: e,
       };
 
       if (e.response) {
         const responseData = (e.response.data ?? {}) as { type: string; code: number; i18n?: string; data?: any };
-        appError.type = responseData.type ?? UNKNOWN_ERROR_TYPE;
+        appError.type = responseData.type ?? StdErrors.internal;
         appError.code = responseData.code ?? e.response.status;
         appError.data = responseData.data ?? null;
 
-        if (appError.type === UNKNOWN_ERROR_TYPE && appError.code === AppErrorCode.NOT_FOUND) {
+        if (appError.type === StdErrors.internal && appError.code === AppErrorCode.NOT_FOUND) {
           appError.type = 'core.http_client.response.not_found';
           appError.data = { url: e.config.url, method: e.config.method };
         }
