@@ -1,1 +1,1 @@
-export * from './ApplicationErrors'
+export * from './ApplicationErrors';

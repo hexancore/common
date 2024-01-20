@@ -1,8 +1,8 @@
 import { AbstractValueObject } from '@/Domain';
 import { instanceToPlain, plainToInstance, Transform, TransformationType } from 'class-transformer';
-import { INTERNAL_ERROR } from './AppError';
+import { INTERNAL_ERROR} from './Error/AppError';
 import { ERR, OK, Result } from './Result';
-import { JsonSerialize } from './JsonSerialize';
+import { JsonSerialize } from './Json/JsonSerialize';
 
 export const INVALID_PLAIN_OBJECT_ERROR_TYPE = 'core.dto.invalid_plain_object';
 

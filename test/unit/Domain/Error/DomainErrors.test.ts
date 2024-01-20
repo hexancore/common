@@ -13,6 +13,7 @@ describe('DomainErrors', () => {
       public other_error = '';
     })(),
   );
+
   test('t()', () => {
     expect(errors.entity.test_1.t('not_found')).toBe('test.domain.entity.test_1.not_found');
     expect(errors.entity.test_1.t('duplicate')).toBe('test.domain.entity.test_1.duplicate');

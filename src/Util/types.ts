@@ -34,3 +34,20 @@ export type HasAnyRequiredProperty<T> = { [K in keyof T]-?: {} extends Pick<T, K
 export type OneOrIterable<T> = T | Iterable<T>;
 
 export type OrderDirection = 'ASC' | 'DESC';
+
+export type EnumValueOrString<T> = T extends keyof T ? T[keyof T] & string : T;
+
+export type EnumValue<T> = (T[keyof T] & number) | string;
+
+export type EnumObject<T> = {
+  [k: number]: string;
+  [k: string]: EnumValue<T>;
+};
+
+export type TUNKNOWN = '#U';
+export type ExcludeUnknown<T> = Exclude<T, TUNKNOWN>;
+export type CastVoidToUnknownMarker<U> = U extends void ? TUNKNOWN : U;
+
+export type CastToIterable<T, IT = any> = T extends Iterable<IT> ? T : never;
+
+export type ExtractKeyof<U, K> = K extends keyof U ? K : never;

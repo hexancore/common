@@ -1,5 +1,5 @@
 import { LogicError } from '../Util/Error/LogicError';
-import { AppError } from '../Util/AppError';
+import { AppError } from '../Util/Error/AppError';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

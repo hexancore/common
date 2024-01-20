@@ -1,4 +1,3 @@
-import { AR, ARP, AsyncResult, ERRA, OKA, PS } from './AsyncResult';
 import { MissingError } from './Error';
 
 export function isIterable(obj: any): boolean {
