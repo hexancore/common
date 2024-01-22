@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added 
+
+- DateTime.formatRfc1123()
+- ARW() - more meaning name for wrapping Promise with AsyncResult 
+
+### Changed
+
+- AsyncResult.fromPromise() -> AsyncResult.wrap().
+- AsyncResult.fromPromiseOkTrue() -> AsyncResult.warpOnOkTrue().
+- AsyncResult.from() - accepts functions returns Promise(async/await support).
+- RetryHelper.retryAsync() - returns AR.
+
+### Removed 
+
+- AsyncResult.fromSafePromise() - AsyncResult.from supports both.
+
+### Deprecated
+
+- P() - use ARW()
+- PS() - use ARW()
+- PB() - use ARWB()
+
 ## [0.13.0] - 2024-01-20
 
 ### Added

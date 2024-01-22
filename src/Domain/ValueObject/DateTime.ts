@@ -1,6 +1,6 @@
 import { AbstractValueObject, ValueObject } from './ValueObject';
 import { OK, R } from '../../Util/Result';
-import { DateTimeFormatter, Duration, LocalDateTime, Period, ZoneOffset, ZonedDateTime, convert, nativeJs } from '@js-joda/core';
+import { DateTimeFormatter, Duration, LocalDateTime, Period, ZoneOffset, convert, nativeJs } from '@js-joda/core';
 
 export type DateTimeRawType = number;
 
@@ -137,6 +137,10 @@ export class DateTime extends AbstractValueObject<DateTime> {
 
   public formatDateTime(): string {
     return this.format(DEFAULT_DATE_TIME_FORMAT);
+  }
+
+  public formatRfc1123(): string {
+    return this.toNativeDate().toUTCString();
   }
 
   public toNativeDate(): Date {

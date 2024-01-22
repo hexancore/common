@@ -64,7 +64,7 @@
     "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
-    "test": "jest --runInBand",
+    "test": "TZ=UTC jest --runInBand",
     "test:clearCache": "jest --clearCache",
     "test:unit": "jest --runInBand --group=unit",
     "test:watch": "jest --runInBand --watchAll",
