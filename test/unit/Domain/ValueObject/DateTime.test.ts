@@ -6,14 +6,13 @@ import { DateTime, AppError } from '@';
 import { Duration, Period } from '@js-joda/core';
 
 describe('DateTime', () => {
-
   test('c() when date', () => {
     const date = new Date();
     const nowTimestamp = date.getTime();
     const result = DateTime.c(date);
     date.setTime(nowTimestamp + 60 * 60 * 1000);
 
-    expect(result.v.t).toBe(Math.trunc(nowTimestamp/1000));
+    expect(result.v.t).toBe(Math.trunc(nowTimestamp / 1000));
   });
 
   test('fromTimestamp', () => {
@@ -29,13 +28,21 @@ describe('DateTime', () => {
     expect(result.e.data).toEqual({ msg: 'invalid timestamp', raw: -10 });
   });
 
-  test("plus()", () => {
+  test('plus()', () => {
     const current = DateTime.cs('2023-01-01T10:50:00').plus(Period.ofDays(2)).plus(Duration.ofHours(2));
     expect(current.toString()).toBe('2023-01-03T12:50:00');
   });
 
-  test("minus()", () => {
+  test('minus()', () => {
     const current = DateTime.cs('2023-10-01T10:50:00').minus(Period.ofDays(2)).minus(Duration.ofHours(2));
     expect(current.toString()).toBe('2023-09-29T08:50:00');
+  });
+
+  test('formatRfc1123', () => {
+    const date = DateTime.cs('2023-10-01T08:50:00');
+
+    const current = date.formatRfc1123();
+
+    expect(current).toBe('Sun, 01 Oct 2023 08:50:00 GMT');
   });
 });
