@@ -2,7 +2,7 @@
  * @group unit
  */
 
-import { AR, AppError, ERR, ERRA, NeverError, OK, OKA, R, StdErrors } from '@';
+import { AR, ARW, AppError, ERR, ERRA, NeverError, OK, OKA, R, StdErrors } from '@';
 import { TestErrSuccess1, TestErrors, TestOk1, TestStartOk } from '@test/helper/TestErrors';
 
 class TestBindClass {
@@ -257,6 +257,24 @@ describe('AsyncResult', () => {
         .bind(obj)
         .onOkThis('method2')
         .onErr(() => true);
+    });
+  });
+
+  describe('ARW', () => {
+    test('when promise', async () => {
+      const result = ARW(Promise.resolve('test'));
+
+      const current = await result;
+
+      expect(current).toMatchSuccessResult('test');
+    });
+
+    test('when function returns promise', async () => {
+      const result = ARW(async () => 'test');
+
+      const current = await result;
+
+      expect(current).toMatchSuccessResult('test');
     });
   });
 

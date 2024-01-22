@@ -1,3 +1,4 @@
+import { LogicError } from '../Error';
 import {
   AppError,
   AppErrorCode,
@@ -6,6 +7,7 @@ import {
   DefaultErrorFn,
   ErrorFn,
   ExcludeNeverError,
+  InternalError,
   NeverError,
   StdErrors,
   UnknownErrorType,
@@ -66,8 +68,8 @@ type MakeNextAsyncResult<U, ET extends string> = AR<ExtractAsyncResultTypes<U>, 
 export type AsyncResultOnOkReturn<ET extends string, U> = MakeNextAsyncResult<U, ET>;
 
 type AsyncResultOnErrReturn<T, U, ET extends string> = T extends TUNKNOWN
-? AR<ExtractAsyncResultTypes<U>, ExtractAsyncResultErrorTypes<U, ET>>
-: AR<ExtractAsyncResultTypes<U> | T, ExtractAsyncResultErrorTypes<U, ET>>;
+  ? AR<ExtractAsyncResultTypes<U>, ExtractAsyncResultErrorTypes<U, ET>>
+  : AR<ExtractAsyncResultTypes<U> | T, ExtractAsyncResultErrorTypes<U, ET>>;
 
 // experimental types
 type FunctionWithLastArgument<T, U = any> = (...args: [...any[], T]) => U;
@@ -86,37 +88,34 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
 
   public constructor(public readonly p: ARP<T, ET>) {}
 
-  public static fromSafePromise<T, ET extends string = StdErrors['internal']>(promise: Promise<T>): AR<T, ET> {
-    const newPromise = promise.then((value: T) => (value instanceof Result ? value : OK<T>(value)));
-    return new AsyncResult(newPromise);
-  }
-
-  public static fromPromise<T, ET extends string = StdErrors['internal']>(promise: Promise<T>, errorFn?: ErrorFn<ET>): AR<T, ET> {
+  public static wrap<T, ET extends string = InternalError>(
+    p: Promise<T> | (() => Promise<T>),
+    errorFn?: ErrorFn<ET>,
+  ): AR<ExtractResultTypes<T>, ExtractResultErrorTypes<T, ET>> {
     errorFn = errorFn ?? (DefaultErrorFn as any);
 
-    const newPromise = promise
-      .then((value: T) => (value instanceof Result ? value : OK(value)))
-      .catch((e) => {
-        e = errorFn(e);
-        e = e instanceof AppError ? e : new AppError(e);
-        return ERR(e);
-      });
+    if (p instanceof Function) {
+      p = p();
+    }
 
-    return new AsyncResult(newPromise) as any;
+    if (!(p instanceof Promise)) {
+      throw new LogicError('AsyncResult.from need Promise or function returns promise');
+    }
+
+    return new AsyncResult(
+      p
+        .then((value: T) => (value instanceof Result ? value : OK(value)))
+        .catch((e) => {
+          e = errorFn(e);
+          e = e instanceof AppError ? e : new AppError(e);
+          return ERR(e);
+        }),
+    );
   }
 
-  public static fromPromiseOkTrue<ET extends string = StdErrors['internal']>(promise: Promise<any>, errorFn?: ErrorFn<ET>): AR<boolean, ET> {
+  public static wrapOnOkTrue<ET extends string = InternalError>(p: Promise<any> | (() => Promise<any>), errorFn?: ErrorFn<ET>): AR<boolean, ET> {
     errorFn = errorFn ?? (DefaultErrorFn as any);
-
-    const newPromise: Promise<R<boolean, ET>> = promise
-      .then(() => OK(true))
-      .catch((e) => {
-        e = errorFn(e);
-        e = e instanceof AppError ? e : new AppError(e);
-        return ERR<boolean, ET>(e);
-      }) as any;
-
-    return new AsyncResult(newPromise).mapToTrue();
+    return this.wrap(p).mapToTrue() as any;
   }
 
   public onOk<U>(fn: (v: T) => U): AsyncResultOnOkReturn<ET, U> {
@@ -311,21 +310,42 @@ export const INTERNAL_ERRA = <T>(error: Error): AR<T, StdErrors['internal']> => 
 };
 
 /**
- * Shortcut AsyncResult.fromPromise
+ * Shortcut AsyncResult.wrap
  * @param p Promise for wrap in AsyncResult
  * @param errorFn Error mapper to AppError
  * @returns
  */
-export const P = AsyncResult.fromPromise;
+export const ARW = AsyncResult.wrap;
+
 /**
- * Shortcut AsyncResult.fromSafePromise
+ * Shortcut AsyncResult.wrapOnOkTrue
  * @param p
  * @returns
  */
-export const PS = AsyncResult.fromSafePromise;
+export const ARWB = AsyncResult.wrapOnOkTrue;
+
 /**
- * Shortcut AsyncResult.fromPromiseOkTrue
+ * @deprecated Use ARW
+ * Shortcut AsyncResult.from
+ * @param p Promise for wrap in AsyncResult
+ * @param errorFn Error mapper to AppError
+ * @returns
+ */
+export const P = AsyncResult.wrap;
+
+/**
+ * @deprecated Use ARW
+ * Shortcut AsyncResult.from
+ * @param p Promise for wrap in AsyncResult
+ * @param errorFn Error mapper to AppError
+ * @returns
+ */
+export const PS = AsyncResult.wrap;
+
+/**
+ * @deprecated Use ARWB
+ * Shortcut AsyncResult.fromOnOkTrue
  * @param  p
  * @returns
  */
-export const PB = AsyncResult.fromPromiseOkTrue;
+export const PB = AsyncResult.wrapOnOkTrue;
