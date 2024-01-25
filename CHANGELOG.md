@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2024-01-25
+
 ### Added 
 
 - DateTime.formatRfc1123()
@@ -78,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.13.0...HEAD
+[unreleased] https://github.com/hexancore/common/compare/0.13.1...HEAD
+[0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1
 [0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0
 [0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5   
 [0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
