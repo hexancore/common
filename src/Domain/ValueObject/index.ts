@@ -19,3 +19,4 @@ export * from './StringValue';
 export * from './UBigIntValue';
 export * from './UIntValue';
 export * from './RegexStringValue';
+export * from './RefId';
