@@ -86,11 +86,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.13.2...HEAD
-[0.13.2] https://github.com/hexancore/common/compare/0.13.1...0.13.2
-[0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1
-[0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0
+[unreleased] https://github.com/hexancore/common/compare/0.13.2...HEAD   
+[0.13.2] https://github.com/hexancore/common/compare/0.13.1...0.13.2   
+[0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1   
+[0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0   
 [0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5   
 [0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
 [0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3   
-[0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4   
+[0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4      
