@@ -43,7 +43,7 @@ export abstract class AbstractLogger implements Logger {
     return (level === 'debug' && AbstractLogger.globalOptions.debug) || true;
   }
 
-  protected logAppError(error: AppError, tags?: LogTags) {
+  protected logAppError(error: AppError, tags?: LogTags): void {
     const record = error.getLogRecord();
     if (!this.canLog(record.level)) {
       return;

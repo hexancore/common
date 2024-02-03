@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   workflow_dispatch:
@@ -20,33 +20,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ env.HEXANCORE_BOT_TOKEN }}
+        env:
+          HEXANCORE_BOT_TOKEN: ${{ secrets.HEXANCORE_BOT_TOKEN }}
 
       - name: Yarn install
-        uses: ./.github/actions/yarn-install
+        uses: hexancore/yarn-ci-install@0.1.0
+      - name: test
+        uses: ./.github/actions/test
 
+      # Bump version
       - name: Bump package version
         run: |
-          echo "OLD_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
           yarn version $RELEASE_TYPE
-          echo "NEW_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
           echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(jq -r '.version' < package.json)" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ inputs.releaseType }}
 
       - name: Update CHANGELOG.md
-        uses: 'zen8sol/update-changelog-action@0.1.2'
+        uses: 'zen8sol/update-changelog-action@0.1.5'
         with:
           newVersion: '${{ env.NEW_VERSION }}'
 
-      - name: Commit CHANGELOG.md and package.json changes and create tag
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-          git add "package.json"
-          git add "CHANGELOG.md"
-          git commit -m "chore: release ${{ env.NEW_VERSION }}"
-          git tag ${{ env.NEW_VERSION }}
-
+      # Publish package
       - name: Publish
         run: |
           echo -e "\nnpmAuthToken: '${{ env.NODE_AUTH_TOKEN }}'" >> ./.yarnrc.yml
@@ -54,9 +52,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Push changes to repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Commit
+      - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
-          git tag -d '${{ env.NEW_VERSION }}'
-          git tag -m 'new version' '${{ env.NEW_VERSION }}' && git push --follow-tags
+          git config --global user.email "153127894+hexancore-bot@users.noreply.github.com"
+          git config --global user.name "Hexancore Bot"
+          git add "package.json"
+          git add "CHANGELOG.md"
+          git commit -m "chore: release ${{ env.NEW_VERSION }}"
+          git tag -m 'new version' ${{ env.NEW_VERSION }}
+          git push --follow-tags

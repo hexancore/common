@@ -4,23 +4,16 @@ on:
     branches: [ master, main ]
 
 jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Yarn install
-  #       uses: ./.github/actions/yarn-install
-  #     - name: Lint
-  #       run: yarn lint
-
-  test:
-   # needs: ['lint']
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Yarn install
-        uses: ./.github/actions/yarn-install
-      - name: test
-        run: yarn test
+        uses: hexancore/yarn-ci-install@0.1.0
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        uses: ./.github/actions/test
+      - name: Build
+        run: yarn build

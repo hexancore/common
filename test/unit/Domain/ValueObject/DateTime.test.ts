@@ -2,17 +2,54 @@
  * @group unit
  */
 
-import { DateTime, AppError } from '@';
+import { DateTime } from '@';
 import { Duration, Period } from '@js-joda/core';
 
 describe('DateTime', () => {
-  test('c() when date', () => {
-    const date = new Date();
-    const nowTimestamp = date.getTime();
-    const result = DateTime.c(date);
-    date.setTime(nowTimestamp + 60 * 60 * 1000);
+  describe("c", () => {
+    test('when input is Date', () => {
+      const raw = new Date("2024-01-01 10:30:30");
 
-    expect(result.v.t).toBe(Math.trunc(nowTimestamp / 1000));
+      const result = DateTime.c(raw);
+
+      expect(result.v.formatDateTime()).toBe(raw.toISOString().replace(/\..+/, ""));
+    });
+
+    test.each([
+      {name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30"},
+      {name: "dateTimeSpace", raw: "2024-01-01 10:30:30", expected: "2024-01-01T10:30:30"},
+      {name: "dateTimeTSeparator", raw: "2024-01-01T10:30:30", expected: "2024-01-01T10:30:30"},
+      {name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00"}
+    ])('when input is string($name)', (data) => {
+
+      const result = DateTime.c(data.raw);
+
+      expect(result.isSuccess()).toBe(true);
+      expect(result.v.formatDateTime()).toBe(data.expected);
+    });
+  });
+
+  describe("cs", () => {
+    test('when input is Date', () => {
+      const raw = new Date("2024-01-01 10:30:30");
+
+      const result = DateTime.cs(raw);
+
+      expect(result.formatDateTime()).toBe(raw.toISOString().replace(/\..+/, ""));
+    });
+
+    test.each([
+      {name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30"},
+      {name: "dateTimeSpace", raw: "2024-01-01 10:30:30", expected: "2024-01-01T10:30:30"},
+      {name: "dateTimeTSeparator", raw: "2024-01-01T10:30:30", expected: "2024-01-01T10:30:30"},
+      {name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00"}
+    ])('when input is string($name)', (data) => {
+
+      const result = DateTime.c(data.raw);
+
+      expect(result.isSuccess()).toBe(true);
+      expect(result.v.formatDateTime()).toBe(data.expected);
+    });
   });
 
   test('fromTimestamp', () => {
@@ -39,7 +76,7 @@ describe('DateTime', () => {
   });
 
   test('formatRfc1123', () => {
-    const date = DateTime.cs('2023-10-01T08:50:00');
+    const date = DateTime.cs('2023-10-01 08:50:00');
 
     const current = date.formatRfc1123();
 

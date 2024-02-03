@@ -7,12 +7,16 @@ export interface ValueObjectMeta {
 
 export const VALUE_OBJECT_META_PROPERTY = '__VOMETA';
 
+export type AnyValueObject = AbstractValueObject<any>;
+
+export type ValueObjectConstructor<T extends AnyValueObject = AnyValueObject> = new (...args: any[]) => T;
+
 /**
  * Decorator
  * @param moduleName Name of module
  */
-export function ValueObject(moduleName: string): (constructor: Function) => void {
-  return function (constructor: Function) {
+export function ValueObject<T extends AnyValueObject>(moduleName: string): (constructor: ValueObjectConstructor<T>) => void {
+  return function (constructor: ValueObjectConstructor) {
     constructor.prototype[VALUE_OBJECT_META_PROPERTY] = {
       module: moduleName,
       class: constructor.name,
@@ -35,7 +39,7 @@ export function checkEnumValueObject(value: any, enumType: any, meta: ValueObjec
   return null;
 }
 
-export abstract class AbstractValueObject<T extends AbstractValueObject<any>> implements JsonSerialize {
+export abstract class AbstractValueObject<T extends AnyValueObject> implements JsonSerialize {
   /**
    * @deprecated use invalidRaw
    * @param meta
@@ -46,7 +50,7 @@ export abstract class AbstractValueObject<T extends AbstractValueObject<any>> im
     return ValueObjectInvalidRawValueError(this.prototype[VALUE_OBJECT_META_PROPERTY], data);
   }
 
-  protected static invalidRaw<R>(valueObjectClass: Function, data: any = null): Result<R> {
+  protected static invalidRaw<R>(valueObjectClass: any, data: any = null): Result<R> {
     const meta = valueObjectClass.prototype[VALUE_OBJECT_META_PROPERTY];
     if (!meta) {
       throw new Error(VALUE_OBJECT_META_PROPERTY + " property isn't defined, add @ValueObject decorator to " + valueObjectClass.name);

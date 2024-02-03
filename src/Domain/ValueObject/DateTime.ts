@@ -1,17 +1,36 @@
 import { AbstractValueObject, ValueObject } from './ValueObject';
 import { OK, R } from '../../Util/Result';
-import { DateTimeFormatter, Duration, LocalDateTime, Period, ZoneOffset, convert, nativeJs } from '@js-joda/core';
+import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
 
 export type DateTimeRawType = number;
+export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+function createJsJodaFromString(v: string): LocalDateTime {
+  if (!v.includes("T")) {
+    if (v.includes(" ")) {
+      v = v.replace(" ", "T");
+    } else {
+      v += "T00:00:00";
+    }
+  }
+  v = v.includes("Z") ? v : v + "Z";
+  return LocalDateTime.ofInstant(Instant.parse(v), ZoneId.UTC);
+}
+
+function createJsJodaFromDate(v: Date): LocalDateTime {
+  return LocalDateTime.ofInstant(Instant.parse(v.toISOString()), ZoneId.UTC);
+}
+
+function createJsJodaFromTimestamp(v: number): LocalDateTime {
+  return LocalDateTime.ofEpochSecond(v, ZoneOffset.UTC);
+}
 
 @ValueObject('Core')
 /**
  * DateTime in UTC zone value object
  */
 export class DateTime extends AbstractValueObject<DateTime> {
-  protected constructor(private readonly value: LocalDateTime) {
+  public constructor(private readonly value: LocalDateTime) {
     super();
   }
 
@@ -29,22 +48,28 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @returns instance
    */
   public static c(v: Date | number | string): R<DateTime> {
-    if (typeof v === 'number') {
-      return this.fromTimestamp(v);
+
+    switch (typeof v) {
+      case 'number': return this.fromTimestamp(v);
+      case 'string':
+        try {
+          return OK(new this(createJsJodaFromString(v)));
+        } catch (e) {
+          return AbstractValueObject.invalidRaw(DateTime, {
+            raw: v,
+            msg: 'invalid format: ' + e.message,
+          });
+        }
     }
 
     if (v instanceof Date) {
-      return OK(new this(LocalDateTime.from(nativeJs(v, ZoneOffset.UTC))));
+      return OK(new this(createJsJodaFromDate(v)));
     }
 
-    try {
-      return OK(new this(LocalDateTime.parse(v)));
-    } catch (e) {
-      return AbstractValueObject.invalidRaw(DateTime, {
-        raw: v,
-        msg: 'invalid format: ' + e.message,
-      });
-    }
+    return AbstractValueObject.invalidRaw(DateTime, {
+      raw: v,
+      msg: 'unsupported datetime raw type',
+    });
   }
 
   /**
@@ -54,14 +79,14 @@ export class DateTime extends AbstractValueObject<DateTime> {
    */
   public static cs(v: Date | number | string): DateTime {
     if (typeof v === 'number') {
-      return new this(LocalDateTime.ofEpochSecond(v, ZoneOffset.UTC));
+      return new this(createJsJodaFromTimestamp(v));
     }
 
     if (v instanceof Date) {
-      return new this(LocalDateTime.from(nativeJs(v)));
+      return new this(createJsJodaFromDate(v));
     }
 
-    return new this(LocalDateTime.parse(v));
+    return new this(createJsJodaFromString(v));
   }
 
   /**
@@ -76,7 +101,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
         msg: 'invalid timestamp',
       });
     }
-    return OK(new this(LocalDateTime.ofEpochSecond(timestamp, ZoneOffset.UTC)));
+    return OK(new this(createJsJodaFromTimestamp(timestamp)));
   }
 
   /**
@@ -144,7 +169,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
   }
 
   public toNativeDate(): Date {
-    return convert(this.value).toDate();
+    return convert(this.value, ZoneId.UTC).toDate();
   }
 
   public toString(): string {

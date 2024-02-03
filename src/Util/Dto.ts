@@ -15,9 +15,9 @@ export const TT = TransformationType;
  * @param type
  * @returns
  */
-export const isPT = (type: TransformationType) => type === TransformationType.CLASS_TO_PLAIN;
+export const isPT = (type: TransformationType): boolean => type === TransformationType.CLASS_TO_PLAIN;
 
-export function ValueObjectTransformer<T extends AbstractValueObject<any>>(t: { c: (value: any) => Result<T> }) {
+export function ValueObjectTransformer<T extends AbstractValueObject<any>>(t: { c: (value: any) => Result<T> }): any {
   return Transform(({ value, type }) => {
     if (value) {
       if (isPT(type)) {
@@ -31,7 +31,7 @@ export function ValueObjectTransformer<T extends AbstractValueObject<any>>(t: { 
   });
 }
 
-export function DtoTransformer<T extends Dto>(t: { new (): T }) {
+export function DtoTransformer<T extends Dto>(t: { new (): T }): any {
   return Transform(({ value, type }) => {
     if (value) {
       if (isPT(type)) {
@@ -45,7 +45,7 @@ export function DtoTransformer<T extends Dto>(t: { new (): T }) {
   });
 }
 
-export function BigIntTransformer() {
+export function BigIntTransformer(): any {
   return Transform(({ value, type }) => {
     if (value) {
       if (isPT(type)) {

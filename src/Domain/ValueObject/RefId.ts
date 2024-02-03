@@ -1,7 +1,7 @@
 import { StringValue } from "./StringValue";
 import { ValueObject } from "./ValueObject";
-
 import { customAlphabet } from 'nanoid';
+
 const RefIdGenerator = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-', 21);
 
 /**

@@ -61,10 +61,10 @@
   },
   "homepage": "https://hexancore.github.io/hexancore",
   "scripts": {
-    "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh",
+    "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh && node bin/fix-es.js ./lib/mjs",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
-    "test": "TZ=UTC jest --runInBand",
+    "test": "jest --runInBand",
     "test:clearCache": "jest --clearCache",
     "test:unit": "jest --runInBand --group=unit",
     "test:watch": "jest --runInBand --watchAll",
@@ -78,7 +78,7 @@
     "class-transformer": "^0.5.1",
     "fastest-validator": "^1.11.1",
     "lambda-log": "^3.1.0",
-    "nanoid": "^3.1.28",
+    "nanoid": "3",
     "string.prototype.matchall": "^4.0.10",
     "tslib": "^2.5.0",
     "xss": "^1.0.10"
