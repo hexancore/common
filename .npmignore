@@ -16,3 +16,4 @@ yarn.lock
 .editorconfig
 .eslintrc.js
 .eslintignore
+CHANGELOG.md

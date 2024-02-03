@@ -14,13 +14,14 @@ export interface AppMetaProps<ET extends Record<string, any> = Record<string, an
 
 export type EnvType = 'dev' | 'test' | 'prod';
 
+
 export type AppMetaProvider = () => AppMetaProps;
 
 export class AppMeta<ET extends Record<string, any> = Record<string, any>> implements AppMetaProps {
   protected static instance: AppMeta;
   protected static provider?: AppMetaProvider;
 
-  public static setProvider(p: AppMetaProvider) {
+  public static setProvider(p: AppMetaProvider): void {
     if (this.provider === undefined) {
       this.provider = p;
     } else {
@@ -81,7 +82,7 @@ export class AppMeta<ET extends Record<string, any> = Record<string, any>> imple
     return this.env === 'prod';
   }
 
-  public static checkEnvIsValid(env: string, errorMessage: string) {
+  public static checkEnvIsValid(env: string, errorMessage: string): void {
     if (['dev', 'test', 'prod'].indexOf(env) === -1) {
       throw new Error(errorMessage);
     }

@@ -15,7 +15,7 @@ export class MailContent extends AbstractValueObject<MailContent> {
   public readonly html: string;
   public readonly text: string;
 
-  protected constructor(subject: string, html: string, text: string) {
+  public constructor(subject: string, html: string, text: string) {
     super();
     this.subject = subject;
     this.html = html;

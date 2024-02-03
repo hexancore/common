@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- ES module build .
+
+### Changed
+
+- DateTime.c() and DateTime.cs() - better support date/time string formats: `2023-10-01`, `2023-10-01 08:50:00` `2023-10-01T08:50:00`.
+- ConsoleLogger - `message -> msg` `timestamp` -> `time`.
+
+### Removed
+
+- Removed ConsoleLogger log record app_id and app_env append(with logging solution like fluentd we can append it on higher level).
+
 ## [0.13.2] - 2024-02-01
 
 ### Added
@@ -93,4 +106,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5   
 [0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
 [0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3   
-[0.10.4] https://github.com/test_owner/test_repository/releases/tag/0.10.4      
+[0.10.4] https://github.com/hexancore/common/releases/tag/0.10.4      

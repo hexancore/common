@@ -1,10 +1,9 @@
-import { LogicError } from '../Util/Error/LogicError';
 import { AppMeta } from '../Util/AppMeta';
+import { AbstractLogger } from './AbstractLogger';
 import { ConsoleLogger } from './ConsoleLogger';
-import { checkTagsAreSame, isSameLogTags, Logger, LogTags } from './Logger';
+import { checkTagsAreSame, Logger, LogTags } from './Logger';
 import { NoopLogger } from './NoopLogger';
 import { TestLogger } from './TestLogger';
-import { AbstractLogger } from './AbstractLogger';
 
 export type LoggerProvider = (name: string, tags: LogTags) => Logger;
 
@@ -24,7 +23,7 @@ export class LoggerManager {
     }
 
     if (this.alwaysNew || l === undefined) {
-      let logger = this.loggerProvider(name, tags);
+      const logger = this.loggerProvider(name, tags);
       this.loggers.set(name, { logger, tags });
       return logger;
     }
@@ -66,7 +65,7 @@ export function getLogger(name: string, tags: string[] = []): Logger {
  * @returns
  */
 export function InjectLogger(name: string, tags: string[] = []) {
-  return (target: any, key: string) => {
+  return (target: any, key: string): void => {
     Object.defineProperty(target, key, {
       get() {
         return getLogger(name, tags);

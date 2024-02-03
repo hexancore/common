@@ -1,11 +1,12 @@
 import { AppMeta } from '../Util/AppMeta';
-import { LambdaLog } from 'lambda-log';
+import lambdalogPackage from 'lambda-log';
+const { LambdaLog } = lambdalogPackage;
 import { AbstractLogger } from './AbstractLogger';
 
 import { Logger, LogLevel, LogTags, LogTagsFactory } from './Logger';
 
 export class ConsoleLogger extends AbstractLogger {
-  private static handler: LambdaLog;
+  private static handler: any;
 
   private static getHandler() {
     if (this.handler === undefined) {
@@ -14,13 +15,12 @@ export class ConsoleLogger extends AbstractLogger {
         dev: appMeta.logPretty,
         debug: appMeta.debug,
         silent: appMeta.logSilent,
-        meta: { app_id: appMeta.id, app_env: appMeta.env },
         levelKey: 'level',
         tagsKey: 'tags',
-        messageKey: 'message',
+        messageKey: 'msg',
         dynamicMeta: () => {
           return {
-            timestamp: new Date().toISOString(),
+            time: new Date().toISOString(),
           };
         },
       });
