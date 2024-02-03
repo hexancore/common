@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.3] - 2024-02-03
+
 ### Fixed
 
 - ES module build .
@@ -99,7 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.13.2...HEAD   
+[unreleased] https://github.com/hexancore/common/compare/0.13.3...HEAD   
+[0.13.3] https://github.com/hexancore/common/compare/0.13.2...0.13.3   
 [0.13.2] https://github.com/hexancore/common/compare/0.13.1...0.13.2   
 [0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1   
 [0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0   
