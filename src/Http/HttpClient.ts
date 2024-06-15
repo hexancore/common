@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import { AR, ARW, AppError, AppErrorCode, AppErrorProps, ErrorFn, StdErrors } from '../Util';
 import { AxiosHttpResponse, HttpRequestConfig, HttpResponse, RawFormData } from './HttpSupport';
-import { AppError, AR, P, AppErrorProps, AppErrorCode, ErrorFn, StdErrors, ARW } from '../Util';
 
 export interface I18nHttpClient {
   t(key: string, context?: Record<string, any>): string;

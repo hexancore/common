@@ -1,6 +1,6 @@
-import { AppMeta, ErrorHelper, LogicError } from '../Util';
+import { ErrorHelper, LogicError } from '../Util';
 import { AppError } from '../Util/Error/AppError';
-import { LogContext, Logger, LogLevel, LogMessage, LogTags, LogTagsFactory } from './Logger';
+import { LogContext, LogLevel, LogMessage, LogTags, LogTagsFactory, Logger } from './Logger';
 
 export interface LoggerGlobalOptions {
   debug: boolean;

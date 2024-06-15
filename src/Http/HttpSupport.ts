@@ -1,13 +1,12 @@
-import { AR, OK, OKA, R, INSAR, SAR } from '../Util';
 import {
   AxiosHeaderValue,
   AxiosHeaders,
   AxiosResponse,
   AxiosResponseHeaders,
   GenericAbortSignal,
-  HttpStatusCode,
-  RawAxiosResponseHeaders,
+  RawAxiosResponseHeaders
 } from 'axios';
+import { AR, OKA } from '../Util';
 
 export type HttpMethod = 'post' | 'put' | 'patch' | 'get' | 'delete' | 'head' | 'options';
 export type HttpResponseType = 'text' | 'stream' | 'blob' | 'json' | 'arraybuffer' | 'document';

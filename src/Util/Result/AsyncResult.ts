@@ -13,7 +13,7 @@ import {
   UnknownErrorType,
 } from '../Error/AppError';
 import { isIterable } from '../functions';
-import { CastToIterable, DropLastParam, ExcludeUnknown, ExtractIterableType, ExtractKeyof, TUNKNOWN } from '../types';
+import { CastToIterable, DropLastParam, ExcludeUnknown, ExtractIterableType, TUNKNOWN } from '../types';
 import { ERR, ExtractResultErrorTypes, ExtractResultTypes, INTERNAL_ERR, OK, R, Result, WrapToResult } from './Result';
 
 /**
