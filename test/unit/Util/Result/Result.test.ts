@@ -10,7 +10,7 @@ class TestClass {
   private method2Calls: number;
 
   public constructor() {
-    this.method1Calls = this.method2Calls;
+    this.method1Calls = this.method2Calls = 0;
   }
 
   public methodWithOnlyValueAndVoidReturn(): void {}

@@ -27,7 +27,7 @@ describe('Matchers', () => {
           '',
           '  Comparing two different types of values. Expected string but received number.'
         ].join('\n');
-        expect(stripAnsiColors(e.message)).toEqual(expected);
+        expect(stripAnsiColors((e as Error).message)).toEqual(expected);
       }
     });
 
@@ -39,7 +39,7 @@ describe('Matchers', () => {
         expect(current).not.toMatchSuccessResult(10);
       } catch (e) {
         const expected = ['Expected result value to be not:', ' 10', 'Received:', ' 10'].join('\n');
-        expect(stripAnsiColors(e.message)).toEqual(expected);
+        expect(stripAnsiColors((e as Error).message)).toEqual(expected);
       }
     });
 
@@ -56,7 +56,7 @@ describe('Matchers', () => {
           'Received error:',
           ` ${JSON.stringify(current.e, undefined, 2)}`,
         ].join('\n');
-        expect(stripAnsiColors(e.message)).toEqual(expected);
+        expect(stripAnsiColors((e as Error).message)).toEqual(expected);
       }
     });
 

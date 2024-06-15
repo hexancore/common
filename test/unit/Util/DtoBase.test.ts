@@ -16,10 +16,10 @@ class TestDto extends Dto {
   public primitiveField?: number;
 
   @BigIntTransformer()
-  public bigIntField: bigint;
+  public bigIntField!: bigint;
 
   @BigIntTransformer()
-  public bigIntArrayField: bigint[];
+  public bigIntArrayField!: bigint[];
 
   @ValueObjectTransformer(TestValueObject)
   public valueObjectField?: TestValueObject;

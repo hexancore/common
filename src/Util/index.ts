@@ -4,8 +4,6 @@ export * from './Error';
 export * from './Result';
 
 export * from './CurrentTime';
-export * from './Validator';
-export * from './SanitizeHelper';
 export * from './RetryHelper';
 export * from './QueryHelper';
 
@@ -14,6 +12,7 @@ export * from './Json/JsonSerialize';
 export * from './Json/JsonHelper';
 
 export * from './StringTemplate';
+export * from './Validator';
 
 export * from './types';
 export * from './functions';

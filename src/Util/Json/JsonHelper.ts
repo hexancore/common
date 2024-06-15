@@ -14,7 +14,7 @@ export class JsonHelper {
     try {
       return OK(JSON.parse(value, reviver));
     } catch (e) {
-      return ERR({ type: JsonErrors.parse, code: AppErrorCode.BAD_REQUEST, error: e });
+      return ERR({ type: JsonErrors.parse, code: AppErrorCode.BAD_REQUEST, error: e as any });
     }
   }
 
@@ -22,7 +22,7 @@ export class JsonHelper {
     try {
       return OK(JSON.stringify(value, replacer, space));
     } catch (e) {
-      return ERR({ type: JsonErrors.stringify, code: AppErrorCode.BAD_REQUEST, error: e });
+      return ERR({ type: JsonErrors.stringify, code: AppErrorCode.BAD_REQUEST, error: e as any });
     }
   }
 }

@@ -2,52 +2,38 @@
   "name": "@hexancore/common",
   "version": "0.13.3",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "engine-strict": true,
-  "description": "Core to build hexagonal architecture designed apps",
-  "author": "Andrzej Wasiak <Mararok>",
+  "description": "Full-Stack TypeScript Framework for building epic HexArch designed applications.",
+  "author": "Andrzej Wasiak",
+  "homepage": "https://hexancore.dev",
   "license": "MIT",
-  "types": "lib/mjs/index.d.ts",
-  "typesVersions": {
-    "*": {
-      ".": [
-        "./lib/mjs/index.d.ts"
-      ],
-      "testutil": [
-        "./lib/mjs/Test/index.d.ts"
-      ]
-    }
+  "bugs": {
+    "url": "https://github.com/hexancore/common/issues"
   },
+  "types": "./lib/types/index.d.ts",
   "main": "lib/cjs/index.js",
   "module": "lib/mjs/index.js",
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/mjs/index.d.ts",
+        "types": "./lib/types/index.d.ts",
         "default": "./lib/mjs/index.js"
       },
       "require": {
-        "types": "./lib/cjs/index.d.ts",
+        "types": "./lib/types/index.d.ts",
         "default": "./lib/cjs/index.js"
-      },
-      "default": {
-        "types": "./lib/mjs/index.d.ts",
-        "default": "./lib/mjs/index.js"
       }
     },
     "./testutil": {
       "import": {
-        "types": "./lib/mjs/Test/index.d.ts",
+        "types": "./lib/types/Test/index.d.ts",
         "default": "./lib/mjs/Test/index.js"
       },
       "require": {
-        "types": "./lib/cjs/Test/index.d.ts",
+        "types": "./lib/types/Test/index.d.ts",
         "default": "./lib/cjs/Test/index.js"
-      },
-      "default": {
-        "types": "./lib/mjs/Test/index.d.ts",
-        "default": "./lib/mjs/Test/index.js"
       }
     }
   },
@@ -59,7 +45,6 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "homepage": "https://hexancore.github.io/hexancore",
   "scripts": {
     "build": "rm -fr lib && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json && bash ./bin/fixbuild.sh && node bin/fix-es.js ./lib/mjs",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -79,60 +64,27 @@
     "fastest-validator": "^1.11.1",
     "lambda-log": "^3.1.0",
     "nanoid": "3",
-    "string.prototype.matchall": "^4.0.10",
-    "tslib": "^2.5.0",
-    "xss": "^1.0.10"
+    "tslib": "^2.6.3"
   },
   "devDependencies": {
     "@hexancore/mocker": "1.*",
     "@types/jest": "29.0.*",
     "@types/lambda-log": "^3.0.0",
-    "@types/luxon": "^3.3.2",
-    "@types/node": "^18.0",
-    "@types/string.prototype.matchall": "^4.0.1",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
+    "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
     "axios-mock-adapter": "^1.22.0",
-    "eslint": "^8.3.0",
+    "eslint": "^9.5.0",
     "jest": "29.0.*",
     "jest-docblock": "29.0.*",
     "jest-runner": "29.0.*",
     "jest-runner-groups": "^2.1.0",
-    "reflect-metadata": "0.1.13",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "runner": "groups",
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "moduleNameMapper": {
-      "^@$": "<rootDir>/src",
-      "^@/(.*)$": "<rootDir>/src/$1",
-      "^@test/helper/(.*)$": "<rootDir>/test/helper/$1"
-    },
-    "testMatch": [
-      "<rootDir>/test/unit/**/*.test.ts",
-      "<rootDir>/test/integration/**/*.test.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/config.ts"
-    ],
-    "coverageDirectory": "./test/coverage",
-    "testEnvironment": "node"
-  },
-  "bugs": {
-    "url": "https://github.com/hexancore/common/issues"
+    "typescript": "^5.4.5"
   },
   "directories": {
     "lib": "lib"
   },
+
   "packageManager": "yarn@4.0.2"
 }

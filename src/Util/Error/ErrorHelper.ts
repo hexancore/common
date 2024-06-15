@@ -17,7 +17,7 @@ export class ErrorHelper {
     return {
       type: e.constructor.name,
       message: e.message,
-      stacktrace: this.convertStackTraceToArray(e.stack),
+      stacktrace: e.stack ? this.convertStackTraceToArray(e.stack) : [],
     };
   }
 

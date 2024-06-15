@@ -3,7 +3,7 @@ import { DateTime } from '../Domain';
 export class CurrentTime {
   public static i: CurrentTime;
 
-  private constNow?: DateTime;
+  private constNow!: DateTime|null;
 
   public get now(): DateTime {
     return this.constNow ?? DateTime.now();

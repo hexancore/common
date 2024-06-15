@@ -63,11 +63,11 @@ export abstract class AbstractLogger implements Logger {
   protected abstract pushRecord(level: LogLevel, message: string, context: Record<string, any>, tags: string[]): void;
 
   protected processMessage(message: LogMessage, context?: Record<string, any>): string {
-    return typeof message === 'function' ? message(context) : message;
+    return typeof message === 'function' ? message(context as any) : message;
   }
 
   protected processTags(context?: Record<string, any>, tags?: LogTags): string[] {
-    tags = typeof tags === 'function' ? tags(context) : tags;
+    tags = typeof tags === 'function' ? tags(context as any) : tags;
     if (tags) {
       return [...this.tags, ...tags];
     }

@@ -84,7 +84,7 @@ type CastToAnyFunction<F> = (...args: any[]) => any;
  * Async version of Result with powerfull api :)
  */
 export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any> implements PromiseLike<R<T, ET>> {
-  private callbackThis: ThisType;
+  private callbackThis!: ThisType;
 
   public constructor(public readonly p: ARP<T, ET>) {}
 
@@ -92,7 +92,7 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
     p: Promise<T> | (() => Promise<T>),
     errorFn?: ErrorFn<ET>,
   ): AR<ExtractResultTypes<T>, ExtractResultErrorTypes<T, ET>> {
-    errorFn = errorFn ?? (DefaultErrorFn as any);
+    errorFn = errorFn ?? DefaultErrorFn;
 
     if (p instanceof Function) {
       p = p();
@@ -151,6 +151,9 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
         }
 
         if ((r.e.type as any) === fnOrErrorType) {
+          if (!fn) {
+            throw new LogicError('When error type is given then handler on 2nd parameter must be defined');
+          }
           return WrapToResult(fn(r.e as any));
         }
 
@@ -165,7 +168,7 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
         return INTERNAL_ERR(new Error('Result value is not Iterable'));
       }
 
-      const list = [];
+      const list: any[] = [];
       for (const i of it as any) {
         let r = onEach(i);
         if (r instanceof Promise) {

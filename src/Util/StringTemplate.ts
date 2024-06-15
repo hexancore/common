@@ -1,6 +1,4 @@
 import { OK, R } from './Result';
-import matchAll from 'string.prototype.matchall';
-
 
 const PARAMS_REGEX = /:([a-zA-Z0-9_]+)/g;
 
@@ -9,11 +7,7 @@ const PARAMS_REGEX = /:([a-zA-Z0-9_]+)/g;
  * https://example.com/:id/posts/:postId
  */
 export class StringTemplate<T = Record<string, any>> {
-  //private regex: Re;
-
-  public constructor(public readonly template: string) {
-   // this.regex = new RegExp(PARAMS_REGEX);
-  }
+  public constructor(public readonly template: string) {}
 
   public static hasAnyParam(template: string): boolean {
     PARAMS_REGEX.lastIndex = 0;
@@ -22,7 +16,7 @@ export class StringTemplate<T = Record<string, any>> {
 
   public static extractParams(template: string): string[] {
     PARAMS_REGEX.lastIndex = 0;
-    return [...matchAll(template, PARAMS_REGEX)].map((m) => m[1]) as unknown as string[];
+    return Array.from(template.matchAll(PARAMS_REGEX)).map((m) => m[1]) as unknown as string[];
   }
 
   public render(params: T): R<string> {

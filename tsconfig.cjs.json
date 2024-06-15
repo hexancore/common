@@ -3,7 +3,9 @@
   "compilerOptions": {
     "module": "Node16",
     "outDir": "lib/cjs",
-    "target": "ES2022"
+    "target": "ES2022",
+    "declaration": true,
+    "declarationDir": "./lib/types"
   },
   "include": ["src/**/*"],
 }

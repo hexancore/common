@@ -37,7 +37,7 @@ export enum AppErrorCode {
 }
 
 export type ErrorFn<ET extends string = StdErrors['internal'], E extends Error = Error> = (e: unknown) => AppError<ET, E> | AppErrorProps<ET, E>;
-export const DefaultErrorFn: ErrorFn = (e) => (e instanceof AppError ? e : INTERNAL_ERROR(e as Error));
+export const DefaultErrorFn: ErrorFn<any> = (e) => (e instanceof AppError ? e : INTERNAL_ERROR(e as Error));
 
 export type AppErrorHandler<ET extends string, U> = (e: AppError<ET, Error>) => U;
 
@@ -47,8 +47,8 @@ export interface AppErrorProps<ET extends string = UnknownErrorType, E extends E
   data?: any;
   i18n?: string;
   message?: string;
-  error?: E;
-  cause?: AppError;
+  error?: E| null;
+  cause?: AppError | null;
 }
 export type AppErrorParameterType<ET extends string = UnknownErrorType> = AppError<ET> | AppErrorProps<ET> | ET;
 
@@ -78,13 +78,13 @@ export class AppError<ET extends string = UnknownErrorType, E extends Error = Er
    * subscope - optional subscopes like `person`,
    * Example `my_module.domain.person.invalid_plain`.
    */
-  public readonly type: ET;
-  public readonly code: number | AppErrorCode;
-  public readonly data: any;
-  public readonly i18n: string;
-  public readonly message: string;
-  public readonly error: E;
-  public readonly cause: AppError;
+  public readonly type!: ET;
+  public readonly code!: number | AppErrorCode;
+  public readonly data!: any;
+  public readonly i18n!: string;
+  public readonly message!: string;
+  public readonly error!: E;
+  public readonly cause!: AppError;
 
   public constructor(props: AppErrorProps<ET, E>) {
     if (props.error && props.code === undefined) {

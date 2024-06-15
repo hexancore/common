@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- shrinked build size
+
+### Removed
+
+- removed `xss` dep
+- removed bin docker
+- removed `string.prototype.matchall` dep
+
+### Fixed 
+
+- small types fixes in strict mode
+
 ## [0.13.3] - 2024-02-03
 
 ### Fixed
