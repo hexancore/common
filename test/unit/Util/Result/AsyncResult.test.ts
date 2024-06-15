@@ -7,7 +7,7 @@ import { TestErrSuccess1, TestErrors, TestOk1, TestStartOk } from '@test/helper/
 
 class TestBindClass {
   private method1Calls: number;
-  private method2Calls: number;
+  private method2Calls!: number;
 
   public constructor() {
     this.method1Calls = this.method2Calls;

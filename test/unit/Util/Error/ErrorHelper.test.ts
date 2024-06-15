@@ -16,7 +16,7 @@ describe('ErrorHelper', () => {
       const expected = {
         type: "LogicError",
         message: "test",
-        stacktrace: ErrorHelper.convertStackTraceToArray(error.stack),
+        stacktrace: ErrorHelper.convertStackTraceToArray(error.stack ?? ""),
       };
       expect(current).toEqual(expected);
     });

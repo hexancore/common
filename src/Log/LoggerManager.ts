@@ -8,12 +8,12 @@ import { TestLogger } from './TestLogger';
 export type LoggerProvider = (name: string, tags: LogTags) => Logger;
 
 export class LoggerManager {
-  private loggers: Map<string, { logger: Logger; tags: string[] }>;
+  private loggers: Map<string, { logger: Logger; tags: string[]; }>;
 
   public static i: LoggerManager;
 
   public constructor(private loggerProvider: LoggerProvider, private alwaysNew: boolean = false) {
-    this.loggers = new Map<string, { logger: Logger; tags: string[] }>();
+    this.loggers = new Map<string, { logger: Logger; tags: string[]; }>();
   }
 
   public getLogger(name: string, tags: string[] = []): Logger {
@@ -41,11 +41,11 @@ export class LoggerManager {
 
     switch (appMeta.env) {
       case 'dev':
-        return (name: string, tags: Array<string> = []) => ConsoleLogger.create(name, tags);
+        return (name: string, tags: LogTags = []) => ConsoleLogger.create(name, tags as any);
       case 'test':
-        return (name: string, tags: Array<string> = []) => new TestLogger(name, tags);
+        return (name: string, tags: LogTags = []) => new TestLogger(name, tags as any);
       case 'prod':
-        return (name: string, tags: Array<string> = []) => ConsoleLogger.create(name, tags);
+        return (name: string, tags: LogTags = []) => ConsoleLogger.create(name, tags as any);
     }
   }
 }

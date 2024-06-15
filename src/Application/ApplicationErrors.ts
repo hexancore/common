@@ -12,7 +12,7 @@ type ApplicationErrors<T extends RawErrorEnum> = {
  * @param errorsClass instance of local class
  * @returns Object with error type property wrappers.
  */
-export function DefineApplicationErrors<T>(errorsClass: T): ApplicationErrors<T> {
+export function DefineApplicationErrors<T extends RawErrorEnum>(errorsClass: T): ApplicationErrors<T> {
   const module = pascalCaseToSnakeCase(errorsClass.constructor.name);
   const moduleErrorTypePrefix = module + '.application.';
   const errors: any = {};

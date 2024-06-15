@@ -1,8 +1,8 @@
 /**
- * @group unit/core
+ * @group unit
  */
 
-import { Email, AppError } from '@';
+import { Email } from '@';
 import { EmailHash } from '../../../../src/Domain/ValueObject/EmailHash';
 
 describe('Email', () => {

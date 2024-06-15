@@ -53,7 +53,7 @@ type DomainErrorTypes<T extends RawErrorEnum, Filter extends string = 'entity_'>
   readonly [P in FilterNotStartsWith<keyof T, Filter>]: EnumErrorTypeWrapper & string;
 };
 
-export type DomainErrors<T> = DomainErrorTypes<T> & EntityErrorType<T>;
+export type DomainErrors<T extends RawErrorEnum> = DomainErrorTypes<T> & EntityErrorType<T>;
 
 /**
  *
@@ -61,7 +61,7 @@ export type DomainErrors<T> = DomainErrorTypes<T> & EntityErrorType<T>;
  * @returns Object with error type property wrappers.
  */
 
-export function DefineDomainErrors<T>(module: string, obj: T): DomainErrors<T> {
+export function DefineDomainErrors<T extends RawErrorEnum>(module: string, obj: T): DomainErrors<T> {
   module = pascalCaseToSnakeCase(module);
   const moduleErrorTypePrefix = module + '.domain.';
   const moduleEntityErrorTypePrefix = moduleErrorTypePrefix + 'entity.';

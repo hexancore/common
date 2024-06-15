@@ -57,7 +57,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
         } catch (e) {
           return AbstractValueObject.invalidRaw(DateTime, {
             raw: v,
-            msg: 'invalid format: ' + e.message,
+            msg: 'invalid format: ' + (e as Error).message,
           });
         }
     }

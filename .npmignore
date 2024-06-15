@@ -15,5 +15,8 @@ yarn.lock
 .gitattributes
 .editorconfig
 .eslintrc.js
+eslint.js
 .eslintignore
 CHANGELOG.md
+.jestrc.json
+bin/

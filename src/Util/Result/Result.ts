@@ -1,16 +1,16 @@
 import { LogicError } from '../Error';
 import {
-  UnknownErrorType,
   AppError,
+  AppErrorHandler,
+  AppErrorParameterType,
   ExcludeNeverError,
   INTERNAL_ERROR,
   NeverError,
   StdErrors,
-  AppErrorParameterType,
-  AppErrorHandler,
+  UnknownErrorType
 } from '../Error/AppError';
-import { CastVoidToUnknownMarker, EnumValueOrString, ExcludeUnknown, TUNKNOWN } from '../types';
-import { AnyAsyncResult, AsyncResult, AsyncResultOnOkReturn, ExtractAsyncResult, P } from './AsyncResult';
+import { CastVoidToUnknownMarker, ExcludeUnknown, TUNKNOWN } from '../types';
+import { ARW, AnyAsyncResult, AsyncResult, AsyncResultOnOkReturn } from './AsyncResult';
 
 export type R<T, ET extends string = UnknownErrorType> = Result<T, ET>;
 export type AnyResult = Result<any, any>;
@@ -23,8 +23,8 @@ export type ExtractResultTypes<T> = T extends AnyResult ? ExtractResultType<T> :
 export type ExtractResultErrorType<P> = P extends Result<any, infer T> ? ExcludeNeverError<T> : never;
 export type ExtractResultErrorTypes<T, ET extends string> = [ET] extends [NeverError]
   ? [T extends AnyResult ? ExtractResultErrorType<T> : NeverError] extends [NeverError]
-    ? NeverError
-    : ExtractResultErrorType<T>
+  ? NeverError
+  : ExtractResultErrorType<T>
   : ET;
 
 type ResultOnOkReturn<U, ET extends string, _R = R<ExtractResultTypes<U>, ExtractResultErrorTypes<U, ET>>> = U extends AnyAsyncResult
@@ -52,7 +52,7 @@ export function WrapToResult<T>(v: any): T {
   }
 
   if (v instanceof Promise) {
-    return P(v) as any;
+    return ARW(v) as any;
   }
 
   return new Result(v) as any;
@@ -118,7 +118,12 @@ export class Result<T, ET extends string = UnknownErrorType> {
       return WrapToResult(fnOrErrorType(this.value));
     }
 
+
+
     if ((this.value.type as any) === fnOrErrorType) {
+      if (!fn) {
+        throw new LogicError('When error type is given then handler on 2nd parameter must be defined');
+      }
       return WrapToResult(fn(this.value as any));
     }
 
@@ -136,7 +141,7 @@ export class Result<T, ET extends string = UnknownErrorType> {
 
   public static all<T extends Record<string, R<unknown>>>(
     results: T,
-    error: { type: string; code: number } | string,
+    error: { type: string; code: number; } | string,
   ): R<{ [P in keyof T]: ExtractResultType<T[P]> }, { [P in keyof T]: ExtractResultErrorType<T[P]> }[keyof T]> {
     const out: any = { ...results };
 
@@ -159,8 +164,8 @@ export class Result<T, ET extends string = UnknownErrorType> {
     return OK(out) as any;
   }
 
-  public static allToFirstError<T extends readonly R<unknown>[] | []>(results: T): R<any> | R<{ -readonly [P in keyof T]: ExtractResultType<T[P]> }> {
-    const values = [];
+  public static allToFirstError<T extends readonly R<any>[] | []>(results: T): R<any> | R<{ -readonly [P in keyof T]: ExtractResultType<T[P]> }> {
+    const values: any[]  = [];
     for (const r of results) {
       if (r.isError()) {
         return r;
@@ -182,24 +187,6 @@ export const OK = <T, ET extends string = NeverError>(v: T): R<T, ET> => {
 
 export const ERR = <T = TUNKNOWN, ET extends string = UnknownErrorType>(error: AppErrorParameterType<ET>, code = 400, data?: any): R<T, ET> => {
   return new Result<T, ET>(AppError.create(error, code, data));
-};
-
-export const ResultFrom = {
-  all: <T>(results: Record<string, R<any>>): R<T> => {
-    for (const r in results) {
-      if (results[r].isError()) {
-        return;
-      }
-    }
-
-    const out = { ...results };
-
-    for (const r in results) {
-      out[r] = results[r];
-    }
-
-    return OK(out) as any;
-  },
 };
 
 export const INTERNAL_ERR = <T, E extends Error>(error: E): R<T, StdErrors['internal']> => {

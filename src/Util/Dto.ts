@@ -90,7 +90,7 @@ export abstract class Dto implements JsonSerialize {
       const i: any = plainToInstance(this, plain);
       return (this as any).processFromPlain(i);
     } catch (e) {
-      return ERR(INTERNAL_ERROR(e));
+      return ERR(INTERNAL_ERROR(e as any));
     }
   }
 
@@ -99,7 +99,7 @@ export abstract class Dto implements JsonSerialize {
    * @returns Result of tranformation from plain
    */
   protected static processFromPlain<T extends Dto>(this: DtoConstructor<T>, i: any): Result<any> {
-    const errors = [];
+    const errors: any[] = [];
 
     for (const p in i) {
       const v = i[p];

@@ -1,4 +1,4 @@
-import { AbstractValueObject, ValueObject, ValueObjectMeta } from './ValueObject';
+import { AbstractValueObject, ValueObject } from './ValueObject';
 import V from '../../Util/Validator';
 import { SyncCheckFunction } from 'fastest-validator';
 import { Result, OK } from '../../Util/Result';

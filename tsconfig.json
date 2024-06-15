@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "strict": true,
     "target": "ES2022",
     "module": "Node16",
     "moduleResolution": "Node16",
     "noImplicitThis": false,
     "noImplicitAny": false,
     "importHelpers": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -15,7 +16,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["jest", "reflect-metadata", "node"],
+    "types": ["jest", "node"],
     "incremental": false,
     "lib": ["ES2022"],
     "outDir": "./lib",
@@ -28,7 +29,6 @@
   },
 
   "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules", "lib"],
 
   "typedocOptions": {
     "mode": "file",

@@ -33,7 +33,8 @@ describe('JsonHelper', () => {
 
     test('when invalid input', () => {
       const value = { field: 'value', field2: null };
-      value.field2 = value;
+      // circularerror 
+      value.field2 = value as any;
 
       const current = JsonHelper.stringify(value);
 

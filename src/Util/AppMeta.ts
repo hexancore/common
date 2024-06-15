@@ -39,8 +39,6 @@ export class AppMeta<ET extends Record<string, any> = Record<string, any>> imple
   public readonly logSilent: boolean;
   public readonly ci: boolean;
 
-  public readonly home: string;
-
   public readonly extra: Readonly<Record<string, any>>;
 
   private constructor(private props: AppMetaProps<ET>) {
@@ -55,7 +53,7 @@ export class AppMeta<ET extends Record<string, any> = Record<string, any>> imple
     this.extra = props.extra ?? {};
   }
 
-  public static get<ET>(): AppMeta<ET> {
+  public static get<ET extends Record<string, any> = Record<string, any>>(): AppMeta<ET> {
     if (AppMeta.instance === undefined) {
       if (AppMeta.provider === undefined) {
         throw Error('AppMeta.instanceFactory is not sets before first get() call, check your code');

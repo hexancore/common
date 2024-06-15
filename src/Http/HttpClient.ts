@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import { AR, ARW, AppError, AppErrorCode, AppErrorProps, ErrorFn, StdErrors } from '../Util';
 import { AxiosHttpResponse, HttpRequestConfig, HttpResponse, RawFormData } from './HttpSupport';
-import { AppError, AR, P, AppErrorProps, AppErrorCode, ErrorFn, StdErrors } from '../Util';
 
 export interface I18nHttpClient {
   t(key: string, context?: Record<string, any>): string;
@@ -36,7 +36,7 @@ export class AxiosHttpClient implements HttpClient {
 
   public send(req: HttpRequestConfig): AR<HttpResponse> {
     this.prepareRequest(req);
-    return P(this.axios.request(req), this.errorMapper).onOk((r) => new AxiosHttpResponse(r));
+    return ARW(this.axios.request(req), this.errorMapper).onOk((r) => new AxiosHttpResponse(r));
   }
 
   protected prepareRequest(req: HttpRequestConfig): void {
@@ -49,7 +49,7 @@ export class AxiosHttpClient implements HttpClient {
   }
 
   protected createErrorMapper(): ErrorFn {
-    return ((e: AxiosError) => {
+    return ((e) => {
       const appError: AppErrorProps = {
         type: StdErrors.internal,
         code: 999,
@@ -64,15 +64,15 @@ export class AxiosHttpClient implements HttpClient {
 
         if (appError.type === StdErrors.internal && appError.code === AppErrorCode.NOT_FOUND) {
           appError.type = 'core.http_client.response.not_found';
-          appError.data = { url: e.config.url, method: e.config.method };
+          appError.data = { url: e.config?.url, method: e.config?.method };
         }
 
         appError.i18n = responseData.i18n ?? appError.type;
       }
 
-      appError.message = this.options.i18n.t(appError.i18n, appError.data ?? {});
+      appError.message = this.options.i18n.t(appError.i18n ?? appError.type, appError.data ?? {});
 
-      return new AppError(appError);
+      return new AppError(appError) as any;
     }).bind(this);
   }
 }
