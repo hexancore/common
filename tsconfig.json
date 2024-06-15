@@ -29,7 +29,6 @@
   },
 
   "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules", "lib"],
 
   "typedocOptions": {
     "mode": "file",

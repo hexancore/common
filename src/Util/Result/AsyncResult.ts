@@ -92,7 +92,7 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
     p: Promise<T> | (() => Promise<T>),
     errorFn?: ErrorFn<ET>,
   ): AR<ExtractResultTypes<T>, ExtractResultErrorTypes<T, ET>> {
-    errorFn = errorFn ?? DefaultErrorFn;
+    const _errorFn = errorFn ?? DefaultErrorFn;
 
     if (p instanceof Function) {
       p = p();
@@ -106,7 +106,7 @@ export class AsyncResult<T, ET extends string = UnknownErrorType, ThisType = any
       p
         .then((value: T) => (value instanceof Result ? value : OK(value)))
         .catch((e) => {
-          e = errorFn(e);
+          e = _errorFn(e);
           e = e instanceof AppError ? e : new AppError(e);
           return ERR(e);
         }),
