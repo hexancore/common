@@ -465,12 +465,11 @@ __metadata:
     "@types/node": "npm:^20.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^6.7.4"
     "@typescript-eslint/parser": "npm:^6.7.4"
-    axios: "npm:^1.5.1"
+    axios: "npm:^1.7.2"
     axios-mock-adapter: "npm:^1.22.0"
     class-transformer: "npm:^0.5.1"
     eslint: "npm:^8.3.0"
     eslint-plugin-unused-imports: "npm:^3.2.0"
-    fastest-validator: "npm:^1.11.1"
     jest: "npm:29.7.0"
     jest-docblock: "npm:29.7.0"
     jest-runner: "npm:29.7.0"
@@ -479,7 +478,12 @@ __metadata:
     nanoid: "npm:3"
     ts-jest: "npm:29.1.4"
     tslib: "npm:^2.6.3"
-    typescript: "npm:5.3.3"
+    typescript: "npm:5.4.5"
+  peerDependencies:
+    axios: ^1.7.2
+  peerDependenciesMeta:
+    axios:
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -1342,7 +1346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.5.1":
+"axios@npm:^1.7.2":
   version: 1.7.2
   resolution: "axios@npm:1.7.2"
   dependencies:
@@ -2116,13 +2120,6 @@ __metadata:
   version: 2.1.1
   resolution: "fast-safe-stringify@npm:2.1.1"
   checksum: dc1f063c2c6ac9533aee14d406441f86783a8984b2ca09b19c2fe281f9ff59d315298bc7bc22fd1f83d26fe19ef2f20e2ddb68e96b15040292e555c5ced0c1e4
-  languageName: node
-  linkType: hard
-
-"fastest-validator@npm:^1.11.1":
-  version: 1.18.0
-  resolution: "fastest-validator@npm:1.18.0"
-  checksum: 16464a3b12f29ebcb09c870a759ee12de00c5fc6ef3004e7ecb6d740e214737958d7658e3e3c82603a54c112ac2c400df9ae901086f69ef3c00e7ade4bb1059d
   languageName: node
   linkType: hard
 
@@ -4401,23 +4398,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.3.3":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+"typescript@npm:5.4.5":
+  version: 5.4.5
+  resolution: "typescript@npm:5.4.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 6e4e6a14a50c222b3d14d4ea2f729e79f972fa536ac1522b91202a9a65af3605c2928c4a790a4a50aa13694d461c479ba92cedaeb1e7b190aadaa4e4b96b8e18
+  checksum: d04a9e27e6d83861f2126665aa8d84847e8ebabcea9125b9ebc30370b98cb38b5dff2508d74e2326a744938191a83a69aa9fddab41f193ffa43eabfdf3f190a5
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+"typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>":
+  version: 5.4.5
+  resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=e012d7"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c93786fcc9a70718ba1e3819bab56064ead5817004d1b8186f8ca66165f3a2d0100fee91fa64c840dcd45f994ca5d615d8e1f566d39a7470fc1e014dbb4cf15d
+  checksum: 584be8bac7112ad49a9eb9992f71d542b1ff2fafb5bb315e1c196145e8feab589f1d7223cfb2d5df6770789582e6918f8287d1f2f89911b38eb80e29c560ad00
   languageName: node
   linkType: hard
 

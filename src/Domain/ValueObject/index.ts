@@ -9,7 +9,6 @@ export * from './UserId';
 // MAILING
 export * from './Email';
 export * from './EmailHash';
-export * from './MailContent';
 
 // TIME
 export * from './DateTime';

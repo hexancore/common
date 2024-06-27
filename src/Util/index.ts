@@ -12,7 +12,6 @@ export * from './Json/JsonSerialize';
 export * from './Json/JsonHelper';
 
 export * from './StringTemplate';
-export * from './Validator';
 
 export * from './types';
 export * from './functions';

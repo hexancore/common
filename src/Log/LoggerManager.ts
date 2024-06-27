@@ -1,7 +1,7 @@
 import { AppMeta } from '../Util/AppMeta';
 import { AbstractLogger } from './AbstractLogger';
 import { ConsoleLogger } from './ConsoleLogger';
-import { checkTagsAreSame, Logger, LogTags } from './Logger';
+import { checkTagsAreSame, Logger, LogTags, type LogRecord } from './Logger';
 import { NoopLogger } from './NoopLogger';
 import { TestLogger } from './TestLogger';
 
@@ -9,14 +9,26 @@ export type LoggerProvider = (name: string, tags: LogTags) => Logger;
 
 export class LoggerManager {
   private loggers: Map<string, { logger: Logger; tags: string[]; }>;
-
-  public static i: LoggerManager;
+  private static i: LoggerManager;
 
   public constructor(private loggerProvider: LoggerProvider, private alwaysNew: boolean = false) {
     this.loggers = new Map<string, { logger: Logger; tags: string[]; }>();
   }
 
-  public getLogger(name: string, tags: string[] = []): Logger {
+  public static set instance(manager: LoggerManager) {
+    this.i = manager;
+  }
+
+  public static get instance(): LoggerManager {
+    if (LoggerManager.i === undefined) {
+      const appMeta = AppMeta.get();
+      LoggerManager.i = new LoggerManager(LoggerManager.getDefaultLoggerProvider(), appMeta.isTest());
+    }
+
+    return LoggerManager.i;
+  }
+
+  public getLogger<T extends Logger = Logger>(name: string, tags: string[] = []): T {
     const l = this.loggers.get(name);
     if (l) {
       checkTagsAreSame(name, tags, l.tags);
@@ -25,10 +37,14 @@ export class LoggerManager {
     if (this.alwaysNew || l === undefined) {
       const logger = this.loggerProvider(name, tags);
       this.loggers.set(name, { logger, tags });
-      return logger;
+      return logger as T;
     }
 
-    return l.logger;
+    return l.logger as T;
+  }
+
+  public getCurrentLoggerInstance<T extends Logger = Logger>(name: string): T | undefined {
+    return this.loggers.get(name)?.logger as any;
   }
 
   public static getDefaultLoggerProvider(): LoggerProvider {
@@ -50,27 +66,24 @@ export class LoggerManager {
   }
 }
 
-export function getLogger(name: string, tags: string[] = []): Logger {
-  if (LoggerManager.i === undefined) {
-    const appMeta = AppMeta.get();
-    LoggerManager.i = new LoggerManager(LoggerManager.getDefaultLoggerProvider(), appMeta.isTest());
-  }
-  return LoggerManager.i.getLogger(name, tags);
+/**
+ * Returns new or created before(in test always returns new) instance of logger with given name and tags.
+ */
+export function getLogger<T extends Logger = Logger>(name: string, tags: string[] = []): T {
+  return LoggerManager.instance.getLogger(name, tags);
 }
 
 /**
- * Decorator inject logger to property.
- * @param name
- * @param tags
- * @returns
+ * Extracts logger instance from given object - usefull for testing logs writing in classes.
  */
-export function InjectLogger(name: string, tags: string[] = []) {
-  return (target: any, key: string): void => {
-    Object.defineProperty(target, key, {
-      get() {
-        return getLogger(name, tags);
-      },
-      enumerable: false,
-    });
-  };
+export function extractLoggerFromObject<T extends Logger = Logger>(obj: any, property = 'logger'): T {
+  return obj[property];
+}
+
+export function extractTestLoggerFromObject(obj: any, property = 'logger'): TestLogger {
+  return extractLoggerFromObject(obj, property);
+}
+
+export function extractTestLoggerRecordsFromObject(obj: any, property = 'logger'): LogRecord[] {
+  return  extractTestLoggerFromObject(obj, property).records;
 }

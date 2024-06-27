@@ -13,21 +13,20 @@ export interface AppMetaProps<ET extends Record<string, any> = Record<string, an
 }
 
 export type EnvType = 'dev' | 'test' | 'prod';
-
-
 export type AppMetaProvider = () => AppMetaProps;
 
 export class AppMeta<ET extends Record<string, any> = Record<string, any>> implements AppMetaProps {
   protected static instance: AppMeta;
   protected static provider?: AppMetaProvider;
 
+  public static hasProvider(): boolean {
+    return this.provider !== undefined;
+  }
   public static setProvider(p: AppMetaProvider): void {
     if (this.provider === undefined) {
       this.provider = p;
-    } else {
-      if (!this.get().isTest()) {
-        throw new LogicError('AppMeta.provider can be sets once');
-      }
+    } else if (!this.get().isTest()) {
+      throw new LogicError('AppMeta.provider can be sets once');
     }
   }
 
@@ -38,7 +37,6 @@ export class AppMeta<ET extends Record<string, any> = Record<string, any>> imple
   public readonly logPretty: boolean;
   public readonly logSilent: boolean;
   public readonly ci: boolean;
-
   public readonly extra: Readonly<Record<string, any>>;
 
   private constructor(private props: AppMetaProps<ET>) {
@@ -55,9 +53,14 @@ export class AppMeta<ET extends Record<string, any> = Record<string, any>> imple
 
   public static get<ET extends Record<string, any> = Record<string, any>>(): AppMeta<ET> {
     if (AppMeta.instance === undefined) {
-      if (AppMeta.provider === undefined) {
-        throw Error('AppMeta.instanceFactory is not sets before first get() call, check your code');
+      if (!AppMeta.provider && process?.exit !== undefined) {
+        this.setProvider(EnvAppMetaProvider);
       }
+
+      if (AppMeta.provider === undefined) {
+        throw new LogicError('AppMeta provider is not sets before first AppMeta.get() call, check your code');
+      }
+
       AppMeta.instance = new AppMeta(AppMeta.provider());
     }
 
@@ -96,9 +99,9 @@ export const EnvAppMetaProvider: AppMetaProvider = (): AppMetaProps => {
     env: env as EnvType,
     id: getRequiredEnv('APP_ID'),
     version: isProd ? getRequiredEnv('APP_VERSION') : 'latest',
-    debug: parseBoolean(process.env.APP_DEBUG, isProd ? false : true),
-    logPretty: parseBoolean(process.env.APP_LOG_PRETTY, !isProd),
-    logSilent: parseBoolean(process.env.APP_LOG_SILENT),
+    debug: parseBoolean(process.env.APP_DEBUG, !isProd),
+    logPretty: parseBoolean(process.env.APP_LOG_PRETTY, false),
+    logSilent: parseBoolean(process.env.APP_LOG_SILENT, false),
     ci: parseBoolean(process.env.CI),
     extra: {},
   };
