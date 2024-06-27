@@ -1,6 +1,6 @@
 {
   "name": "@hexancore/common",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "engines": {
     "node": ">=22"
   },
@@ -26,7 +26,17 @@
         "default": "./lib/cjs/index.js"
       }
     },
-    "./testutil": {
+    "./http": {
+      "import": {
+        "types": "./lib/types/Http/index.d.ts",
+        "default": "./lib/mjs/Http/index.js"
+      },
+      "require": {
+        "types": "./lib/types/Http/index.d.ts",
+        "default": "./lib/cjs/Http/index.js"
+      }
+    },
+    "./testing": {
       "import": {
         "types": "./lib/types/Test/index.d.ts",
         "default": "./lib/mjs/Test/index.js"
@@ -34,6 +44,26 @@
       "require": {
         "types": "./lib/types/Test/index.d.ts",
         "default": "./lib/cjs/Test/index.js"
+      }
+    },
+    "./testing/jest": {
+      "import": {
+        "types": "./lib/types/Test/Jest/index.d.ts",
+        "default": "./lib/mjs/Test/Jest/index.js"
+      },
+      "require": {
+        "types": "./lib/types/Test/Jest/index.d.ts",
+        "default": "./lib/cjs/Test/Jest/index.js"
+      }
+    },
+    "./testing/http": {
+      "import": {
+        "types": "./lib/types/Test/Http/index.d.ts",
+        "default": "./lib/mjs/Test/Http/index.js"
+      },
+      "require": {
+        "types": "./lib/types/Test/Http/index.d.ts",
+        "default": "./lib/cjs/Test/Http/index.js"
       }
     }
   },
@@ -58,11 +88,17 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "prepublish": "yarn test && yarn run build"
   },
+  "peerDependencies": {
+    "axios": "^1.7.2"
+  },
+  "peerDependenciesMeta": {
+    "axios": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@js-joda/core": "^5.6.1",
-    "axios": "^1.5.0",
     "class-transformer": "^0.5.1",
-    "fastest-validator": "^1.11.1",
     "lambda-log": "^3.1.0",
     "nanoid": "3",
     "tslib": "^2.6.3"
@@ -74,7 +110,7 @@
     "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "axios": "^1.5.1",
+    "axios": "^1.7.2",
     "axios-mock-adapter": "^1.22.0",
     "eslint": "^8.3.0",
     "eslint-plugin-unused-imports": "^3.2.0",
@@ -83,7 +119,7 @@
     "jest-runner": "29.7.0",
     "jest-runner-groups": "^2.1.0",
     "ts-jest": "29.1.4",
-    "typescript": "5.3.3"
+    "typescript": "5.4.5"
   },
   "directories": {
     "lib": "lib"

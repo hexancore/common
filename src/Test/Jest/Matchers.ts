@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { AppError, AppErrorProps, Result } from '../Util';
+import { AppError, AppErrorProps, Result } from '../../Util';
 
 interface HexancoreCommonMatchers<R = unknown> {
   toMatchSuccessResult(expected: any): R;
@@ -10,9 +10,9 @@ interface HexancoreCommonMatchers<R = unknown> {
 
 declare global {
   namespace jest {
-    interface Expect extends HexancoreCommonMatchers {}
-    interface Matchers<R> extends HexancoreCommonMatchers<R> {}
-    interface InverseAsymmetricMatchers extends HexancoreCommonMatchers {}
+    interface Expect extends HexancoreCommonMatchers { }
+    interface Matchers<R> extends HexancoreCommonMatchers<R> { }
+    interface InverseAsymmetricMatchers extends HexancoreCommonMatchers { }
   }
 }
 
@@ -45,13 +45,13 @@ expect.extend({
     return {
       pass: pass,
       message: () => {
-          if (this.isNot) {
-            return `${messageHeader} ${printExpectedAndReceived(current)}`;
-          } else {
-            return finalPass
+        if (this.isNot) {
+          return `${messageHeader} ${printExpectedAndReceived(current)}`;
+        } else {
+          return finalPass
             ? `${messageHeader} ${printExpectedAndReceived(current)}`
-            : `${messageHeader} ${printExpectedAndReceived(current)}\n\n${this.utils.diff(expected, current, )}`;
-          }
+            : `${messageHeader} ${printExpectedAndReceived(current)}\n\n${this.utils.diff(expected, current,)}`;
+        }
 
       }
     };

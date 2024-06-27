@@ -1,5 +1,5 @@
 import { AppMeta } from '@/Util/AppMeta';
-import '@/Test';
+import '@/Test/Jest';
 
 AppMeta.setProvider(() => {
   return {
