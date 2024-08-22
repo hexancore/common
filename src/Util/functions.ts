@@ -14,8 +14,11 @@ export function getClassMethods(obj: Record<string, any>): Array<string> {
   return [...properties.keys()].filter((item: string) => typeof obj[item] === 'function');
 }
 
-export function pascalCaseToSnakeCase(s: string): string {
-  return s.replace(/(?:^|\.?)([A-Z])/g, (_x, y) => '_' + y.toLowerCase()).replace(/^_/, '');
+export function pascalCaseToSnakeCase(input: string): string {
+  return input
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2') // "XMLHttpRequest" => 'XML_Http_Request'
+    .toLowerCase();
 }
 
 export function pascalCaseToCamelCase(s: string): string {

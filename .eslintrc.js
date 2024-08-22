@@ -24,6 +24,6 @@ module.exports = {
     'array-bracket-newline': 'off',
     'function-call-argument-newline': 'off',
     'no-console': 'off',
-    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-imports": "warn"
   },
 };

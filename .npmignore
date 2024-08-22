@@ -18,5 +18,6 @@ yarn.lock
 eslint.js
 .eslintignore
 CHANGELOG.md
-.jestrc.json
+jest.config.js
 bin/
+benchmark/

@@ -3,6 +3,10 @@ export * from './Error';
 
 export * from './Result';
 
+export * from './Plain';
+
+export * from './Feature';
+
 export * from './CurrentTime';
 export * from './RetryHelper';
 export * from './QueryHelper';
