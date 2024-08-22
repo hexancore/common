@@ -1,4 +1,4 @@
-import { AppError, ERR, JsonSerialize, pascalCaseToSnakeCase, Result } from '../../Util';
+import { AppError, CustomPlainParseIssue, ERR,  JsonSerialize, pascalCaseToSnakeCase, PlainParseHelper, Result,type PlainParsableHObjectType, type PlainParseError, type R } from '../../Util';
 
 export interface ValueObjectMeta {
   readonly module: string;
@@ -8,8 +8,8 @@ export interface ValueObjectMeta {
 export const VALUE_OBJECT_META_PROPERTY = '__VOMETA';
 
 export type AnyValueObject = AbstractValueObject<any>;
+export type ValueObjectConstructor<T extends AnyValueObject = AnyValueObject> = PlainParsableHObjectType<T, AnyValueObject>;
 
-export type ValueObjectConstructor<T extends AnyValueObject = AnyValueObject> = new (...args: any[]) => T;
 
 /**
  * Decorator
@@ -56,6 +56,21 @@ export abstract class AbstractValueObject<T extends AnyValueObject> implements J
       throw new Error(VALUE_OBJECT_META_PROPERTY + " property isn't defined, add @ValueObject decorator to " + valueObjectClass.name);
     }
     return ERR(ValueObjectInvalidRawValueError(meta, data));
+  }
+
+  /**
+   * Creates ValueObject from plain value
+   * @param this
+   * @param plain
+   * @returns
+   */
+  public static parse<T extends AnyValueObject>(this: ValueObjectConstructor<T>, plain: unknown): R<T, PlainParseError> {
+    const result: R<T> = this['c'](plain);
+    if (result.isError()) {
+      return PlainParseHelper.HObjectParseErr(this, [new CustomPlainParseIssue(result.e.data, 'invalid plain')]);
+    }
+
+    return result as any;
   }
 
   public abstract equals(o: T): boolean;

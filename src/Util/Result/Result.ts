@@ -55,7 +55,23 @@ export function WrapToResult<T>(v: any): T {
     return ARW(v) as any;
   }
 
-  return new Result(v) as any;
+  if (v === true) {
+    return TRUE_RESULT as T;
+  }
+
+  if (v === undefined) {
+    return UNDEFINED_RESULT as T;
+  }
+
+  if (v === false) {
+    return FALSE_RESULT as T;
+  }
+
+  if (v === null) {
+    return NULL_RESULT as T;
+  }
+
+  return new Result(v) as T;
 }
 
 export class Result<T, ET extends string = UnknownErrorType> {
@@ -165,7 +181,7 @@ export class Result<T, ET extends string = UnknownErrorType> {
   }
 
   public static allToFirstError<T extends readonly R<any>[] | []>(results: T): R<any> | R<{ -readonly [P in keyof T]: ExtractResultType<T[P]> }> {
-    const values: any[]  = [];
+    const values: any[] = [];
     for (const r of results) {
       if (r.isError()) {
         return r;
@@ -177,9 +193,30 @@ export class Result<T, ET extends string = UnknownErrorType> {
   }
 }
 
+const NULL_RESULT = new Result(null);
+const UNDEFINED_RESULT = new Result(undefined);
+const TRUE_RESULT = new Result(true);
+const FALSE_RESULT = new Result(false);
+
 export const OK = <T, ET extends string = NeverError>(v: T): R<T, ET> => {
   if (v instanceof Result) {
     return v;
+  }
+
+  if (v === true) {
+    return TRUE_RESULT as R<T, ET>;
+  }
+
+  if (v === undefined) {
+    return UNDEFINED_RESULT as R<T, ET>;
+  }
+
+  if (v === false) {
+    return FALSE_RESULT as R<T, ET>;
+  }
+
+  if (v === null) {
+    return NULL_RESULT as R<T, ET>;
   }
 
   return new Result(v);

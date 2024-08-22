@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import type { JsonSerialize } from "./Json/JsonSerialize";
+
 export type DeepPartial<T> = Partial<{ [P in keyof T]: DeepPartial<T[P]> }>;
 
 /**
@@ -51,3 +53,59 @@ export type CastVoidToUnknownMarker<U> = U extends void ? TUNKNOWN : U;
 export type CastToIterable<T, IT = any> = T extends Iterable<IT> ? T : never;
 
 export type ExtractKeyof<U, K> = K extends keyof U ? K : never;
+
+
+/**
+ * Default exclude tag type
+ */
+export type NO_EXCLUDE_TAG = TUNKNOWN;
+
+/**
+ * Extracts all not method required properties names. Optional checks exclude tag
+ */
+export type NonMethodRequiredPropertyNames<T, ExcludeTag = NO_EXCLUDE_TAG> = Exclude<{
+  [K in keyof T]: T[K] extends Function ? never : (T[K] extends ExcludeTag ? never : (T[K] extends {} ? K : never));
+}[keyof T], undefined>;
+
+/**
+ * Extracts all not method required properties names. Optional checks exclude tag
+ */
+export type NonMethodOptionalPropertyNames<T, ExcludeTag = NO_EXCLUDE_TAG> = Exclude<{
+  [K in keyof T]: T[K] extends Function ? never : (T[K] extends ExcludeTag ? never : (T[K] extends {} ? never : K));
+}[keyof T], undefined>;
+
+
+/**
+ * Extracts all not function(method) properties. Optional checks exclude tag
+ */
+export type NonMethodProperties<T, ExcludeTag = NO_EXCLUDE_TAG> = Pick<T, NonMethodRequiredPropertyNames<T, ExcludeTag>> & Pick<T, NonMethodOptionalPropertyNames<T, ExcludeTag>>;
+
+export type ToJSONReturnType<T> = T extends JsonSerialize ? ReturnType<T['toJSON']> : never;
+
+// Determines the plain field type of a property
+type PlainFieldType<T, ExcludeTag = NO_EXCLUDE_TAG> =
+  T extends BigInt ? string
+  : T extends Array<infer E> ? Array<PlainFieldType<E, ExcludeTag>>
+  : T extends Map<infer K, infer V> ? [K, V][]
+  : T extends Set<infer V> ? V[]
+  : T extends JsonSerialize ? ToJSONReturnType<T>
+  : T;
+
+/**
+ * Converts all object properties(deeply) to plain primitives type
+ */
+export type PlainObjectType<T extends object, ExcludeTag = NO_EXCLUDE_TAG> = {
+  [K in NonMethodRequiredPropertyNames<T, ExcludeTag>]: PlainFieldType<T[K]>
+} & {
+  [K in NonMethodOptionalPropertyNames<T, ExcludeTag>]+?: PlainFieldType<T[K]> | undefined
+};
+
+/**
+ * Tag to mark property in object as not json serializable.
+ */
+export type JsonExcluded = { __hctag?: 'json_excluded'; };
+
+/**
+ * Converts all object properties(deeply) to plain primitives. Skips all with tag type: `JsonExcluded`
+ */
+export type JsonObjectType<T extends object> = PlainObjectType<T, JsonExcluded>;

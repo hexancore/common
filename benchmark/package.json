@@ -1,0 +1,15 @@
+{
+  "name": "@hexancore/common-benchmark",
+  "packageManager": "yarn@4.0.2",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Benchmark of Hexancore Common Package",
+  "scripts": {
+    "yalc-common": "yalc link @hexnacore/common",
+    "bench": "tsx src/main.mts"
+  },
+  "dependencies": {
+    "tinybench": "^2.9.0",
+    "zod": "^3.23.8"
+  }
+}
