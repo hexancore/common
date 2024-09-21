@@ -70,11 +70,13 @@ export class TestDto extends Dto {
   public static HOBJ_META = HObjectTypeMeta.application('core', 'core', 'dto', 'TestDto', TestDto);
 
   public constructor(
+    public stringField: string,
     public bigIntField: bigint,
     public numberField: v.uint,
     public numberArrayField: number[],
     public booleanField: boolean,
 
+    public optionalStringField?: string,
     public optionalValueObjectField?: TestValueObject,
     public optionalValueObjectArrayField?: TestValueObject[],
     public optionalDtoField?: OtherTestDto,
@@ -87,24 +89,27 @@ export class TestDto extends Dto {
   public static parse<T extends object>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
-      return PlainParseHelper.HObjectParseErr(this, [new InvalidTypePlainParseIssue('object', typeof plain)]);
+      return PlainParseHelper.HObjectIsNotObjectParseErr(TestDto as any, plain);
     }
 
     const plainObj = plain as Record<keyof TestDto, unknown>;
     const issues: PlainParseIssue[] = [];
     // end constant check part
 
+    const stringField = PlainParseHelper.parseString(plainObj.stringField, 'stringField', issues);
     const bigIntField = PlainParseHelper.parseBigInt64(plainObj.bigIntField, 'bigIntField', issues);
-    const numberField = PlainParseHelper.parseNumber(plainObj.numberField, 'numberField', issues);
-    if (!(numberField instanceof PlainParseIssue) && numberField < 0) {
-      issues.push(TooSmallPlainParseIssue.numberGTE(0, numberField, 'numberField'));
-    }
+    const numberField = PlainParseHelper.parseNumberGTE(plainObj.numberField, 0, 'numberField', issues);
     const numberArrayField = PlainParseHelper.parsePrimitiveArray(plainObj.numberArrayField, PlainParseHelper.parseNumber, 'numberArrayField', issues);
     const booleanField = PlainParseHelper.parseBoolean(plainObj.booleanField, 'booleanField', issues);
 
     let valueObjectField;
     if (plainObj.optionalValueObjectField !== undefined) {
       valueObjectField = PlainParseHelper.parseHObject(plainObj.optionalValueObjectField, TestValueObject, 'optionalValueObjectField', issues);
+    }
+
+    let optionalStringField;
+    if (plainObj.optionalStringField !== undefined) {
+      optionalStringField = PlainParseHelper.parseString(plainObj.optionalStringField, 'optionalStringField', issues);
     }
 
     let optionalValueObjectArrayField;
@@ -127,6 +132,7 @@ export class TestDto extends Dto {
     }
 
     return OK(new this(
+      stringField,
       bigIntField,
       numberField,
       numberArrayField,
@@ -141,6 +147,7 @@ export class TestDto extends Dto {
 
   public toJSON(): JsonObjectType<TestDto> {
     return {
+      stringField: this.stringField,
       bigIntField: this.bigIntField.toString(),
       numberField: this.numberField,
       numberArrayField: this.numberArrayField,
