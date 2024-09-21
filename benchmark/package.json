@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "description": "Benchmark of Hexancore Common Package",
   "scripts": {
-    "yalc-common": "yalc link @hexnacore/common",
+    "yalc-common": "yalc link @hexancore/common",
     "bench": "tsx src/main.mts"
   },
   "dependencies": {

@@ -2,7 +2,6 @@ import type { HObjectTypeMeta } from "../Feature";
 import type { JsonSerialize } from "../Json/JsonSerialize";
 import type { JsonExcluded, JsonObjectType } from "../types";
 
-
 export enum PlainParseIssueCode {
   invalid_type = 'invalid_type',
   invalid_string = 'invalid_string',
@@ -142,12 +141,12 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
     return new this(minimum, ValueRangeSideMode.array_inclusive_size, current, message, path);
   }
 
-  public static stringExactlyLen(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
+  public static stringLengthExactly(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `String must contain exactly ${minimum} character(s), current: ${current}`;
     return new this(minimum, ValueRangeSideMode.string_exactly_len, current, message, path);
   }
 
-  public static stringAtLeastLen(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
+  public static stringLengthAtLeast(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `String must contain at least ${minimum} character(s), current: ${current}`;
     return new this(minimum, ValueRangeSideMode.string_inclusive_len, current, message, path);
   }
@@ -162,9 +161,9 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
     return new this(minimum, ValueRangeSideMode.number_exclusive, current, message, path);
   }
 
-  public static numberExactly(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
-    const message = `Number must be exactly ${minimum}, current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.number_exactly, current, message, path);
+  public static numberExactly(exactly: number, current: number, path?: string): TooSmallPlainParseIssue {
+    const message = `Number must be exactly ${exactly}, current: ${current}`;
+    return new this(exactly, ValueRangeSideMode.number_exactly, current, message, path);
   }
 
   public get i18n(): string {
@@ -201,17 +200,17 @@ export class TooBigPlainParseIssue extends PlainParseIssue {
     return new this(maximum, ValueRangeSideMode.array_exactly_size, current, message, path);
   }
 
-  public static arrayAtLeastSize(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
-    const message = `Array must contain at least ${maximum} element(s), current: ${current}`;
+  public static arrayMaxSize(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
+    const message = `Array must contain maximum ${maximum} element(s), current: ${current}`;
     return new this(maximum, ValueRangeSideMode.array_inclusive_size, current, message, path);
   }
 
-  public static stringExactlyLen(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
+  public static stringLengthExactly(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `String must contain exactly ${maximum} character(s), current: ${current}`;
     return new this(maximum, ValueRangeSideMode.string_exactly_len, current, message, path);
   }
 
-  public static stringAtLeastLen(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
+  public static stringLengthMax(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `String must contain maximum ${maximum} character(s), current: ${current}`;
     return new this(maximum, ValueRangeSideMode.string_inclusive_len, current, message, path);
   }
@@ -226,9 +225,9 @@ export class TooBigPlainParseIssue extends PlainParseIssue {
     return new this(maximum, ValueRangeSideMode.number_exclusive, current, message, path);
   }
 
-  public static numberExactly(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
-    const message = ` Number must be exactly ${maximum}, current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.number_exactly, current, message, path);
+  public static numberExactly(exactly: number, current: number, path?: string): TooBigPlainParseIssue {
+    const message = ` Number must be exactly ${exactly}, current: ${current}`;
+    return new this(exactly, ValueRangeSideMode.number_exactly, current, message, path);
   }
 
   public toJSON(): JsonObjectType<TooBigPlainParseIssue> {

@@ -1,4 +1,4 @@
-import { AppErrorCode, InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseError, PlainParseHelper, type JsonObjectType } from '@';
+import { AppErrorCode, InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseError, PlainParseHelper, TooBigPlainParseIssue, TooSmallPlainParseIssue, type JsonObjectType } from '@';
 import { TestDto } from '@test/helper/TestDto';
 import path from 'node:path';
 
@@ -88,9 +88,46 @@ describe(path.basename(__filename, '.test.ts'), () => {
     });
   });
 
+  describe('parseStringLength()', () => {
+    test.each([
+      { plain: 'good', expected: 'good' },
+      { plain: 'goo', expected: TooSmallPlainParseIssue.stringLengthExactly(4, 3) },
+      { plain: 'good2', expected: TooBigPlainParseIssue.stringLengthExactly(4, 5) },
+      { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
+    ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
+      const current = PlainParseHelper.parseStringLength(plain, 4);
+      expect(current).toEqual(expected);
+    });
+  });
+
+  describe('parseStringLengthMin()', () => {
+    test.each([
+      { plain: 'good', expected: 'good' },
+      { plain: 'goo', expected: TooSmallPlainParseIssue.stringLengthAtLeast(4, 3) },
+      { plain: 'good2', expected: 'good2' },
+      { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
+    ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
+      const current = PlainParseHelper.parseStringLengthMin(plain, 4);
+      expect(current).toEqual(expected);
+    });
+  });
+
+  describe('parseStringLengthMax()', () => {
+    test.each([
+      { plain: 'good', expected: 'good' },
+      { plain: 'goo', expected: 'goo' },
+      { plain: 'good2', expected: TooBigPlainParseIssue.stringLengthMax(4, 5) },
+      { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
+    ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
+      const current = PlainParseHelper.parseStringLengthMax(plain, 4);
+      expect(current).toEqual(expected);
+    });
+  });
+
   describe('parseHObject()', () => {
     test('when valid should return parsed', () => {
       const plain: JsonObjectType<TestDto> = {
+        stringField: 'test',
         bigIntField: '1000',
         numberField: 1000,
         numberArrayField: [1000],
@@ -100,6 +137,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
       const current = PlainParseHelper.parseHObject(plain, TestDto);
 
       const expected = TestDto.cs({
+        stringField: 'test',
         bigIntField: 1000n,
         booleanField: true,
         numberArrayField: [1000],
@@ -123,6 +161,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
   describe('parseHObjectArray()', () => {
     test('when valid should return parsed', () => {
       const plain: JsonObjectType<TestDto> = {
+        stringField: 'test',
         bigIntField: '1000',
         numberField: 1000,
         numberArrayField: [1000],
@@ -132,6 +171,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
       const current = PlainParseHelper.parseHObjectArray([plain], TestDto);
 
       const expected = TestDto.cs({
+        stringField: 'test',
         bigIntField: 1000n,
         booleanField: true,
         numberArrayField: [1000],

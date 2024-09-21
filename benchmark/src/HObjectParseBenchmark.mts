@@ -85,7 +85,7 @@ export class TestDto extends Dto {
   public static parse<T extends object>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
-      return PlainParseHelper.HObjectParseErr(this, [new InvalidTypePlainParseIssue('object', typeof plain)]);
+      return PlainParseHelper.HObjectIsNotObjectParseErr(TestDto as any, plain);
     }
 
     const p = plain as Record<keyof TestDto, unknown>;
@@ -94,10 +94,7 @@ export class TestDto extends Dto {
 
 
     const bigIntField = PlainParseHelper.parseBigInt64(p.bigIntField, 'bigIntField', issues);
-    const numberField = PlainParseHelper.parseNumber(p.numberField, 'numberField', issues);
-    if (!(numberField instanceof PlainParseIssue) && numberField > 2000) {
-      issues.push(TooBigPlainParseIssue.numberLT(2000, numberField));
-    }
+    const numberField = PlainParseHelper.parseNumberLT(p.numberField, 2000, 'numberField', issues);
 
     const numberArrayField = PlainParseHelper.parsePrimitiveArray(p.numberArrayField, PlainParseHelper.parseNumber, 'numberArrayField', issues);
     const booleanField = PlainParseHelper.parseBoolean(p.booleanField, 'booleanField', issues);
@@ -139,7 +136,7 @@ export class TestDto extends Dto {
     }
 
     if (issues.length > 0) {
-      return PlainParseHelper.HObjectParseErr(this, issues);
+      return PlainParseHelper.HObjectParseErr(TestDto, issues);
     }
 
     return OK(new this(
@@ -242,7 +239,7 @@ const zodNoTransformTestDtoSchema = z.object({
   optionalDtoArrayField: z.array(zodOtherTestDtoSchema).optional(),
 });
 
-const bench = new Bench({ time: 3000, iterations: 8, warmupTime: 300 });
+const bench = new Bench({ time: 3000, iterations: 12, warmupTime: 500 });
 
 bench
   .add('HObject.parse - valid plain', () => {
