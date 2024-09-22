@@ -6,6 +6,7 @@ export * from './Result';
 export * from './Plain';
 
 export * from './Feature';
+export * from './Event/HEvent';
 
 export * from './CurrentTime';
 export * from './RetryHelper';
