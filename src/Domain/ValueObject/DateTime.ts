@@ -1,6 +1,7 @@
-import { AbstractValueObject, ValueObject } from './ValueObject';
+import { AbstractValueObject,  type ValueObjectType } from './AbstractValueObject';
 import { OK, R } from '../../Util/Result';
 import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
+import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParsableHObjectType, type PlainParseError } from "../../Util";
 
 export type DateTimeRawType = number;
 export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -25,11 +26,12 @@ function createJsJodaFromTimestamp(v: number): LocalDateTime {
   return LocalDateTime.ofEpochSecond(v, ZoneOffset.UTC);
 }
 
-@ValueObject('Core')
 /**
  * DateTime in UTC zone value object
  */
 export class DateTime extends AbstractValueObject<DateTime> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'DateTime', DateTime);
+
   public constructor(private readonly value: LocalDateTime) {
     super();
   }
@@ -42,34 +44,26 @@ export class DateTime extends AbstractValueObject<DateTime> {
     return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
-  /**
-   * Creates instance from various primitive value like Date, timestamp or formatted datetime string.
-   * @param v
-   * @returns instance
-   */
-  public static c(v: Date | number | string): R<DateTime> {
-
-    switch (typeof v) {
-      case 'number': return this.fromTimestamp(v);
+  public static parse<T extends DateTime>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+    switch (typeof plain) {
+      case 'number': return DateTime.fromTimestamp(plain) as any;
       case 'string':
         try {
-          return OK(new this(createJsJodaFromString(v)));
+          return OK(new this(createJsJodaFromString(plain)));
         } catch (e) {
-          return AbstractValueObject.invalidRaw(DateTime, {
-            raw: v,
-            msg: 'invalid format: ' + (e as Error).message,
-          });
+          return PlainParseHelper.HObjectParseErr(DateTime, [
+            new InvalidStringPlainParseIssue('datetime', {}, 'Given plain string is not valid datetime')
+          ]) as any;
         }
     }
 
-    if (v instanceof Date) {
-      return OK(new this(createJsJodaFromDate(v)));
+    if (plain instanceof Date) {
+      return OK(new this(createJsJodaFromDate(plain)));
     }
 
-    return AbstractValueObject.invalidRaw(DateTime, {
-      raw: v,
-      msg: 'unsupported datetime raw type',
-    });
+    return PlainParseHelper.HObjectParseErr(DateTime, [
+      new InvalidTypePlainParseIssue(["number", "string", "Date"], typeof plain)
+    ]) as any;
   }
 
   /**
@@ -94,14 +88,13 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @param timestamp
    * @returns
    */
-  public static fromTimestamp(timestamp: number): R<DateTime> {
+  public static fromTimestamp(timestamp: number): R<DateTime, PlainParseError> {
     if (timestamp < 0) {
-      return AbstractValueObject.invalidRaw(DateTime, {
-        raw: timestamp,
-        msg: 'invalid timestamp',
-      });
+      return PlainParseHelper.HObjectParseErr(DateTime, [
+        TooSmallPlainParseIssue.numberGTE(0, timestamp)
+      ]);
     }
-    return OK(new this(createJsJodaFromTimestamp(timestamp)));
+    return OK(new DateTime(createJsJodaFromTimestamp(timestamp)));
   }
 
   /**
@@ -176,7 +169,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
     return this.formatDateTime();
   }
 
-  public toJSON(): any {
+  public toJSON(): number {
     return this.t;
   }
 }

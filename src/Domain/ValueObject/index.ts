@@ -1,6 +1,5 @@
 // BASE
-export * from './ValueObject';
-export * from './SimpleValueObject';
+export * from './AbstractValueObject';
 
 // Account
 export * from './AccountId';

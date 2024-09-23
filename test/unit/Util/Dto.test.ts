@@ -1,11 +1,10 @@
-import { Dto, UIntValue, ValueObject, type JsonObjectType } from '@';
+import { Dto, UIntValue, type JsonObjectType } from '@';
 import path from 'path';
 
 /**
  * @group unit
  */
 
-@ValueObject('Test')
 class TestValueObject extends UIntValue { }
 
 class OtherTestDto extends Dto {

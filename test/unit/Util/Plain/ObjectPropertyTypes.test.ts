@@ -3,7 +3,7 @@ import path from 'node:path';
 
 class Super {
   public constructor(
-    public stringPatternField: v.string.pattern<'^[A-Z][a-zA-Z]{4}$'>,
+    public stringPatternField: v.string.regex<'^[A-Z][a-zA-Z]{4}$'>,
 
     public stringLengthField: v.string.length<10>,
     public stringMinField: v.string.length.min<10>,

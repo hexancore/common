@@ -1,5 +1,4 @@
 import {
-  ValueObject,
   UIntValue, Dto,
   type JsonObjectType,
   type PlainParsableHObjectType,
@@ -14,7 +13,6 @@ import {
 } from "@";
 import type { v } from "@/Util/Plain/types";
 
-@ValueObject('Test')
 export class TestValueObject extends UIntValue { }
 
 class OtherTestDto extends Dto {
