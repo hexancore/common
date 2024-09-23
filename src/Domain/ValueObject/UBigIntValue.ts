@@ -1,31 +1,33 @@
-import { ERR, OK, Result } from '../../Util';
-import { SimpleValueObject, SimpleValueObjectConstructor } from './SimpleValueObject';
-import { AbstractValueObject, ValueObject } from './ValueObject';
+import { HObjectTypeMeta, OK, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
+import { AbstractValueObject, type ValueObjectType } from './AbstractValueObject';
 
-export type UBigIntValueConstructor<T> = SimpleValueObjectConstructor<T, bigint>;
+export class UBigIntValue<T extends UBigIntValue<any> = any> extends AbstractValueObject<T> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'UBigInt', UBigIntValue);
 
-@ValueObject('Core')
-export class UBigIntValue<T extends UBigIntValue<any> = any> extends SimpleValueObject<T, bigint> {
-  public static c<T extends SimpleValueObject<T, bigint>>(this: UBigIntValueConstructor<T>, value: any): Result<T> {
-    if (typeof value === 'string') {
-      try {
-        value = BigInt(value);
-      } catch (e) {
-        return AbstractValueObject.invalidRaw(this, { raw: value });
-      }
+  public constructor(public readonly v: bigint) {
+    super();
+  }
+
+  public static parse<T extends UBigIntValue>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+    const parsed = PlainParseHelper.parseBigInt64GTE(plain, 0n);
+    if (parsed instanceof PlainParseIssue) {
+      return PlainParseHelper.HObjectParseErr(this, [parsed]);
     }
 
-    const checkResult = this.checkRawValue(value);
-    return checkResult.isError() ? ERR(checkResult.e) : OK(new this(value));
+    return OK(new this(parsed));
   }
 
-  public static cs<T extends SimpleValueObject<T, bigint>>(this: UBigIntValueConstructor<T>, value: any): T {
-    value = BigInt(value.toString());
-    return new this(value);
+  /**
+   * Creates instance without extra validation.
+   * @param v
+   * @returns
+   */
+  public static cs<T extends UBigIntValue>(this: ValueObjectType<T>, v: string | number | bigint): T {
+    return new (this as any)(BigInt(v));
   }
 
-  public static checkRawValue(value: any): Result<boolean> {
-    return value >= 0n ? OK(true) : AbstractValueObject.invalidRaw(this, { raw: value });
+  public equals(other: T): boolean {
+    return this.v === other.v;
   }
 
   public toString(): string {

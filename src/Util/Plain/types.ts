@@ -8,7 +8,7 @@ type NumberValueRuleTag<Meta> = number & ValueRuleTagBase<Meta>;
 
 export namespace v {
   export namespace string {
-    export type pattern<Pattern extends string, Flags extends string = ''> = string & ValueRuleTagBase<'string_pattern'>;
+    export type regex<Pattern extends string, Flags extends string = ''> = string & ValueRuleTagBase<'string_regex'>;
 
     export type length<Length extends number> = string & ValueRuleTagBase<'string_length_exactly'>;
     export namespace length {

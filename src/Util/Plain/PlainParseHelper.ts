@@ -1,7 +1,7 @@
 import { AppErrorCode } from "../Error/AppError";
 import { HObjectTypeMeta, type HObjectType, type PlainParsableHObjectType } from "../Feature";
 import { ERR, type R } from "../Result";
-import { InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue as InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseIssue, TooBigPlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
+import { InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue as InvalidHObjectPlainParseIssue, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseIssue, TooBigPlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
 
 export const PlainParseError = 'core.plain.parse' as const;
 export type PlainParseError = typeof PlainParseError;
@@ -24,7 +24,7 @@ export class PlainParseHelper {
   }
 
   public static parseBigInt64(plain: unknown, path?: string, issues?: PlainParseIssue[]): bigint | PlainParseIssue {
-    if (typeof plain === 'number' || (typeof plain === 'string' && BigInt64Regex.test(plain))) {
+    if (typeof plain === 'number' || typeof plain === 'bigint' || (typeof plain === 'string' && BigInt64Regex.test(plain))) {
       return BigInt(plain);
     }
 
@@ -33,6 +33,21 @@ export class PlainParseHelper {
       issues.push(issue);
     }
 
+    return issue;
+  }
+
+  public static parseBigInt64GTE(plain: unknown, min: bigint, path?: string, issues?: PlainParseIssue[]): bigint | PlainParseIssue {
+    if (typeof plain === 'number' || typeof plain === 'bigint' || (typeof plain === 'string' && BigInt64Regex.test(plain))) {
+      const parsed = BigInt(plain);
+      if (parsed < min) {
+        const issue = TooSmallPlainParseIssue.bigintGTE(min, parsed, path);
+        issues?.push(issue);
+        return issue;
+      }
+      return parsed;
+    }
+    const issue = new InvalidTypePlainParseIssue('bigint_string', typeof plain, path);
+    issues?.push(issue);
     return issue;
   }
 
@@ -127,6 +142,21 @@ export class PlainParseHelper {
 
   public static parseString(plain: unknown, path?: string, issues?: PlainParseIssue[]): string | PlainParseIssue {
     if (typeof plain === 'string') {
+      return plain;
+    }
+
+    const issue = new InvalidTypePlainParseIssue('string', typeof plain, path);
+    issues?.push(issue);
+    return issue;
+  }
+
+  public static parseStringRegex(plain: unknown, regex: RegExp, path?: string, issues?: PlainParseIssue[]): string | PlainParseIssue {
+    if (typeof plain === 'string') {
+      if (!regex.test(plain)) {
+        const issue = InvalidStringPlainParseIssue.regex(regex, path);
+        issues?.push(issue);
+        return issue;
+      }
       return plain;
     }
 

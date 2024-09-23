@@ -2,9 +2,9 @@
  * @group unit/core
  */
 
-import { UBigIntValue } from '../../../../src';
+import { PlainParseError, UBigIntValue } from '../../../../src';
 
-class CustomUBigInt extends UBigIntValue {
+class CustomUBigInt extends UBigIntValue<CustomUBigInt> {
   public customMethod() {
     return 'test';
   }
@@ -12,24 +12,24 @@ class CustomUBigInt extends UBigIntValue {
 
 describe('UBigIntValue', () => {
   test('create from string', () => {
-    const result = UBigIntValue.c('10');
+    const result = UBigIntValue.parse('10');
     expect(result.v.v).toBe(10n);
   });
 
   test('create when invalid string raw value', () => {
-    const result = UBigIntValue.c('-10');
+    const result = UBigIntValue.parse('-10');
     expect(result.isError()).toBe(true);
 
-    expect(result.e.type).toEqual('core.domain.value_object.u_big_int_value.invalid_raw_value');
+    expect(result.e.type).toEqual(PlainParseError);
   });
 
   test('create from bigint', () => {
-    const result = UBigIntValue.c(10n);
+    const result = UBigIntValue.parse(10n);
     expect(result.v.v).toBe(10n);
   });
 
   test('create custom', () => {
-    const result = CustomUBigInt.c(10n);
+    const result = CustomUBigInt.parse(10n);
     expect(result.v).toBeInstanceOf(CustomUBigInt);
     expect(result.v.v).toBe(10n);
   });

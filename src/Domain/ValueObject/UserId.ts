@@ -1,5 +1,6 @@
+import { HObjectTypeMeta } from "../../Util";
 import { StringValue } from "./StringValue";
-import { ValueObject } from "./ValueObject";
 
-@ValueObject('Account')
-export class UserId extends StringValue<UserId> {}
+export class UserId extends StringValue<UserId> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'User', 'ValueObject', 'UserId', UserId);
+}

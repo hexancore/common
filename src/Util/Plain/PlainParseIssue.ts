@@ -61,7 +61,7 @@ export abstract class PlainParseIssue implements JsonSerialize {
   }
 }
 
-export type PlainParsePrimitiveType = 'string' | 'number' | 'bigint' | 'bigint_string' | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function';
+export type PlainParsePrimitiveType = 'string' | 'number' | 'bigint' | 'bigint_string' | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
 
 export class InvalidTypePlainParseIssue extends PlainParseIssue {
   public constructor(
@@ -87,10 +87,16 @@ export class InvalidTypePlainParseIssue extends PlainParseIssue {
 export class InvalidStringPlainParseIssue extends PlainParseIssue {
   public constructor(
     public validatorType: string,
+    public validatorArgs: Record<string, any>,
     message: string,
     path?: string,
   ) {
     super(PlainParseIssueCode.invalid_string, message, path);
+  }
+
+  public static regex(regex: RegExp, path?: string): InvalidStringPlainParseIssue {
+    const message = `String must pass pattern: ${regex}`;
+    return new this('regex', { regex }, message, path);
   }
 
   public get i18n(): string {
@@ -103,12 +109,17 @@ export class InvalidStringPlainParseIssue extends PlainParseIssue {
       message: this.message,
       path: this.path,
       validatorType: this.validatorType,
-      i18n: this.i18n
-    };
+      validatorArgs: this.validatorArgs,
+      i18n: this.i18n,
+    } as any;
   }
 }
 
 export enum ValueRangeSideMode {
+  bigint_exclusive = 'bigint_exclusive',
+  bigint_inclusive = 'bigint_inclusive',
+  bigint_exactly = 'bigint_exactly',
+
   number_exclusive = 'number_exclusive',
   number_inclusive = 'number_inclusive',
   number_exactly = 'number_exactly',
@@ -122,9 +133,9 @@ export enum ValueRangeSideMode {
 
 export class TooSmallPlainParseIssue extends PlainParseIssue {
   public constructor(
-    public minimum: number,
+    public minimum: number | bigint,
     public mode: ValueRangeSideMode,
-    public current: number,
+    public current: number | bigint,
     message: string,
     path?: string
   ) {
@@ -166,6 +177,11 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
     return new this(exactly, ValueRangeSideMode.number_exactly, current, message, path);
   }
 
+  public static bigintGTE(minimum: bigint, current: bigint, path?: string): TooSmallPlainParseIssue {
+    const message = `Number must be greater than or equal to ${minimum}, current: ${current}`;
+    return new this(minimum, ValueRangeSideMode.bigint_inclusive, current, message, path);
+  }
+
   public get i18n(): string {
     return super.i18n + `.${this.mode}`;
   }
@@ -177,9 +193,9 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
       path: this.path,
       i18n: this.i18n,
 
-      minimum: this.minimum,
+      minimum: typeof this.minimum === 'bigint' ? this.minimum.toString() : this.minimum,
       mode: this.mode,
-      current: this.current,
+      current: typeof this.current === 'bigint' ? this.current.toString() : this.current,
     };
   }
 }

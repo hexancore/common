@@ -2,7 +2,7 @@
  * @group unit
  */
 
-import { DateTime } from '@';
+import { DateTime, InvalidHObjectPlainParseIssue, PlainParseError, TooSmallPlainParseIssue } from '@';
 import { Duration, Period } from '@js-joda/core';
 
 describe('DateTime', () => {
@@ -10,7 +10,7 @@ describe('DateTime', () => {
     test('when input is Date', () => {
       const raw = new Date("2024-01-01 10:30:30");
 
-      const result = DateTime.c(raw);
+      const result = DateTime.parse(raw);
 
       expect(result.v.formatDateTime()).toBe(raw.toISOString().replace(/\..+/, ""));
     });
@@ -22,7 +22,7 @@ describe('DateTime', () => {
       {name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00"}
     ])('when input is string($name)', (data) => {
 
-      const result = DateTime.c(data.raw);
+      const result = DateTime.parse(data.raw);
 
       expect(result.isSuccess()).toBe(true);
       expect(result.v.formatDateTime()).toBe(data.expected);
@@ -45,7 +45,7 @@ describe('DateTime', () => {
       {name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00"}
     ])('when input is string($name)', (data) => {
 
-      const result = DateTime.c(data.raw);
+      const result = DateTime.parse(data.raw);
 
       expect(result.isSuccess()).toBe(true);
       expect(result.v.formatDateTime()).toBe(data.expected);
@@ -61,8 +61,10 @@ describe('DateTime', () => {
     const result = DateTime.fromTimestamp(-10);
     expect(result.isError()).toBe(true);
 
-    expect(result.e.type).toEqual('core.domain.value_object.date_time.invalid_raw_value');
-    expect(result.e.data).toEqual({ msg: 'invalid timestamp', raw: -10 });
+    expect(result.e.type).toEqual(PlainParseError);
+    expect(result.e.data).toEqual(new InvalidHObjectPlainParseIssue(DateTime.HOBJ_META, [
+      TooSmallPlainParseIssue.numberGTE(0, -10)
+    ]));
   });
 
   test('plus()', () => {

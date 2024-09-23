@@ -1,6 +1,7 @@
 import { LogicError } from "../Error";
 import { pascalCaseToSnakeCase } from "../functions";
 import type { JsonSerialize } from "../Json/JsonSerialize";
+import type { PlainParseError } from "../Plain";
 import type { R } from "../Result";
 import type { JsonExcluded, JsonObjectType } from "../types";
 import type { HFeatureBackendLayer } from "./types";
@@ -11,7 +12,7 @@ export type HObjectType<T> = {
 
 export type PlainParsableHObjectType<T, TBase = object> = {
   new(...args: any[]): T;
-  parse<T extends TBase>(this: PlainParsableHObjectType<T>, plain: unknown): R<T>;
+  parse<T extends TBase>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError>;
 };
 
 

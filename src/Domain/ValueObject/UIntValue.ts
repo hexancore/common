@@ -1,40 +1,56 @@
-import { ERR, OK, Result } from '../../Util';
-import { SimpleValueObject, SimpleValueObjectConstructor } from './SimpleValueObject';
-import { AbstractValueObject, ValueObject } from './ValueObject';
+import { HObjectTypeMeta, InvalidTypePlainParseIssue, OK, PlainParseHelper, TooSmallPlainParseIssue, type PlainParseError, type R } from '../../Util';
+import { AbstractValueObject, type ValueObjectType } from './AbstractValueObject';
 
-export type UIntValueConstructor<T> = SimpleValueObjectConstructor<T, number>;
+export class UIntValue<T extends UIntValue<any> = any> extends AbstractValueObject<T> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'User', 'ValueObject', 'UInt', UIntValue);
 
-@ValueObject('Core')
-export class UIntValue<T extends UIntValue<any> = any> extends SimpleValueObject<T, number> {
-  public static c<T extends SimpleValueObject<T, number>>(this: UIntValueConstructor<T>, value: any): Result<T> {
-    if (typeof value === 'string') {
-      try {
-        value = Number.parseInt(value);
-      } catch (e) {
-        return AbstractValueObject.invalidRaw(this, { raw: value });
-      }
-    }
-
-    const checkResult = this.checkRawValue(value);
-    return checkResult.isError() ? ERR(checkResult.e) : OK(new this(value));
+  public constructor(public readonly v: number) {
+    super();
   }
 
-  public static cs<T extends SimpleValueObject<T, number>>(this: UIntValueConstructor<T>, value: any): T {
-    if (typeof value === 'string') {
-      value = Number.parseInt(value);
+  public static parse<T extends UIntValue>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+    let parsed: number;
+    switch (typeof plain) {
+      case 'number':
+        parsed = Math.trunc(plain);
+        break;
+      case 'string':
+        parsed = parseInt(plain);
+        break;
+      default:
+        return PlainParseHelper.HObjectParseErr(this, [new InvalidTypePlainParseIssue('number', typeof plain)]);
     }
-    return new this(value);
+
+    if (parsed < 0) {
+      const issue = TooSmallPlainParseIssue.numberGTE(0, parsed);
+      return PlainParseHelper.HObjectParseErr(this, [issue]);
+    }
+
+    return OK(new this(parsed));
   }
 
-  public static checkRawValue(value: number): Result<boolean> {
-    return value >= 0 ? OK(true) : AbstractValueObject.invalidRaw(this, { raw: value });
+  /**
+   * Creates instance without extra validation.
+   * @param v
+   * @returns
+   */
+  public static cs<T extends UIntValue>(this: ValueObjectType<T>, v: string | number): T {
+    if (typeof v === 'string') {
+      v = Number.parseInt(v);
+    }
+
+    return new this(v);
+  }
+
+  public equals(other: T): boolean {
+    return this.v === other.v;
   }
 
   public toString(): string {
     return this.v.toString();
   }
 
-  public toJSON(): number {
-    return this.v;
+  public toJSON(): string {
+    return this.v.toString();
   }
 }
