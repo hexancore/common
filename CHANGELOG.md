@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added 
+
+- added HObject concept with parse from unknown method generated from AOT(Transformer in core).
+- added first package benchmark stuff
+- added types: NonMethodRequiredPropertyNames,NonMethodOptionalPropertyNames,NonMethodProperties, ToJSONReturnType, JsonObjectType
+
+### Changed
+
+- refactor ValueObject concept to HObject.
+- pascalCaseToSnakeCase() - implemented faster version.
+- OK() returns constant objects for: `true`, `false`, `undefined`, `null` values for performence.
+
 ## [0.15.0] - 2024-06-27
 
 ### Added 
