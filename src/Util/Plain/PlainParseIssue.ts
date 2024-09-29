@@ -265,7 +265,7 @@ export class TooBigPlainParseIssue extends PlainParseIssue {
     path?: string,
     public minimum?: number,
   ) {
-    super(PlainParseIssueCode.too_small, message, path);
+    super(PlainParseIssueCode.too_big, message, path);
   }
 
   public static arrayExactlySize(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
@@ -324,7 +324,7 @@ export class InvalidEnumValuePlainParseIssue extends PlainParseIssue {
     path?: string
   ) {
     const optionsString = options.map(o => `'${o}'`).join('|');
-    super(PlainParseIssueCode.invalid_array_elements, `Invalid enum value. Expected ${optionsString}, received '${received}'`, path);
+    super(PlainParseIssueCode.invalid_enum_value, `Invalid enum value. Expected ${optionsString}, received '${received}'`, path);
   }
 
   public toJSON(): JsonObjectType<InvalidEnumValuePlainParseIssue> {
