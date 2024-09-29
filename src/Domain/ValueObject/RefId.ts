@@ -1,4 +1,4 @@
-import { StringValue } from "./StringValue";
+import { HString } from "./HString";
 import { customAlphabet } from 'nanoid';
 import { HObjectTypeMeta } from "../../Util";
 
@@ -7,7 +7,7 @@ const RefIdGenerator = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcde
 /**
  * Represents unique random string id. Generates nanoid - 21 characters
  */
-export class RefId extends StringValue<RefId> {
+export class RefId extends HString<RefId> {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'RefId', RefId);
 
   public static gen(): RefId {

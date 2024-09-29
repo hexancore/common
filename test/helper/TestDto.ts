@@ -1,5 +1,5 @@
 import {
-  UIntValue, Dto,
+  UInt, Dto,
   type JsonObjectType,
   type R, type PlainParseError,
   PlainParseHelper,
@@ -16,7 +16,7 @@ import {
 } from "@";
 import type { v } from "@/Util/Plain/types";
 
-export class TestValueObject extends UIntValue { }
+export class TestValueObject extends UInt { }
 
 export class OtherTestDto extends Dto<OtherTestDto> {
   public primitiveField!: v.int.between<10, 100>;

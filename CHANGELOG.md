@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- reworked HObjects(no backward compatible changes)
+- renamed ValueObjects: 
+  - DateTime -> HDateTime
+  - UIntValue -> UInt
+  - UBigInt -> UBigInt64
+  - StringValue -> HString
+  - RegexStringValue -> HRegexString
+
+
 ## [0.16.0] - 2024-09-23
 
 ### Added 

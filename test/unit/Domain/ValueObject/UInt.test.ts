@@ -3,16 +3,16 @@
  */
 
 import { PlainParseError } from "@";
-import { UIntValue } from '@/Domain/ValueObject/UIntValue';
+import { UInt } from '@/Domain/ValueObject/UInt';
 
 describe('UIntValue', () => {
   test('create', () => {
-    const result = UIntValue.parse(10);
+    const result = UInt.parse(10);
     expect(result.v.v).toBe(10);
   });
 
   test('create when invalid raw value', () => {
-    const result = UIntValue.parse(-10);
+    const result = UInt.parse(-10);
     expect(result.isError()).toBe(true);
 
     expect(result.e.type).toEqual(PlainParseError);
