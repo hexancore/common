@@ -1,11 +1,11 @@
 {
   "name": "@hexancore/common",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "engines": {
     "node": ">=22"
   },
   "engine-strict": true,
-  "description": "Full-Stack TypeScript Framework for building epic HexArch designed applications.",
+  "description": "Promise of delivering value through a good process",
   "author": "Andrzej Wasiak",
   "homepage": "https://hexancore.dev",
   "license": "MIT",
