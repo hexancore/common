@@ -1,21 +1,24 @@
 import {
   UIntValue, Dto,
   type JsonObjectType,
-  type PlainParsableHObjectType,
   type R, type PlainParseError,
   PlainParseHelper,
-  InvalidTypePlainParseIssue,
   OK,
   HObjectTypeMeta,
   PlainParseIssue,
   TooBigPlainParseIssue,
   TooSmallPlainParseIssue,
+  type AnyDto,
+  type DtoType,
+  ArrayPlainParseHelper,
+  StringPlainParseHelper,
+  NumberPlainParseHelper,
 } from "@";
 import type { v } from "@/Util/Plain/types";
 
 export class TestValueObject extends UIntValue { }
 
-class OtherTestDto extends Dto {
+export class OtherTestDto extends Dto<OtherTestDto> {
   public primitiveField!: v.int.between<10, 100>;
 
   // generate constructor in AOT
@@ -26,18 +29,17 @@ class OtherTestDto extends Dto {
     this.primitiveField = primitiveField;
   }
 
-
-  public static parse<T extends object>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyDto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
-      return PlainParseHelper.HObjectParseErr(this, [new InvalidTypePlainParseIssue('object', typeof plain)]);
+      return PlainParseHelper.HObjectIsNotObjectParseErr(this, plain);
     }
 
     const plainObj = plain as Record<keyof OtherTestDto, unknown>;
     const issues: PlainParseIssue[] = [];
     // end constant check part
 
-    const primitiveField = PlainParseHelper.parseNumber(plainObj.primitiveField, 'primitiveField', issues);
+    const primitiveField = NumberPlainParseHelper.parseNumber(plainObj.primitiveField, 'primitiveField', issues);
     if (!(primitiveField instanceof PlainParseIssue)) {
       if (primitiveField < 10) {
         issues.push(TooSmallPlainParseIssue.numberGTE(10, primitiveField));
@@ -64,7 +66,7 @@ class OtherTestDto extends Dto {
   }
 }
 
-export class TestDto extends Dto {
+export class TestDto extends Dto<TestDto> {
   public static HOBJ_META = HObjectTypeMeta.application('core', 'core', 'dto', 'TestDto', TestDto);
 
   public constructor(
@@ -84,20 +86,20 @@ export class TestDto extends Dto {
     super();
   }
 
-  public static parse<T extends object>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyDto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
-      return PlainParseHelper.HObjectIsNotObjectParseErr(TestDto as any, plain);
+      return PlainParseHelper.HObjectIsNotObjectParseErr(TestDto, plain);
     }
 
     const plainObj = plain as Record<keyof TestDto, unknown>;
     const issues: PlainParseIssue[] = [];
     // end constant check part
 
-    const stringField = PlainParseHelper.parseString(plainObj.stringField, 'stringField', issues);
+    const stringField = StringPlainParseHelper.parseString(plainObj.stringField, 'stringField', issues);
     const bigIntField = PlainParseHelper.parseBigInt64(plainObj.bigIntField, 'bigIntField', issues);
-    const numberField = PlainParseHelper.parseNumberGTE(plainObj.numberField, 0, 'numberField', issues);
-    const numberArrayField = PlainParseHelper.parsePrimitiveArray(plainObj.numberArrayField, PlainParseHelper.parseNumber, 'numberArrayField', issues);
+    const numberField = NumberPlainParseHelper.parseNumberGTE(plainObj.numberField, 0, 'numberField', issues);
+    const numberArrayField = ArrayPlainParseHelper.parsePrimitiveArray(plainObj.numberArrayField, NumberPlainParseHelper.parseNumber, 'numberArrayField', issues);
     const booleanField = PlainParseHelper.parseBoolean(plainObj.booleanField, 'booleanField', issues);
 
     let valueObjectField;
@@ -107,12 +109,12 @@ export class TestDto extends Dto {
 
     let optionalStringField;
     if (plainObj.optionalStringField !== undefined) {
-      optionalStringField = PlainParseHelper.parseString(plainObj.optionalStringField, 'optionalStringField', issues);
+      optionalStringField = StringPlainParseHelper.parseString(plainObj.optionalStringField, 'optionalStringField', issues);
     }
 
     let optionalValueObjectArrayField;
     if (plainObj.optionalValueObjectArrayField !== undefined) {
-      optionalValueObjectArrayField = PlainParseHelper.parseHObjectArray(plainObj.optionalValueObjectArrayField, TestValueObject, 'optionalValueObjectArrayField', issues);
+      optionalValueObjectArrayField = ArrayPlainParseHelper.parseHObjectArray(plainObj.optionalValueObjectArrayField, TestValueObject, 'optionalValueObjectArrayField', issues);
     }
 
     let optionalDtoField;
@@ -122,24 +124,25 @@ export class TestDto extends Dto {
 
     let optionalDtoArrayField;
     if (plainObj.optionalDtoArrayField !== undefined) {
-      optionalDtoArrayField = PlainParseHelper.parseHObjectArray(plainObj.optionalDtoArrayField, OtherTestDto, 'optionalDtoArrayField', issues);
+      optionalDtoArrayField = ArrayPlainParseHelper.parseHObjectArray(plainObj.optionalDtoArrayField, OtherTestDto, 'optionalDtoArrayField', issues);
     }
 
     if (issues.length > 0) {
-      return PlainParseHelper.HObjectParseErr(this, issues);
+      return PlainParseHelper.HObjectParseErr(TestDto, issues);
     }
 
-    return OK(new this(
-      stringField,
-      bigIntField,
-      numberField,
-      numberArrayField,
-      booleanField,
-      valueObjectField,
-      optionalValueObjectArrayField,
-      optionalDtoField,
-      optionalDtoArrayField
-    ));
+    return OK(new TestDto(
+      stringField as any,
+      bigIntField as any,
+      numberField as any,
+      numberArrayField as any,
+      booleanField as any,
+      valueObjectField as any,
+      optionalStringField as any,
+      optionalValueObjectArrayField as any,
+      optionalDtoField as any,
+      optionalDtoArrayField as any
+    )) as any;
   }
 
 
@@ -150,6 +153,7 @@ export class TestDto extends Dto {
       numberField: this.numberField,
       numberArrayField: this.numberArrayField,
       booleanField: this.booleanField,
+      optionalStringField: this.optionalStringField,
       optionalValueObjectField: this.optionalValueObjectField?.toJSON(),
       optionalValueObjectArrayField: this.optionalValueObjectArrayField?.map(v => v.toJSON()),
       optionalDtoField: this.optionalDtoField?.toJSON(),
@@ -157,3 +161,12 @@ export class TestDto extends Dto {
     };
   }
 }
+
+class AOTTestDto extends Dto<AOTTestDto> {
+  public stringField!: string;
+  public numberField!: v.uint;
+}
+
+// Uncomment to check return types
+//const aotCSReturnType = AOTTestDto.cs({stringField: "test", numberField: 10});
+//const aotParseReturnType = AOTTestDto.parse({stringField: "test", numberField: 10});

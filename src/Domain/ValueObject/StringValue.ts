@@ -1,5 +1,5 @@
-import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, PlainParseIssue, type R } from "../../Util";
-import { AbstractValueObject, type ValueObjectType } from "./AbstractValueObject";
+import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R } from "../../Util";
+import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
 
 export class StringValue<T extends StringValue<any> = any> extends AbstractValueObject<T> {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'String', StringValue);
@@ -9,8 +9,8 @@ export class StringValue<T extends StringValue<any> = any> extends AbstractValue
     super();
   }
 
-  public static parse<T extends StringValue>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
-    const parsed = PlainParseHelper.parseString(plain);
+  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+    const parsed = StringPlainParseHelper.parseString(plain);
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
     }

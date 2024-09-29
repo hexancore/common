@@ -26,7 +26,7 @@ export namespace v {
 
     export type gt<V extends number> = NumberValueRuleTag<'float_gt'>;
     export type lt<V extends number> = NumberValueRuleTag<'float_lt'>;
-    export type between_exclusive<Min extends number, Max extends number> = NumberValueRuleTag<'float_between_exclusive'>;
+    export type between_exclusively<Min extends number, Max extends number> = NumberValueRuleTag<'float_between_exclusive'>;
   }
 
   export type int = NumberValueRuleTag<'int'>;
@@ -35,7 +35,7 @@ export namespace v {
     export type max<Max extends number> = NumberValueRuleTag<'int_max'>;
     export type between<Min extends number, Max extends number> = NumberValueRuleTag<'int_between'>;
 
-    export type between_exclusive<Min extends number, Max extends number> = NumberValueRuleTag<'int_between_exclusive'>;
+    export type between_exclusively<Min extends number, Max extends number> = NumberValueRuleTag<'int_between_exclusive'>;
     export type gt<V extends number> = NumberValueRuleTag<'int_gt'>;
     export type lt<V extends number> = NumberValueRuleTag<'int_lt'>;
   }
@@ -46,7 +46,7 @@ export namespace v {
     export type max<Max extends number> = number & ValueRuleTagBase<'uint_max'>;
     export type between<Min extends number, Max extends number> = NumberValueRuleTag<'uint_between'>;
 
-    export type between_exclusive<Min extends number, Max extends number> = NumberValueRuleTag<'uint_between_exclusive'>;
+    export type between_exclusively<Min extends number, Max extends number> = NumberValueRuleTag<'uint_between_exclusive'>;
     export type gt<V extends number> = NumberValueRuleTag<'uint_gt'>;
     export type lt<V extends number> = NumberValueRuleTag<'uint_lt'>;
   }

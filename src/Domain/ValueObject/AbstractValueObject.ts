@@ -16,7 +16,7 @@ export abstract class AbstractValueObject<T extends AnyValueObject> implements J
    * @param plain
    * @returns
    */
-  public static parse<T>(this: (new (...args: any[]) => any), plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     throw new LogicError('Not implemented or AOT generated');
   }
 

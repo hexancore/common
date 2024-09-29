@@ -1,18 +1,13 @@
-import { LogicError, OK, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
-import { AbstractValueObject, type ValueObjectType } from "./AbstractValueObject";
-
-export type RegexStringSubtype<T> = {
-  new(value: string): T;
-  getRegex(): RegExp;
-} & ValueObjectType;
+import { LogicError, OK, StringPlainParseHelper, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
+import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
 
 export abstract class RegexStringValue<T extends RegexStringValue<any>> extends AbstractValueObject<T> {
   public constructor(public readonly v: string) {
     super();
   }
 
-  public static parse<T extends RegexStringValue<any>>(this: RegexStringSubtype<T>, plain: unknown): R<T, PlainParseError> {
-    const parsed = PlainParseHelper.parseStringRegex(plain, this.getRegex());
+  public static parse<T extends AnyValueObject>(this: ValueObjectType<T> & { getRegex(): RegExp; }, plain: unknown): R<T, PlainParseError> {
+    const parsed = StringPlainParseHelper.parseStringRegex(plain, this.getRegex());
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
     }
@@ -29,7 +24,7 @@ export abstract class RegexStringValue<T extends RegexStringValue<any>> extends 
    * @param v
    * @returns
    */
-  public static cs<T extends RegexStringValue<any>>(this: RegexStringSubtype<T>, v: string): T {
+  public static cs<T extends RegexStringValue<any>>(this: ValueObjectType<T>, v: string): T {
     return new (this as any)(v);
   }
 

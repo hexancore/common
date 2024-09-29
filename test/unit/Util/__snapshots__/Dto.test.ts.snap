@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dto toJSON 1`] = `
+{
+  "bigIntField": "1000",
+  "booleanField": true,
+  "numberArrayField": [
+    1,
+    2,
+  ],
+  "numberField": 1,
+  "optionalDtoArrayField": [
+    {
+      "primitiveField": 1,
+    },
+  ],
+  "optionalDtoField": {
+    "primitiveField": 2,
+  },
+  "optionalStringField": undefined,
+  "optionalValueObjectArrayField": [
+    3,
+    4,
+  ],
+  "optionalValueObjectField": 2,
+  "stringField": "test",
+}
+`;

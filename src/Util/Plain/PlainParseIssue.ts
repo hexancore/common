@@ -7,6 +7,7 @@ export enum PlainParseIssueCode {
   invalid_string = 'invalid_string',
   too_small = 'too_small',
   too_big = 'too_big',
+  out_of_range = 'out_of_range',
   invalid_enum_value = 'invalid_enum_value',
   invalid_array_elements = 'invalid_array_elements',
   invalid_hobject = 'invalid_hobject',
@@ -61,7 +62,7 @@ export abstract class PlainParseIssue implements JsonSerialize {
   }
 }
 
-export type PlainParsePrimitiveType = 'string' | 'number' | 'bigint' | 'bigint_string' | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
+export type PlainParsePrimitiveType = 'string' | 'number' | 'int' | 'uint' | 'bigint' | 'bigint_string' | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
 
 export class InvalidTypePlainParseIssue extends PlainParseIssue {
   public constructor(
@@ -116,24 +117,79 @@ export class InvalidStringPlainParseIssue extends PlainParseIssue {
 }
 
 export enum ValueRangeSideMode {
-  bigint_exclusive = 'bigint_exclusive',
-  bigint_inclusive = 'bigint_inclusive',
+  bigint_exclusively = 'bigint_exclusively',
+  bigint_inclusively = 'bigint_inclusively',
   bigint_exactly = 'bigint_exactly',
 
-  number_exclusive = 'number_exclusive',
-  number_inclusive = 'number_inclusive',
+  number_exclusively = 'number_exclusively',
+  number_inclusively = 'number_inclusively',
   number_exactly = 'number_exactly',
 
-  array_exactly_size = 'array_exactly_size',
-  array_inclusive_size = 'array_inclusive_size',
+  array_size_exactly = 'array_size_exactly',
+  array_size_inclusively = 'array_size_inclusively',
 
-  string_exactly_len = 'string_exactly_len',
-  string_inclusive_len = 'string_inclusive_len',
+  string_len_exactly = 'string_len_exactly',
+  string_len_inclusively = 'string_len_inclusively',
+}
+
+export class OutOfRangePlainParseIssue extends PlainParseIssue {
+  public constructor(
+    public min: number | bigint,
+    public max: number | bigint,
+    public valueType: "array" | "number",
+    public inclusively: boolean,
+    public current: number | bigint,
+    message: string,
+    path?: string
+  ) {
+    super(PlainParseIssueCode.out_of_range, message, path);
+  }
+
+  public static arrayBetween(min: number, max: number, current: number, path?: string): OutOfRangePlainParseIssue {
+    const message = `Array size must be between ${min} and ${max} inclusively, current: ${current}`;
+    return new this(min, max, "array", true, current, message, path);
+  }
+
+  public static stringLengthBetween(min: number, max: number, current: number, path?: string): OutOfRangePlainParseIssue {
+    const message = `String length must be between ${min} and ${max} inclusively, current: ${current}`;
+    return new this(min, max, "number", true, current, message, path);
+  }
+
+  public static numberBetween(min: number, max: number, current: number, path?: string): OutOfRangePlainParseIssue {
+    const message = `Number must be between ${min} and ${max} inclusively, current: ${current}`;
+    return new this(min, max, "number", true, current, message, path);
+  }
+
+  public static numberBetweenExclusively(min: number, max: number, current: number, path?: string): OutOfRangePlainParseIssue {
+    const message = `Number must be between ${min} and ${max} exclusively, current: ${current}`;
+    return new this(min, max, "number", false, current, message, path);
+  }
+
+
+
+  public get i18n(): string {
+    return super.i18n + `.${this.valueType}.${this.inclusively ? "inclusively" : "exclusively"}`;
+  }
+
+  public toJSON(): JsonObjectType<OutOfRangePlainParseIssue> {
+    return {
+      code: this.code,
+      message: this.message,
+      path: this.path,
+      i18n: this.i18n,
+
+      min: typeof this.min === 'bigint' ? this.min.toString() : this.min,
+      max: typeof this.max === 'bigint' ? this.max.toString() : this.max,
+      valueType: this.valueType,
+      inclusively: this.inclusively,
+      current: typeof this.current === 'bigint' ? this.current.toString() : this.current,
+    };
+  }
 }
 
 export class TooSmallPlainParseIssue extends PlainParseIssue {
   public constructor(
-    public minimum: number | bigint,
+    public min: number | bigint,
     public mode: ValueRangeSideMode,
     public current: number | bigint,
     message: string,
@@ -144,32 +200,32 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
 
   public static arrayExactlySize(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `Array must contain exactly ${minimum} element(s), current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.array_exactly_size, current, message, path);
+    return new this(minimum, ValueRangeSideMode.array_size_exactly, current, message, path);
   }
 
   public static arrayAtLeastSize(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `Array must contain at least ${minimum} element(s), current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.array_inclusive_size, current, message, path);
+    return new this(minimum, ValueRangeSideMode.array_size_inclusively, current, message, path);
   }
 
   public static stringLengthExactly(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `String must contain exactly ${minimum} character(s), current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.string_exactly_len, current, message, path);
+    return new this(minimum, ValueRangeSideMode.string_len_exactly, current, message, path);
   }
 
   public static stringLengthAtLeast(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `String must contain at least ${minimum} character(s), current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.string_inclusive_len, current, message, path);
+    return new this(minimum, ValueRangeSideMode.string_len_inclusively, current, message, path);
   }
 
   public static numberGTE(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `Number must be greater than or equal to ${minimum}, current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.number_inclusive, current, message, path);
+    return new this(minimum, ValueRangeSideMode.number_inclusively, current, message, path);
   }
 
   public static numberGT(minimum: number, current: number, path?: string): TooSmallPlainParseIssue {
     const message = `Number must be greater than ${minimum}, current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.number_exclusive, current, message, path);
+    return new this(minimum, ValueRangeSideMode.number_exclusively, current, message, path);
   }
 
   public static numberExactly(exactly: number, current: number, path?: string): TooSmallPlainParseIssue {
@@ -179,7 +235,7 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
 
   public static bigintGTE(minimum: bigint, current: bigint, path?: string): TooSmallPlainParseIssue {
     const message = `Number must be greater than or equal to ${minimum}, current: ${current}`;
-    return new this(minimum, ValueRangeSideMode.bigint_inclusive, current, message, path);
+    return new this(minimum, ValueRangeSideMode.bigint_inclusively, current, message, path);
   }
 
   public get i18n(): string {
@@ -193,7 +249,7 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
       path: this.path,
       i18n: this.i18n,
 
-      minimum: typeof this.minimum === 'bigint' ? this.minimum.toString() : this.minimum,
+      min: typeof this.min === 'bigint' ? this.min.toString() : this.min,
       mode: this.mode,
       current: typeof this.current === 'bigint' ? this.current.toString() : this.current,
     };
@@ -202,43 +258,44 @@ export class TooSmallPlainParseIssue extends PlainParseIssue {
 
 export class TooBigPlainParseIssue extends PlainParseIssue {
   public constructor(
-    public maximum: number,
+    public max: number,
     public mode: ValueRangeSideMode,
     public current: number,
     message: string,
-    path?: string
+    path?: string,
+    public minimum?: number,
   ) {
     super(PlainParseIssueCode.too_small, message, path);
   }
 
   public static arrayExactlySize(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `Array must contain exactly ${maximum} element(s), current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.array_exactly_size, current, message, path);
+    return new this(maximum, ValueRangeSideMode.array_size_exactly, current, message, path);
   }
 
   public static arrayMaxSize(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `Array must contain maximum ${maximum} element(s), current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.array_inclusive_size, current, message, path);
+    return new this(maximum, ValueRangeSideMode.array_size_inclusively, current, message, path);
   }
 
   public static stringLengthExactly(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `String must contain exactly ${maximum} character(s), current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.string_exactly_len, current, message, path);
+    return new this(maximum, ValueRangeSideMode.string_len_exactly, current, message, path);
   }
 
   public static stringLengthMax(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `String must contain maximum ${maximum} character(s), current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.string_inclusive_len, current, message, path);
+    return new this(maximum, ValueRangeSideMode.string_len_inclusively, current, message, path);
   }
 
   public static numberLTE(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `Number must be less than or equal to ${maximum}, current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.number_inclusive, current, message, path);
+    return new this(maximum, ValueRangeSideMode.number_inclusively, current, message, path);
   }
 
   public static numberLT(maximum: number, current: number, path?: string): TooBigPlainParseIssue {
     const message = `Number must be less than ${maximum}, current: ${current}`;
-    return new this(maximum, ValueRangeSideMode.number_exclusive, current, message, path);
+    return new this(maximum, ValueRangeSideMode.number_exclusively, current, message, path);
   }
 
   public static numberExactly(exactly: number, current: number, path?: string): TooBigPlainParseIssue {
@@ -253,7 +310,7 @@ export class TooBigPlainParseIssue extends PlainParseIssue {
       path: this.path,
       i18n: this.i18n,
 
-      maximum: this.maximum,
+      max: this.max,
       mode: this.mode,
       current: this.current,
     };
@@ -310,7 +367,7 @@ export class InvalidHObjectPlainParseIssue extends PlainParseIssue {
     public issues: PlainParseIssue[],
     path?: string
   ) {
-    super(PlainParseIssueCode.invalid_hobject, `Invalid object of type: ${typeMeta.typeId}`, path);
+    super(PlainParseIssueCode.invalid_hobject, `Invalid plain object to parse to HObject: ${typeMeta.typeId}`, path);
   }
 
   public toJSON(): JsonObjectType<InvalidHObjectPlainParseIssue> & { typeId: string; } {
