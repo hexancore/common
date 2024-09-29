@@ -1,8 +1,8 @@
 import { HObjectTypeMeta, OK, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
 import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
 
-export class UBigIntValue<T extends UBigIntValue<any> = any> extends AbstractValueObject<T> {
-  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'UBigInt', UBigIntValue);
+export class UBigInt64<T extends UBigInt64<any> = any> extends AbstractValueObject<T> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'UBigInt64', UBigInt64);
 
   public constructor(public readonly v: bigint) {
     super();
@@ -22,7 +22,7 @@ export class UBigIntValue<T extends UBigIntValue<any> = any> extends AbstractVal
    * @param v
    * @returns
    */
-  public static cs<T extends UBigIntValue>(this: ValueObjectType<T>, v: string | number | bigint): T {
+  public static cs<T extends UBigInt64>(this: ValueObjectType<T>, v: string | number | bigint): T {
     return new (this as any)(BigInt(v));
   }
 

@@ -10,11 +10,11 @@ export * from './Email';
 export * from './EmailHash';
 
 // TIME
-export * from './DateTime';
+export * from './HDateTime';
 
 // PRIMITIVE
-export * from './StringValue';
-export * from './UBigIntValue';
-export * from './UIntValue';
-export * from './RegexStringValue';
+export * from './HString';
+export * from './UBigInt64';
+export * from './UInt';
+export * from './HRegexString';
 export * from './RefId';

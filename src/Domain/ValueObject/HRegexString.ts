@@ -1,7 +1,7 @@
 import { LogicError, OK, StringPlainParseHelper, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
 import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
 
-export abstract class RegexStringValue<T extends RegexStringValue<any>> extends AbstractValueObject<T> {
+export abstract class HRegexString<T extends HRegexString<any>> extends AbstractValueObject<T> {
   public constructor(public readonly v: string) {
     super();
   }
@@ -24,7 +24,7 @@ export abstract class RegexStringValue<T extends RegexStringValue<any>> extends 
    * @param v
    * @returns
    */
-  public static cs<T extends RegexStringValue<any>>(this: ValueObjectType<T>, v: string): T {
+  public static cs<T extends HRegexString<any>>(this: ValueObjectType<T>, v: string): T {
     return new (this as any)(v);
   }
 

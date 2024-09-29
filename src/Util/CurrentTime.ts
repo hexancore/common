@@ -1,15 +1,15 @@
-import { DateTime } from '../Domain';
+import { HDateTime } from '../Domain';
 
 export class CurrentTime {
   public static i: CurrentTime;
 
-  private constNow!: DateTime|null;
+  private constNow!: HDateTime | null;
 
-  public get now(): DateTime {
-    return this.constNow ?? DateTime.now();
+  public get now(): HDateTime {
+    return this.constNow ?? HDateTime.now();
   }
 
-  public set now(now: DateTime | null) {
+  public set now(now: HDateTime | null) {
     this.constNow = now;
   }
 }

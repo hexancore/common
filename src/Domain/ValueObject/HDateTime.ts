@@ -1,7 +1,7 @@
 import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
 import { OK, R } from '../../Util/Result';
 import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
-import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue,  type PlainParseError } from "../../Util";
+import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParseError } from "../../Util";
 
 export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -28,29 +28,29 @@ function createJsJodaFromTimestamp(v: number): LocalDateTime {
 /**
  * DateTime in UTC zone value object
  */
-export class DateTime extends AbstractValueObject<DateTime> {
-  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'DateTime', DateTime);
+export class HDateTime extends AbstractValueObject<HDateTime> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'HDateTime', HDateTime);
 
   public constructor(private readonly value: LocalDateTime) {
     super();
   }
 
-  public static now(): DateTime {
+  public static now(): HDateTime {
     return new this(LocalDateTime.now(ZoneOffset.UTC).withNano(0));
   }
 
-  public static nowWithNano(): DateTime {
+  public static nowWithNano(): HDateTime {
     return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
   public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     switch (typeof plain) {
-      case 'number': return DateTime.fromTimestamp(plain) as any;
+      case 'number': return HDateTime.fromTimestamp(plain) as any;
       case 'string':
         try {
           return OK(new this(createJsJodaFromString(plain)));
         } catch (e) {
-          return PlainParseHelper.HObjectParseErr(DateTime, [
+          return PlainParseHelper.HObjectParseErr(HDateTime, [
             new InvalidStringPlainParseIssue('datetime', {}, 'Given plain string is not valid datetime')
           ]) as any;
         }
@@ -60,7 +60,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
       return OK(new this(createJsJodaFromDate(plain)));
     }
 
-    return PlainParseHelper.HObjectParseErr(DateTime, [
+    return PlainParseHelper.HObjectParseErr(HDateTime, [
       new InvalidTypePlainParseIssue(["number", "string", "Date"], typeof plain)
     ]) as any;
   }
@@ -70,7 +70,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @param v
    * @returns
    */
-  public static cs(v: Date | number | string): DateTime {
+  public static cs(v: Date | number | string): HDateTime {
     if (typeof v === 'number') {
       return new this(createJsJodaFromTimestamp(v));
     }
@@ -87,14 +87,14 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @param timestamp
    * @returns
    */
-  public static fromTimestamp(timestamp: number): R<DateTime, PlainParseError> {
+  public static fromTimestamp(timestamp: number): R<HDateTime, PlainParseError> {
     timestamp = Math.trunc(timestamp);
     if (timestamp < 0) {
-      return PlainParseHelper.HObjectParseErr(DateTime, [
+      return PlainParseHelper.HObjectParseErr(HDateTime, [
         TooSmallPlainParseIssue.numberGTE(0, timestamp)
       ]);
     }
-    return OK(new DateTime(createJsJodaFromTimestamp(timestamp)));
+    return OK(new HDateTime(createJsJodaFromTimestamp(timestamp)));
   }
 
   /**
@@ -116,8 +116,8 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @param amount
    * @returns
    */
-  public plus(amount: Period | Duration): DateTime {
-    return new DateTime(this.value.plus(amount));
+  public plus(amount: Period | Duration): HDateTime {
+    return new HDateTime(this.value.plus(amount));
   }
 
   /**
@@ -125,19 +125,19 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @param amount
    * @returns
    */
-  public minus(amount: Period | Duration): DateTime {
-    return new DateTime(this.value.minus(amount));
+  public minus(amount: Period | Duration): HDateTime {
+    return new HDateTime(this.value.minus(amount));
   }
 
-  public equals(o: DateTime): boolean {
+  public equals(o: HDateTime): boolean {
     return this.value.equals(o.value);
   }
 
-  public isAfter(o: DateTime): boolean {
+  public isAfter(o: HDateTime): boolean {
     return this.value.isAfter(o.value);
   }
 
-  public isBefore(o: DateTime): boolean {
+  public isBefore(o: HDateTime): boolean {
     return this.value.isBefore(o.value);
   }
 

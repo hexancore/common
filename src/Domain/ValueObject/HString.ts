@@ -1,8 +1,8 @@
 import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R } from "../../Util";
 import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
 
-export class StringValue<T extends StringValue<any> = any> extends AbstractValueObject<T> {
-  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'String', StringValue);
+export class HString<T extends HString<any> = any> extends AbstractValueObject<T> {
+  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'HString', HString);
 
 
   public constructor(public readonly v: string) {
@@ -23,7 +23,7 @@ export class StringValue<T extends StringValue<any> = any> extends AbstractValue
    * @param v
    * @returns
    */
-  public static cs<T extends StringValue>(this: ValueObjectType<T>, v: string): T {
+  public static cs<T extends HString>(this: ValueObjectType<T>, v: string): T {
     return new (this as any)(v);
   }
 

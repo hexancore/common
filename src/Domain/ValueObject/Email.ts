@@ -1,11 +1,11 @@
 import { HObjectTypeMeta } from "../../Util";
 import { EmailHash } from './EmailHash';
-import { RegexStringValue } from './RegexStringValue';
+import { HRegexString } from './HRegexString';
 
 const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 
-export class Email extends RegexStringValue<Email> {
+export class Email extends HRegexString<Email> {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'Email', Email);
 
   public static getRegex(): RegExp {
