@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Hexancore</h1>
-<p align="center"><i>Full-Stack TypeScript Framework for building epic <b>HexArch</b> designed applications.</i></p>
+<p align="center"><i>Promise of delivering value through a good process </i></p>
 <h2 align="center">Package: Common</h2>
 <p align="center">
   <a href="https://www.npmjs.com/package/@hexancore/common"><img src="https://img.shields.io/npm/v/@hexancore/common.svg" alt="NPM Version" /></a>

@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.1] - 2024-09-29
+
 ### Changed
 
 - reworked HObjects(no backward compatible changes)
@@ -159,7 +161,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.16.0...HEAD   
+[unreleased] https://github.com/hexancore/common/compare/0.16.1...HEAD   
+[0.16.1] https://github.com/hexancore/common/compare/0.16.0...0.16.1    
 [0.16.0] https://github.com/hexancore/common/compare/0.15.0...0.16.0   
 [0.15.0] https://github.com/hexancore/common/compare/0.14.0...0.15.0   
 [0.14.0] https://github.com/hexancore/common/compare/0.13.3...0.14.0   
