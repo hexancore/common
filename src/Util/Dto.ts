@@ -1,13 +1,14 @@
 import { LogicError } from './Error';
-import { HObjectType, type PlainParsableHObjectType } from './Feature/HObjectTypeMeta';
+import { HObjectType, type HObjectTypeMeta } from './Feature/HObjectTypeMeta';
 import { JsonSerialize } from './Json/JsonSerialize';
 import type { PlainParseError } from './Plain';
 import { type R } from './Result';
-import type { NonMethodProperties } from './types';
+import type { JsonObjectType, NonMethodProperties } from './types';
 
-export type DtoType<T extends Dto> = HObjectType<T>;
+export type AnyDto = Dto<any>;
+export type DtoType<T extends AnyDto> = HObjectType<T>;
 
-export abstract class Dto implements JsonSerialize {
+export abstract class Dto<T extends AnyDto> implements JsonSerialize {
 
   /**
    * Create from safe props
@@ -15,7 +16,7 @@ export abstract class Dto implements JsonSerialize {
    * @param props
    * @returns
    */
-  public static cs<T extends Dto>(this: DtoType<T>, props: NonMethodProperties<T>): T {
+  public static cs<T extends AnyDto>(this: DtoType<T>, props: NonMethodProperties<T>): T {
     const i = new this();
     Object.assign(i, props);
     return i;
@@ -27,12 +28,11 @@ export abstract class Dto implements JsonSerialize {
    * @param plain
    * @returns
    */
-  public static parse<T extends object>(this: PlainParsableHObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyDto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
     throw new LogicError('Not implemented or AOT generated');
   }
 
-  public toJSON(): Record<string, any> {
+  public toJSON(): JsonObjectType<T> {
     throw new LogicError('Not implemented or AOT generated');
   }
-
 }

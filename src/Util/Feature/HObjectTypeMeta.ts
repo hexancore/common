@@ -36,23 +36,23 @@ export class HObjectTypeMeta implements JsonSerialize {
   ) {
     this.typeId = [
       pascalCaseToSnakeCase(feature),
-      layer,
+      layer.toLowerCase(),
       pascalCaseToSnakeCase(context),
-      kind,
+      pascalCaseToSnakeCase(kind),
       pascalCaseToSnakeCase(name)
     ].join('.');
   }
 
   public static application(feature: string, context: string, kind: string, name: string, typeClass: AnyHObjectType): HObjectTypeMeta {
-    return new this(feature, 'application', context, kind, name, typeClass);
+    return new this(feature, 'Application', context, kind, name, typeClass);
   }
 
   public static domain(feature: string, context: string, kind: string, name: string, typeClass: AnyHObjectType): HObjectTypeMeta {
-    return new this(feature, 'domain', context, kind, name, typeClass);
+    return new this(feature, 'Domain', context, kind, name, typeClass);
   }
 
   public static infrastructure(feature: string, context: string, kind: string, name: string, typeClass: AnyHObjectType): HObjectTypeMeta {
-    return new this(feature, 'infrastructure', context, kind, name, typeClass);
+    return new this(feature, 'Infrastructure', context, kind, name, typeClass);
   }
 
   public static injectToClass(classConstructor: HObjectType<any>, meta: HObjectTypeMeta): void {

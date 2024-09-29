@@ -1,5 +1,5 @@
 import { HObjectTypeMeta, OK, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
-import { AbstractValueObject, type ValueObjectType } from './AbstractValueObject';
+import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
 
 export class UBigIntValue<T extends UBigIntValue<any> = any> extends AbstractValueObject<T> {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'UBigInt', UBigIntValue);
@@ -8,7 +8,7 @@ export class UBigIntValue<T extends UBigIntValue<any> = any> extends AbstractVal
     super();
   }
 
-  public static parse<T extends UBigIntValue>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = PlainParseHelper.parseBigInt64GTE(plain, 0n);
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);

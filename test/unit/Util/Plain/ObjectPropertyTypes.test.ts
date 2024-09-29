@@ -18,7 +18,7 @@ class Super {
 
     public intLtField: v.int.lt<-10>,
     public intGtField: v.int.gt<100>,
-    public intBetweenExclusiveField: v.int.between_exclusive<-10, 100>,
+    public intBetweenExclusiveField: v.int.between_exclusively<-10, 100>,
 
     public uintField: v.uint,
 
@@ -28,7 +28,7 @@ class Super {
 
     public uintLtField: v.uint.lt<10>,
     public uintGtField: v.uint.gt<100>,
-    public uintBetweenExclusiveField: v.uint.between_exclusive<10, 100>,
+    public uintBetweenExclusiveField: v.uint.between_exclusively<10, 100>,
 
     public floatField: v.float,
     public floatMinField: v.float.min<-1.5>,
@@ -37,7 +37,7 @@ class Super {
 
     public floatLtField: v.float.lt<-1.5>,
     public floatGtField: v.float.gt<2.5>,
-    public floatBetweenExclusiveField: v.float.between_exclusive<-1.5, 2.5>,
+    public floatBetweenExclusiveField: v.float.between_exclusively<-1.5, 2.5>,
 
     public intArray10: v.int.between<10, 100>[] & v.items.exactly<10>,
     public intArrayMin: v.int.between<10, 100>[] & v.items.min<10>,

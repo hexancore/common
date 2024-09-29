@@ -1,9 +1,8 @@
-import { AbstractValueObject,  type ValueObjectType } from './AbstractValueObject';
+import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
 import { OK, R } from '../../Util/Result';
 import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
-import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParsableHObjectType, type PlainParseError } from "../../Util";
+import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue,  type PlainParseError } from "../../Util";
 
-export type DateTimeRawType = number;
 export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 function createJsJodaFromString(v: string): LocalDateTime {
@@ -44,7 +43,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
     return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
-  public static parse<T extends DateTime>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     switch (typeof plain) {
       case 'number': return DateTime.fromTimestamp(plain) as any;
       case 'string':
@@ -89,6 +88,7 @@ export class DateTime extends AbstractValueObject<DateTime> {
    * @returns
    */
   public static fromTimestamp(timestamp: number): R<DateTime, PlainParseError> {
+    timestamp = Math.trunc(timestamp);
     if (timestamp < 0) {
       return PlainParseHelper.HObjectParseErr(DateTime, [
         TooSmallPlainParseIssue.numberGTE(0, timestamp)

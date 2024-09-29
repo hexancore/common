@@ -1,4 +1,4 @@
-import { AppErrorCode, InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseError, PlainParseHelper, TooBigPlainParseIssue, TooSmallPlainParseIssue, type JsonObjectType } from '@';
+import { AppErrorCode, ArrayPlainParseHelper, InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, NumberPlainParseHelper, PlainParseError, PlainParseHelper, StringPlainParseHelper, TooBigPlainParseIssue, TooSmallPlainParseIssue, type JsonObjectType } from '@';
 import { TestDto } from '@test/helper/TestDto';
 import path from 'node:path';
 
@@ -38,7 +38,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when valid should return parsed', () => {
       const plain = 1000;
 
-      const current = PlainParseHelper.parseNumber(plain);
+      const current = NumberPlainParseHelper.parseNumber(plain);
 
       expect(current).toBe(1000);
     });
@@ -46,7 +46,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when invalid should return issue', () => {
       const plain = 'bad1000';
 
-      const current = PlainParseHelper.parseNumber(plain);
+      const current = NumberPlainParseHelper.parseNumber(plain);
 
       expect(current).toEqual(new InvalidTypePlainParseIssue('number', 'string'));
     });
@@ -74,7 +74,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when valid should return parsed', () => {
       const plain = 'good';
 
-      const current = PlainParseHelper.parseString(plain);
+      const current = StringPlainParseHelper.parseString(plain);
 
       expect(current).toBe('good');
     });
@@ -82,7 +82,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when invalid should return issue', () => {
       const plain = 1000;
 
-      const current = PlainParseHelper.parseString(plain);
+      const current = StringPlainParseHelper.parseString(plain);
 
       expect(current).toEqual(new InvalidTypePlainParseIssue('string', 'number'));
     });
@@ -95,7 +95,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
       { plain: 'good2', expected: TooBigPlainParseIssue.stringLengthExactly(4, 5) },
       { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
     ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
-      const current = PlainParseHelper.parseStringLength(plain, 4);
+      const current = StringPlainParseHelper.parseStringLength(plain, 4);
       expect(current).toEqual(expected);
     });
   });
@@ -107,7 +107,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
       { plain: 'good2', expected: 'good2' },
       { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
     ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
-      const current = PlainParseHelper.parseStringLengthMin(plain, 4);
+      const current = StringPlainParseHelper.parseStringLengthMin(plain, 4);
       expect(current).toEqual(expected);
     });
   });
@@ -119,7 +119,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
       { plain: 'good2', expected: TooBigPlainParseIssue.stringLengthMax(4, 5) },
       { plain: 1000, expected: new InvalidTypePlainParseIssue('string', 'number') }
     ])('when input is $plain, it should return $expected', ({ plain, expected }) => {
-      const current = PlainParseHelper.parseStringLengthMax(plain, 4);
+      const current = StringPlainParseHelper.parseStringLengthMax(plain, 4);
       expect(current).toEqual(expected);
     });
   });
@@ -168,7 +168,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
         booleanField: true,
       };
 
-      const current = PlainParseHelper.parseHObjectArray([plain], TestDto);
+      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDto);
 
       const expected = TestDto.cs({
         stringField: 'test',
@@ -183,7 +183,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when invalid should return issue', () => {
       const plain = 1000;
 
-      const current = PlainParseHelper.parseHObjectArray([plain], TestDto);
+      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDto);
 
       const expected = new InvalidArrayElementsPlainParseIssue([
         new InvalidHObjectPlainParseIssue(TestDto.HOBJ_META, [

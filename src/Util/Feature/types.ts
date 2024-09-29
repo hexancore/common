@@ -1,1 +1,1 @@
-export type HFeatureBackendLayer = 'application' | 'domain' | 'infrastructure';
+export type HFeatureBackendLayer = 'Application' | 'Domain' | 'Infrastructure';
