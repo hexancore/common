@@ -5,15 +5,22 @@ import {
   type R,
   type PlainParseError,
   LogicError,
-  type JsonObjectType
+  type JsonObjectType,
+  type AR,
+  type ARP
 } from "../Util";
-
 
 export type AnyHQuery = HQuery<any, any>;
 export type HQueryType<T extends AnyHQuery> = HObjectType<T>;
-export type ExtractHQueryResultValueType<T extends AnyHQuery> = T extends HQuery<any, infer U> ? U : never;
 
-export abstract class HQuery<T extends AnyHQuery, RT, RET extends string = UnknownErrorType> {
+export type InferHQueryResultValueType<T extends AnyHQuery> = T extends HQuery<infer U, any> ? U : never;
+export type InferHQueryResultErrorType<T extends AnyHQuery> = T extends HQuery<any, infer U> ? U : never;
+
+export type HQueryAsyncResultType<T extends AnyHQuery> = AR<InferHQueryResultValueType<T>, InferHQueryResultErrorType<T>>;
+export type HQueryAsyncResultPromiseType<T extends AnyHQuery> = ARP<InferHQueryResultValueType<T>, InferHQueryResultErrorType<T>>;
+export type HQueryResultType<T extends AnyHQuery> = R<InferHQueryResultValueType<T>, InferHQueryResultErrorType<T>>;
+
+export abstract class HQuery<RT, RET extends string = UnknownErrorType> {
   /**
    * Create from safe props
    * @param this
@@ -36,7 +43,14 @@ export abstract class HQuery<T extends AnyHQuery, RT, RET extends string = Unkno
     throw new LogicError('Not implemented or AOT generated');
   }
 
-  public toJSON(): JsonObjectType<T> {
+  public toJSON(): JsonObjectType<this> {
     throw new LogicError('Not implemented or AOT generated');
+  }
+
+  /**
+   * @internal Keeps inference good
+   */
+  protected __XHCG(): R<RT, RET> {
+    return undefined as any;
   }
 }

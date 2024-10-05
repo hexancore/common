@@ -4,7 +4,7 @@
 
 import { PlainParseError, UBigInt64 } from '../../../../src';
 
-class CustomUBigInt extends UBigInt64<CustomUBigInt> {
+class CustomUBigInt extends UBigInt64 {
   public customMethod() {
     return 'test';
   }

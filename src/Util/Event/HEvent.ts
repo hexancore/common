@@ -6,17 +6,17 @@ import type { R } from "../Result";
 import type { NonMethodProperties, JsonObjectType } from "../types";
 
 
-export type AnyHEvent = HEvent<any>;
-export type EventType<T extends AnyHEvent> = HObjectType<T>;
 
-export abstract class HEvent<T extends AnyHEvent> implements JsonSerialize {
+export type EventType<T extends HEvent> = HObjectType<T>;
+
+export abstract class HEvent implements JsonSerialize {
   /**
    * Creates from safe props
    * @param this
    * @param props
    * @returns
    */
-  public static cs<T extends AnyHEvent>(this: EventType<T>, props: NonMethodProperties<T>): T {
+  public static cs<T extends HEvent>(this: EventType<T>, props: NonMethodProperties<T>): T {
     const i = new this();
     Object.assign(i, props);
     return i;
@@ -28,11 +28,11 @@ export abstract class HEvent<T extends AnyHEvent> implements JsonSerialize {
    * @param plain
    * @returns
    */
-  public static parse<T extends AnyHEvent>(this: EventType<T>, plain: unknown): R<T, PlainParseError> {
-    throw new LogicError('Not implemented or AOT generated');
+  public static parse<T extends HEvent>(this: EventType<T>, plain: unknown): R<T, PlainParseError> {
+    throw new LogicError("Not implemented or AOT generated");
   }
 
-  public toJSON(): JsonObjectType<T> {
-    throw new LogicError('Not implemented or AOT generated');
+  public toJSON(): JsonObjectType<this> {
+    throw new LogicError("Not implemented or AOT generated");
   }
 }

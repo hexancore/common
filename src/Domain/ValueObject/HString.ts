@@ -1,15 +1,14 @@
 import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R } from "../../Util";
-import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
+import { HValueObject, type ValueObjectType } from "./HValueObject";
 
-export class HString<T extends HString<any> = any> extends AbstractValueObject<T> {
-  public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'HString', HString);
-
+export class HString extends HValueObject {
+  public static readonly HOBJ_META = HObjectTypeMeta.ValueObject('Core', 'Core', HString);
 
   public constructor(public readonly v: string) {
     super();
   }
 
-  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = StringPlainParseHelper.parseString(plain);
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
@@ -24,10 +23,10 @@ export class HString<T extends HString<any> = any> extends AbstractValueObject<T
    * @returns
    */
   public static cs<T extends HString>(this: ValueObjectType<T>, v: string): T {
-    return new (this as any)(v);
+    return new this(v);
   }
 
-  public equals(other: T): boolean {
+  public equals(other: this): boolean {
     return this.v === other.v;
   }
 

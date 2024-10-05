@@ -1,20 +1,27 @@
-import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
+import { HValueObject, type ValueObjectType } from './HValueObject';
 import { OK, R } from '../../Util/Result';
 import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
 import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParseError } from "../../Util";
 
 export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-function createJsJodaFromString(v: string): LocalDateTime {
+function createJsJodaFromString(v: string): LocalDateTime | InvalidStringPlainParseIssue {
   if (!v.includes("T")) {
-    if (v.includes(" ")) {
-      v = v.replace(" ", "T");
-    } else {
-      v += "T00:00:00";
-    }
+    v = v.includes(" ") ? v.replace(" ", "T") : v + "T00:00:00";
   }
-  v = v.includes("Z") ? v : v + "Z";
-  return LocalDateTime.ofInstant(Instant.parse(v), ZoneId.UTC);
+
+  if (v.endsWith("Z")) {
+    v = v.substring(0, v.length - 1);
+  }
+
+  if (!/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2}))?)$/.test(v)) {
+    return new InvalidStringPlainParseIssue("datetime", {}, "Invalid datetime string");
+  }
+
+  try {
+    return LocalDateTime.parse(v);
+  } catch (e) {
+    return new InvalidStringPlainParseIssue("datetime", {}, "Invalid datetime string: " + (e as Error).message);
+  }
 }
 
 function createJsJodaFromDate(v: Date): LocalDateTime {
@@ -28,7 +35,7 @@ function createJsJodaFromTimestamp(v: number): LocalDateTime {
 /**
  * DateTime in UTC zone value object
  */
-export class HDateTime extends AbstractValueObject<HDateTime> {
+export class HDateTime extends HValueObject {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'HDateTime', HDateTime);
 
   public constructor(private readonly value: LocalDateTime) {
@@ -43,17 +50,17 @@ export class HDateTime extends AbstractValueObject<HDateTime> {
     return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
-  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     switch (typeof plain) {
       case 'number': return HDateTime.fromTimestamp(plain) as any;
       case 'string':
-        try {
-          return OK(new this(createJsJodaFromString(plain)));
-        } catch (e) {
-          return PlainParseHelper.HObjectParseErr(HDateTime, [
-            new InvalidStringPlainParseIssue('datetime', {}, 'Given plain string is not valid datetime')
-          ]) as any;
+        // eslint-disable-next-line no-case-declarations
+        const parsed = createJsJodaFromString(plain);
+        if (parsed instanceof InvalidStringPlainParseIssue) {
+          return PlainParseHelper.HObjectParseErr(HDateTime, [parsed]);
         }
+
+        return OK(new this(createJsJodaFromString(plain)));
     }
 
     if (plain instanceof Date) {
@@ -79,7 +86,7 @@ export class HDateTime extends AbstractValueObject<HDateTime> {
       return new this(createJsJodaFromDate(v));
     }
 
-    return new this(createJsJodaFromString(v));
+    return new this(createJsJodaFromString(v) as any);
   }
 
   /**

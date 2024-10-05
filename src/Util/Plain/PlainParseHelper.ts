@@ -1,7 +1,7 @@
 import { AppErrorCode } from "../Error/AppError";
 import { HObjectTypeMeta, type HObjectType, type PlainParsableHObjectType } from "../Feature";
 import { ERR, type R } from "../Result";
-import { InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseIssue, TooBigPlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
+import { InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
 
 export const PlainParseError = 'core.plain.parse' as const;
 export type PlainParseError = typeof PlainParseError;

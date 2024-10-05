@@ -1,12 +1,12 @@
 import { LogicError, OK, StringPlainParseHelper, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
-import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from "./AbstractValueObject";
+import { HValueObject,  type ValueObjectType } from "./HValueObject";
 
-export abstract class HRegexString<T extends HRegexString<any>> extends AbstractValueObject<T> {
+export abstract class HRegexString extends HValueObject {
   public constructor(public readonly v: string) {
     super();
   }
 
-  public static parse<T extends AnyValueObject>(this: ValueObjectType<T> & { getRegex(): RegExp; }, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends HValueObject>(this: ValueObjectType<T> & { getRegex(): RegExp; }, plain: unknown): R<T, PlainParseError> {
     const parsed = StringPlainParseHelper.parseStringRegex(plain, this.getRegex());
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
@@ -24,11 +24,11 @@ export abstract class HRegexString<T extends HRegexString<any>> extends Abstract
    * @param v
    * @returns
    */
-  public static cs<T extends HRegexString<any>>(this: ValueObjectType<T>, v: string): T {
-    return new (this as any)(v);
+  public static cs<T extends HRegexString>(this: ValueObjectType<T>, v: string): T {
+    return new this(v);
   }
 
-  public equals(other: T): boolean {
+  public equals(other: this): boolean {
     return this.v === other.v;
   }
 
