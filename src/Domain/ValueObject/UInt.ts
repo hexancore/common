@@ -1,14 +1,14 @@
 import { HObjectTypeMeta, IntegerPlainParseHelper, OK, PlainParseHelper, type PlainParseError, type R } from '../../Util';
-import { AbstractValueObject, type AnyValueObject, type ValueObjectType } from './AbstractValueObject';
+import { HValueObject, type ValueObjectType } from './HValueObject';
 
-export class UInt<T extends UInt<any> = any> extends AbstractValueObject<T> {
+export class UInt extends HValueObject {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'User', 'ValueObject', 'UInt', UInt);
 
   public constructor(public readonly v: number) {
     super();
   }
 
-  public static parse<T extends AnyValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = IntegerPlainParseHelper.parseUInt(plain);
     return typeof parsed === "number" ? OK(new this(parsed)) : PlainParseHelper.HObjectParseErr(this, [parsed]);
   }
@@ -26,7 +26,7 @@ export class UInt<T extends UInt<any> = any> extends AbstractValueObject<T> {
     return new this(v);
   }
 
-  public equals(other: T): boolean {
+  public equals(other: this): boolean {
     return this.v === other.v;
   }
 

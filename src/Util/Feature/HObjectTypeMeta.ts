@@ -43,6 +43,10 @@ export class HObjectTypeMeta implements JsonSerialize {
     ].join('.');
   }
 
+  public static ValueObject(feature: string, context: string, typeClass: AnyHObjectType): HObjectTypeMeta {
+    return new this(feature, "Domain", context, "ValueObject", typeClass.name, typeClass);
+  }
+
   public static application(feature: string, context: string, kind: string, name: string, typeClass: AnyHObjectType): HObjectTypeMeta {
     return new this(feature, 'Application', context, kind, name, typeClass);
   }

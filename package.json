@@ -89,7 +89,7 @@
     "prepublish": "yarn test && yarn run build"
   },
   "peerDependencies": {
-    "axios": "^1.7.2"
+    "axios": "^1.7.7"
   },
   "peerDependenciesMeta": {
     "axios": {
@@ -98,7 +98,6 @@
   },
   "dependencies": {
     "@js-joda/core": "^5.6.1",
-    "class-transformer": "^0.5.1",
     "lambda-log": "^3.1.0",
     "nanoid": "3",
     "tslib": "^2.6.3"
@@ -110,7 +109,7 @@
     "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "axios-mock-adapter": "^1.22.0",
     "eslint": "^8.3.0",
     "eslint-plugin-unused-imports": "^3.2.0",
@@ -119,7 +118,7 @@
     "jest-runner": "29.7.0",
     "jest-runner-groups": "^2.1.0",
     "ts-jest": "29.1.4",
-    "typescript": "5.4.5"
+    "typescript": "5.6.2"
   },
   "directories": {
     "lib": "lib"

@@ -5,14 +5,22 @@ import {
   type R,
   type PlainParseError,
   LogicError,
-  type JsonObjectType
+  type JsonObjectType,
+  type AR,
+  type ARP,
 } from "../Util";
 
 export type AnyHCommand = HCommand<any, any>;
 export type HCommandType<T extends AnyHCommand> = HObjectType<T>;
-export type ExtractHCommandResultValueType<T extends AnyHCommand> = T extends HCommand<any, infer U> ? U : never;
 
-export abstract class HCommand<T extends AnyHCommand, RT, RET extends string = UnknownErrorType> {
+export type InferHCommandResultValueType<T extends AnyHCommand> = T extends HCommand<infer U, any> ? U : never;
+export type InferHCommandResultErrorType<T extends AnyHCommand> = T extends HCommand<any, infer U> ? U : never;
+
+export type HCommandAsyncResultType<T extends AnyHCommand> = AR<InferHCommandResultValueType<T>, InferHCommandResultErrorType<T>>;
+export type HCommandAsyncResultPromiseType<T extends AnyHCommand> = ARP<InferHCommandResultValueType<T>, InferHCommandResultErrorType<T>>;
+export type HCommandResultType<T extends AnyHCommand> = R<InferHCommandResultValueType<T>, InferHCommandResultErrorType<T>>;
+
+export abstract class HCommand<RT, RET extends string = UnknownErrorType> {
   /**
    * Create from safe props
    * @param this
@@ -35,7 +43,14 @@ export abstract class HCommand<T extends AnyHCommand, RT, RET extends string = U
     throw new LogicError('Not implemented or AOT generated');
   }
 
-  public toJSON(): JsonObjectType<T> {
+  public toJSON(): JsonObjectType<typeof this> {
     throw new LogicError('Not implemented or AOT generated');
+  }
+
+  /**
+   * @internal Keeps inference good
+   */
+  protected __XHCG(): R<RT, RET> {
+    return undefined as any;
   }
 }

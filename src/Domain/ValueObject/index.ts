@@ -1,5 +1,5 @@
 // BASE
-export * from './AbstractValueObject';
+export * from './HValueObject';
 
 // Account
 export * from './AccountId';

@@ -8,7 +8,6 @@ import {
   PlainParseIssue,
   TooBigPlainParseIssue,
   TooSmallPlainParseIssue,
-  type AnyDto,
   type DtoType,
   ArrayPlainParseHelper,
   StringPlainParseHelper,
@@ -18,7 +17,7 @@ import type { v } from "@/Util/Plain/types";
 
 export class TestValueObject extends UInt { }
 
-export class OtherTestDto extends Dto<OtherTestDto> {
+export class OtherTestDto extends Dto {
   public primitiveField!: v.int.between<10, 100>;
 
   // generate constructor in AOT
@@ -29,7 +28,7 @@ export class OtherTestDto extends Dto<OtherTestDto> {
     this.primitiveField = primitiveField;
   }
 
-  public static parse<T extends AnyDto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends Dto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
       return PlainParseHelper.HObjectIsNotObjectParseErr(this, plain);
@@ -59,14 +58,15 @@ export class OtherTestDto extends Dto<OtherTestDto> {
     ));
   }
 
-  public toJSON(): JsonObjectType<OtherTestDto> {
-    return {
+  public toJSON(): JsonObjectType<this> {
+    const data = {
       primitiveField: this.primitiveField,
-    };
+    } as JsonObjectType<OtherTestDto>;
+    return data as any;
   }
 }
 
-export class TestDto extends Dto<TestDto> {
+export class TestDto extends Dto {
   public static HOBJ_META = HObjectTypeMeta.application('core', 'core', 'dto', 'TestDto', TestDto);
 
   public constructor(
@@ -86,7 +86,7 @@ export class TestDto extends Dto<TestDto> {
     super();
   }
 
-  public static parse<T extends AnyDto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends Dto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
     // constant check part
     if (typeof plain !== 'object') {
       return PlainParseHelper.HObjectIsNotObjectParseErr(TestDto, plain);
@@ -145,9 +145,8 @@ export class TestDto extends Dto<TestDto> {
     )) as any;
   }
 
-
-  public toJSON(): JsonObjectType<TestDto> {
-    return {
+  public toJSON(this: TestDto): JsonObjectType<this> {
+    const data = {
       stringField: this.stringField,
       bigIntField: this.bigIntField.toString(),
       numberField: this.numberField,
@@ -158,15 +157,20 @@ export class TestDto extends Dto<TestDto> {
       optionalValueObjectArrayField: this.optionalValueObjectArrayField?.map(v => v.toJSON()),
       optionalDtoField: this.optionalDtoField?.toJSON(),
       optionalDtoArrayField: this.optionalDtoArrayField?.map((v) => v.toJSON()),
-    };
+    } as JsonObjectType<TestDto>;
+
+    return data as any;
   }
 }
 
-class AOTTestDto extends Dto<AOTTestDto> {
+type a = ReturnType<TestDto["toJSON"]>;
+
+class AOTTestDto extends Dto {
   public stringField!: string;
   public numberField!: v.uint;
 }
 
 // Uncomment to check return types
 //const aotCSReturnType = AOTTestDto.cs({stringField: "test", numberField: 10});
+//const aotCSReturnType = AOTTestDto.cs({stringField: "test", numberField: 10}).toJSON();
 //const aotParseReturnType = AOTTestDto.parse({stringField: "test", numberField: 10});
