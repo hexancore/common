@@ -1,14 +1,16 @@
 import { HObjectTypeMeta, IntegerPlainParseHelper, OK, PlainParseHelper, type PlainParseError, type R } from '../../Util';
-import { HValueObject, type ValueObjectType } from './HValueObject';
+import { ValueObject, type ValueObjectType } from './ValueObject';
+import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export class UInt extends HValueObject {
+export class UInt extends ValueObject {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'User', 'ValueObject', 'UInt', UInt);
+  public static readonly JSON_SCHEMA = JsonSchemaFactory.Integer({ minimum: 0 });
 
   public constructor(public readonly v: number) {
     super();
   }
 
-  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = IntegerPlainParseHelper.parseUInt(plain);
     return typeof parsed === "number" ? OK(new this(parsed)) : PlainParseHelper.HObjectParseErr(this, [parsed]);
   }

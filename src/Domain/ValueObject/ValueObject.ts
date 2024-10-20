@@ -1,21 +1,22 @@
 import {
-  JsonSerialize,
+  type JsonSerialize,
   LogicError,
   type HObjectType,
   type PlainParseError,
   type R
 } from '../../Util';
 
-export type ValueObjectType<T extends HValueObject> = HObjectType<T>;
+export type ValueObjectType<T extends ValueObject> = HObjectType<T>;
 
-export abstract class HValueObject implements JsonSerialize {
+export abstract class ValueObject implements JsonSerialize {
+
   /**
    * Creates ValueObject from plain value
    * @param this
    * @param plain
    * @returns
    */
-  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     throw new LogicError("Not implemented or AOT generated");
   }
 

@@ -11,7 +11,7 @@ bench
     HDateTime.parse("2024ff-10-10T12:34:44");
   });
 
-export async function ValueObjectBench() {
+export async function ValueObjectBench(): Promise<void> {
   await bench.warmup();
   await bench.run();
 

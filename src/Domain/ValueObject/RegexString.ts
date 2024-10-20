@@ -1,18 +1,23 @@
-import { LogicError, OK, StringPlainParseHelper, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
-import { HValueObject,  type ValueObjectType } from "./HValueObject";
+import { LogicError, OK, StringPlainParseHelper, PlainParseHelper, PlainParseIssue, type PlainParseError, type R, type JsonSchema } from '../../Util';
+import { ValueObject, type ValueObjectType } from "./ValueObject";
+import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export abstract class HRegexString extends HValueObject {
+export abstract class RegexString extends ValueObject {
   public constructor(public readonly v: string) {
     super();
   }
 
-  public static parse<T extends HValueObject>(this: ValueObjectType<T> & { getRegex(): RegExp; }, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends ValueObject>(this: ValueObjectType<T> & { getRegex(): RegExp; }, plain: unknown): R<T, PlainParseError> {
     const parsed = StringPlainParseHelper.parseStringRegex(plain, this.getRegex());
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
     }
 
     return OK(new this(parsed));
+  }
+
+  public static get JSON_SCHEMA(): JsonSchema {
+    return JsonSchemaFactory.String({ pattern: this.getRegex().toString() });
   }
 
   public static getRegex(): RegExp {
@@ -24,7 +29,7 @@ export abstract class HRegexString extends HValueObject {
    * @param v
    * @returns
    */
-  public static cs<T extends HRegexString>(this: ValueObjectType<T>, v: string): T {
+  public static cs<T extends RegexString>(this: ValueObjectType<T>, v: string): T {
     return new this(v);
   }
 

@@ -1,15 +1,17 @@
 import { HObjectTypeMeta, OK, PlainParseHelper, PlainParseIssue, type PlainParseError, type R } from '../../Util';
-import { HValueObject, type ValueObjectType } from './HValueObject';
+import { ValueObject, type ValueObjectType } from './ValueObject';
+import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export class UBigInt64 extends HValueObject {
-  public static readonly HOBJ_META = HObjectTypeMeta.ValueObject('Core', 'Core', UBigInt64);
+export class UInt64 extends ValueObject {
+  public static readonly HOBJ_META = HObjectTypeMeta.ValueObject('Core', 'Core', UInt64);
+  public static readonly JSON_SCHEMA = JsonSchemaFactory.String({ pattern: "^(0|[1-9]\\d{0,19})$" });
 
   public constructor(public readonly v: bigint) {
     super();
   }
 
-  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
-    const parsed = PlainParseHelper.parseBigInt64GTE(plain, 0n);
+  public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+    const parsed = PlainParseHelper.parseUInt64(plain);
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
     }
@@ -22,7 +24,7 @@ export class UBigInt64 extends HValueObject {
    * @param v
    * @returns
    */
-  public static cs<T extends UBigInt64>(this: ValueObjectType<T>, v: string | number | bigint): T {
+  public static cs<T extends UInt64>(this: ValueObjectType<T>, v: string | number | bigint): T {
     return new this(BigInt(v));
   }
 

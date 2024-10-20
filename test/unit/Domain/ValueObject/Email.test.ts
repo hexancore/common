@@ -2,21 +2,26 @@
  * @group unit
  */
 
-import { Email, PlainParseError } from '@';
-import { EmailHash } from '../../../../src/Domain/ValueObject/EmailHash';
+import { Email, JsonSchemaFactory, PlainParseError } from '@';
 
 describe('Email', () => {
-  test('create', () => {
+  test('parse', () => {
     const result = Email.parse('test@test.com');
     expect(result.isSuccess()).toBe(true);
     expect(result.v.v).toEqual('test@test.com');
   });
-  test('create when invalid raw value', () => {
+  test('parse when invalid raw value', () => {
     const result = Email.parse('test@test');
     expect(result.isError()).toBe(true);
 
     expect(result.e.type).toEqual(PlainParseError);
   });
+
+  test('JSON_SCHEMA', () => {
+    const current = Email.JSON_SCHEMA;
+    expect(current).toEqual(JsonSchemaFactory.String({ format: "email" }));
+  });
+
   test('get local', () => {
     const result = Email.parse('test@test.com');
     expect(result.v.local).toEqual('test');
@@ -24,9 +29,5 @@ describe('Email', () => {
   test('get domain', () => {
     const result = Email.parse('test@test.com');
     expect(result.v.domain).toEqual('test.com');
-  });
-  test('get hash', () => {
-    const result = Email.parse('test@test.com');
-    expect(result.v.hash).toEqual(EmailHash.cs('a6ad00ac113a19d953efb91820d8788e2263b28a'));
   });
 });

@@ -2,9 +2,9 @@
  * @group unit/core
  */
 
-import { PlainParseError, UBigInt64 } from '../../../../src';
+import { PlainParseError, UInt64 } from '../../../../src';
 
-class CustomUBigInt extends UBigInt64 {
+class CustomUBigInt extends UInt64 {
   public customMethod() {
     return 'test';
   }
@@ -12,19 +12,19 @@ class CustomUBigInt extends UBigInt64 {
 
 describe('UBigIntValue', () => {
   test('create from string', () => {
-    const result = UBigInt64.parse('10');
+    const result = UInt64.parse('10');
     expect(result.v.v).toBe(10n);
   });
 
   test('create when invalid string raw value', () => {
-    const result = UBigInt64.parse('-10');
+    const result = UInt64.parse('-10');
     expect(result.isError()).toBe(true);
 
     expect(result.e.type).toEqual(PlainParseError);
   });
 
   test('create from bigint', () => {
-    const result = UBigInt64.parse(10n);
+    const result = UInt64.parse(10n);
     expect(result.v.v).toBe(10n);
   });
 

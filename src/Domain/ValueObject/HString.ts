@@ -1,14 +1,16 @@
 import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R } from "../../Util";
-import { HValueObject, type ValueObjectType } from "./HValueObject";
+import { ValueObject, type ValueObjectType } from "./ValueObject";
+import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export class HString extends HValueObject {
+export class HString extends ValueObject {
   public static readonly HOBJ_META = HObjectTypeMeta.ValueObject('Core', 'Core', HString);
+  public static readonly JSON_SCHEMA = JsonSchemaFactory.String();
 
   public constructor(public readonly v: string) {
     super();
   }
 
-  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = StringPlainParseHelper.parseString(plain);
     if (parsed instanceof PlainParseIssue) {
       return PlainParseHelper.HObjectParseErr(this, [parsed]);
