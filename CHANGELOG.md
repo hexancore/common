@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- added Uuid ValueObject
+- added UuidBase converters to base62 and base36
+- added JsonSchema prop to HObjects 
+- added OrganizationId, OrganizationGroupId, OrganizationMemberId, TenantId
+
+### Changed
+
+- UBigInt64 -> UInt64.
+- HValueObject -> ValueObject
+- GetQueryOptions -> GetListQueryOptions
+
+### Removed
+
+- temporaly removed EmailHash(need rework to support browser&node versions in one)
+- removed AccountId -> replaced with TenantId
+
 ## [0.16.2] - 2024-10-05
 
 ### Changed
