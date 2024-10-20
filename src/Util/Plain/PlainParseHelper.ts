@@ -12,6 +12,12 @@ export type PlainParseError = typeof PlainParseError;
  */
 const BigInt64Regex = /^-?\d{1,19}$/;
 
+/**
+ * 0
+ * 18446744073709551615
+ */
+const UInt64Regex = /^(0|[1-9]\d{0,19})$/;
+
 export class PlainParseHelper {
 
   public static HObjectParseErr<T>(hObjectClass: HObjectType<any>, issues: PlainParseIssue[]): R<T, PlainParseError> {
@@ -47,6 +53,15 @@ export class PlainParseHelper {
       return parsed;
     }
     const issue = new InvalidTypePlainParseIssue('bigint_string', typeof plain, path);
+    issues?.push(issue);
+    return issue;
+  }
+
+  public static parseUInt64(plain: unknown, path?: string, issues?: PlainParseIssue[]): bigint | PlainParseIssue {
+    if (typeof plain === 'number' || typeof plain === 'bigint' || (typeof plain === 'string' && UInt64Regex.test(plain))) {
+      return BigInt(plain);
+    }
+    const issue = new InvalidTypePlainParseIssue('uint64_string', typeof plain, path);
     issues?.push(issue);
     return issue;
   }

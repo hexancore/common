@@ -1,20 +1,19 @@
 // BASE
-export * from './HValueObject';
+export * from './ValueObject';
 
-// Account
-export * from './AccountId';
+export * from './Enterprise';
 export * from './UserId';
 
-// MAILING
+// EMAIL
 export * from './Email';
-export * from './EmailHash';
 
 // TIME
 export * from './HDateTime';
 
 // PRIMITIVE
 export * from './HString';
-export * from './UBigInt64';
+export * from './UInt64';
 export * from './UInt';
-export * from './HRegexString';
+export * from './RegexString';
 export * from './RefId';
+export * from './Uuid';

@@ -1,7 +1,7 @@
 import { OrderDirection } from "./types";
 
-export interface GetQueryOptions<T> {
+export interface GetListQueryOptions<T> {
   orderBy?: Record<keyof T, OrderDirection>;
   limit?: number;
-  offset?: number;
+  offset?: number|string;
 }

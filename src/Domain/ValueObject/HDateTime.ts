@@ -1,7 +1,8 @@
-import { HValueObject, type ValueObjectType } from './HValueObject';
+import { ValueObject, type ValueObjectType } from './ValueObject';
 import { OK, R } from '../../Util/Result';
 import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
 import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParseError } from "../../Util";
+import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
 export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 function createJsJodaFromString(v: string): LocalDateTime | InvalidStringPlainParseIssue {
@@ -14,7 +15,7 @@ function createJsJodaFromString(v: string): LocalDateTime | InvalidStringPlainPa
   }
 
   if (!/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2}))?)$/.test(v)) {
-    return new InvalidStringPlainParseIssue("datetime", {}, "Invalid datetime string");
+    return new InvalidStringPlainParseIssue("date-time", {}, "Invalid datetime string");
   }
 
   try {
@@ -35,8 +36,9 @@ function createJsJodaFromTimestamp(v: number): LocalDateTime {
 /**
  * DateTime in UTC zone value object
  */
-export class HDateTime extends HValueObject {
+export class HDateTime extends ValueObject {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'Core', 'ValueObject', 'HDateTime', HDateTime);
+  public static readonly JSON_SCHEMA = JsonSchemaFactory.String({ format: "date-time" });
 
   public constructor(private readonly value: LocalDateTime) {
     super();
@@ -50,7 +52,7 @@ export class HDateTime extends HValueObject {
     return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
-  public static parse<T extends HValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
+  public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     switch (typeof plain) {
       case 'number': return HDateTime.fromTimestamp(plain) as any;
       case 'string':

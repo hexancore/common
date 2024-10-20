@@ -62,7 +62,7 @@ export abstract class PlainParseIssue implements JsonSerialize {
   }
 }
 
-export type PlainParsePrimitiveType = 'string' | 'number' | 'int' | 'uint' | 'bigint' | 'bigint_string' | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
+export type PlainParsePrimitiveType = 'string' | 'number' | 'int' | 'uint' | 'bigint' | 'bigint_string' | "uint64_string" | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
 
 export class InvalidTypePlainParseIssue extends PlainParseIssue {
   public constructor(
@@ -93,6 +93,10 @@ export class InvalidStringPlainParseIssue extends PlainParseIssue {
     path?: string,
   ) {
     super(PlainParseIssueCode.invalid_string, message, path);
+  }
+
+  public static uuid(path?: string): InvalidStringPlainParseIssue {
+    return new this('uuid', { }, "String must be UUID", path);
   }
 
   public static regex(regex: RegExp, path?: string): InvalidStringPlainParseIssue {

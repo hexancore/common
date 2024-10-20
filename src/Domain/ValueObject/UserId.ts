@@ -1,6 +1,6 @@
 import { HObjectTypeMeta } from "../../Util";
-import { HString } from "./HString";
+import { Uuid } from "./Uuid";
 
-export class UserId extends HString {
-  public static readonly HOBJ_META = HObjectTypeMeta.ValueObject("Core", "User",  UserId);
+export class UserId extends Uuid {
+  public static readonly HOBJ_META = HObjectTypeMeta.ValueObject("User", "User",  UserId);
 }

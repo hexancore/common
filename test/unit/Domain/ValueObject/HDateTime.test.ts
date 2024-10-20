@@ -5,8 +5,8 @@
 import { HDateTime, InvalidHObjectPlainParseIssue, PlainParseError, TooSmallPlainParseIssue } from '@';
 import { Duration, Period } from '@js-joda/core';
 
-describe('DateTime', () => {
-  describe("c", () => {
+describe('HDateTime', () => {
+  describe("parse", () => {
     test('when input is Date', () => {
       const raw = new Date("2024-01-01 10:30:30");
 
