@@ -40,11 +40,11 @@ export abstract class HQuery<RT, RET extends string = UnknownErrorType> {
    * @returns
    */
   public static parse<T extends AnyHQuery>(this: HQueryType<T>, plain: unknown): R<T, PlainParseError> {
-    throw new LogicError('Not implemented or AOT generated');
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "parse");
   }
 
   public toJSON(): JsonObjectType<this> {
-    throw new LogicError('Not implemented or AOT generated');
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "toJSON");
   }
 
   /**

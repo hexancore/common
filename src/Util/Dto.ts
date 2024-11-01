@@ -5,9 +5,9 @@ import type { PlainParseError } from './Plain';
 import { type R } from './Result';
 import type { JsonObjectType, NonMethodProperties } from './types';
 
-export type DtoType<T extends Dto> = HObjectType<T>;
+export type DTOType<T extends DTO> = HObjectType<T>;
 
-export abstract class Dto implements JsonSerialize {
+export abstract class DTO implements JsonSerialize {
 
   /**
    * Create from safe props
@@ -15,7 +15,7 @@ export abstract class Dto implements JsonSerialize {
    * @param props
    * @returns
    */
-  public static cs<T extends Dto>(this: DtoType<T>, props: NonMethodProperties<T>): T {
+  public static cs<T extends DTO>(this: DTOType<T>, props: NonMethodProperties<T>): T {
     const i = new this();
     Object.assign(i, props);
     return i;
@@ -27,11 +27,11 @@ export abstract class Dto implements JsonSerialize {
    * @param plain
    * @returns
    */
-  public static parse<T extends Dto>(this: DtoType<T>, plain: unknown): R<T, PlainParseError> {
-    throw new LogicError('Not implemented or AOT generated');
+  public static parse<T extends DTO>(this: DTOType<T>, plain: unknown): R<T, PlainParseError> {
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "parse");
   }
 
   public toJSON(): JsonObjectType<this> {
-    throw new LogicError('Not implemented or AOT generated');
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "toJSON");
   }
 }

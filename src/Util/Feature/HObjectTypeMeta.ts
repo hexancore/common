@@ -4,7 +4,8 @@ import type { JsonSerialize } from "../Json/JsonSerialize";
 import type { PlainParseError } from "../Plain";
 import type { R } from "../Result";
 import type { JsonExcluded, JsonObjectType } from "../types";
-import type { HFeatureBackendLayer } from "./types";
+
+export type HFeatureBackendLayer = 'Application' | 'Domain' | 'Infrastructure';
 
 export type HObjectType<T> = {
   new(...args: any[]): T;

@@ -109,3 +109,21 @@ export type JsonExcluded = { __hctag?: 'json_excluded'; };
  * Converts all object properties(deeply) to plain primitives. Skips all with tag type: `JsonExcluded`
  */
 export type JsonObjectType<T extends object> = PlainObjectType<T, JsonExcluded>;
+
+
+export type PrimitiveComparableType = string | number | boolean | bigint | null;
+/**
+ * Interface to provide a standardized `valueOf` method for classes representing primitive values.
+ * This allows objects to be compared as their underlying primitive type.
+ *
+ * `PrimitiveComparable<T>` is typically used for Value Objects that need to behave like primitives
+ * (e.g., numbers, strings) in comparisons or operations, without losing their structure.
+ *
+ * @template T - The underlying primitive type (e.g., string, number, boolean) that the object represents.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
+ */
+export interface PrimitiveComparable<T extends PrimitiveComparableType> {
+  valueOf(): T;
+}
+export type PrimitiveOrPrimitiveComparable<T extends PrimitiveComparableType> = T | PrimitiveComparable<T>;
+export type InferPrimitiveComparable<T extends PrimitiveOrPrimitiveComparable<any>> = T extends PrimitiveComparable<infer U> ? U | T : T;

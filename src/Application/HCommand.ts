@@ -40,11 +40,11 @@ export abstract class HCommand<RT, RET extends string = UnknownErrorType> {
    * @returns
    */
   public static parse<T extends AnyHCommand>(this: HCommandType<T>, plain: unknown): R<T, PlainParseError> {
-    throw new LogicError('Not implemented or AOT generated');
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "parse");
   }
 
   public toJSON(): JsonObjectType<typeof this> {
-    throw new LogicError('Not implemented or AOT generated');
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "toJSON");
   }
 
   /**

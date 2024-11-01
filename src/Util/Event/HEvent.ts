@@ -1,5 +1,5 @@
 import { LogicError } from "../Error";
-import type { HObjectType } from "../Feature";
+import type { HObjectType } from "../Feature/HObjectTypeMeta";
 import type { JsonSerialize } from "../Json/JsonSerialize";
 import type { PlainParseError } from "../Plain";
 import type { R } from "../Result";
@@ -29,10 +29,10 @@ export abstract class HEvent implements JsonSerialize {
    * @returns
    */
   public static parse<T extends HEvent>(this: EventType<T>, plain: unknown): R<T, PlainParseError> {
-    throw new LogicError("Not implemented or AOT generated");
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "parse");
   }
 
   public toJSON(): JsonObjectType<this> {
-    throw new LogicError("Not implemented or AOT generated");
+    throw LogicError.NotImplementedOrAOTGenerated(this.constructor as any, "toJSON");
   }
 }

@@ -1,8 +1,8 @@
-import { HObjectTypeMeta, IntegerPlainParseHelper, OK, PlainParseHelper, type PlainParseError, type R } from '../../Util';
+import { HObjectTypeMeta, IntegerPlainParseHelper, OK, PlainParseHelper, type PlainParseError, type PrimitiveComparable, type R } from '../../Util';
 import { ValueObject, type ValueObjectType } from './ValueObject';
 import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export class UInt extends ValueObject {
+export class UInt extends ValueObject implements PrimitiveComparable<number> {
   public static readonly HOBJ_META = HObjectTypeMeta.domain('Core', 'User', 'ValueObject', 'UInt', UInt);
   public static readonly JSON_SCHEMA = JsonSchemaFactory.Integer({ minimum: 0 });
 
@@ -37,6 +37,10 @@ export class UInt extends ValueObject {
   }
 
   public toJSON(): number {
+    return this.v;
+  }
+
+  public valueOf(): number {
     return this.v;
   }
 }
