@@ -5,7 +5,8 @@ export * from './Result';
 
 export * from './Plain';
 
-export * from './Feature';
+export * from './Feature/HObjectTypeMeta';
+
 export * from './Event/HEvent';
 
 export * from './CurrentTime';
@@ -25,3 +26,4 @@ export * from './types';
 export * from './functions';
 
 export * from './UuidBase';
+export * from './Object/ObjectFilter';

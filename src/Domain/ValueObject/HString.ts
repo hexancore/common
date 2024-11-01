@@ -1,14 +1,15 @@
-import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R } from "../../Util";
+import { HObjectTypeMeta, OK, PlainParseError, PlainParseHelper, StringPlainParseHelper, PlainParseIssue, type R, type PrimitiveComparable } from "../../Util";
 import { ValueObject, type ValueObjectType } from "./ValueObject";
 import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export class HString extends ValueObject {
+export class HString extends ValueObject implements PrimitiveComparable<string> {
   public static readonly HOBJ_META = HObjectTypeMeta.ValueObject('Core', 'Core', HString);
   public static readonly JSON_SCHEMA = JsonSchemaFactory.String();
 
   public constructor(public readonly v: string) {
     super();
   }
+
 
   public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
     const parsed = StringPlainParseHelper.parseString(plain);
@@ -37,6 +38,10 @@ export class HString extends ValueObject {
   }
 
   public toJSON(): string {
+    return this.v;
+  }
+
+  public valueOf(): string {
     return this.v;
   }
 }

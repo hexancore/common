@@ -1,4 +1,4 @@
-import { type PlainParsableHObjectType } from "../Feature";
+import { type PlainParsableHObjectType } from "../Feature/HObjectTypeMeta";
 import { InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, OutOfRangePlainParseIssue, PlainParseIssue, TooBigPlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
 
 export type ParseArrayItemFn<T> = (v: unknown) => T | PlainParseIssue;

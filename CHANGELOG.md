@@ -12,12 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added UuidBase converters to base62 and base36
 - added JsonSchema prop to HObjects 
 - added OrganizationId, OrganizationGroupId, OrganizationMemberId, TenantId
+- added PrimitiveComparable
 
 ### Changed
 
 - UBigInt64 -> UInt64.
 - HValueObject -> ValueObject
 - GetQueryOptions -> GetListQueryOptions
+- Dto -> DTO
 
 ### Removed
 

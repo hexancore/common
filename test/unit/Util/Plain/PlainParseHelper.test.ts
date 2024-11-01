@@ -1,5 +1,5 @@
 import { AppErrorCode, ArrayPlainParseHelper, InvalidArrayElementsPlainParseIssue, InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, NumberPlainParseHelper, PlainParseError, PlainParseHelper, StringPlainParseHelper, TooBigPlainParseIssue, TooSmallPlainParseIssue, type JsonObjectType } from '@';
-import { TestDto } from '@test/helper/TestDto';
+import { TestDTO } from '@test/helper/TestDto';
 import path from 'node:path';
 
 /**
@@ -9,9 +9,9 @@ import path from 'node:path';
 describe(path.basename(__filename, '.test.ts'), () => {
   test('HObjectParseErr', () => {
     const issues = [new InvalidTypePlainParseIssue('number', 'string', 'field')];
-    const current = PlainParseHelper.HObjectParseErr(TestDto, [new InvalidTypePlainParseIssue('number', 'string', 'field')]);
+    const current = PlainParseHelper.HObjectParseErr(TestDTO, [new InvalidTypePlainParseIssue('number', 'string', 'field')]);
 
-    expect(current.e.data).toEqual(new InvalidHObjectPlainParseIssue(TestDto.HOBJ_META, issues));
+    expect(current.e.data).toEqual(new InvalidHObjectPlainParseIssue(TestDTO.HOBJ_META, issues));
     expect(current.e.type).toBe(PlainParseError);
     expect(current.e.code).toBe(AppErrorCode.BAD_REQUEST);
   });
@@ -126,7 +126,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
 
   describe('parseHObject()', () => {
     test('when valid should return parsed', () => {
-      const plain: JsonObjectType<TestDto> = {
+      const plain: JsonObjectType<TestDTO> = {
         stringField: 'test',
         bigIntField: '1000',
         numberField: 1000,
@@ -134,9 +134,9 @@ describe(path.basename(__filename, '.test.ts'), () => {
         booleanField: true,
       };
 
-      const current = PlainParseHelper.parseHObject(plain, TestDto);
+      const current = PlainParseHelper.parseHObject(plain, TestDTO);
 
-      const expected = TestDto.cs({
+      const expected = TestDTO.cs({
         stringField: 'test',
         bigIntField: 1000n,
         booleanField: true,
@@ -149,9 +149,9 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when invalid should return issue', () => {
       const plain = 1000;
 
-      const current = PlainParseHelper.parseHObject(plain, TestDto);
+      const current = PlainParseHelper.parseHObject(plain, TestDTO);
 
-      expect(current).toEqual(new InvalidHObjectPlainParseIssue(TestDto.HOBJ_META, [
+      expect(current).toEqual(new InvalidHObjectPlainParseIssue(TestDTO.HOBJ_META, [
         new InvalidTypePlainParseIssue('object', 'number')
       ]));
     });
@@ -160,7 +160,7 @@ describe(path.basename(__filename, '.test.ts'), () => {
 
   describe('parseHObjectArray()', () => {
     test('when valid should return parsed', () => {
-      const plain: JsonObjectType<TestDto> = {
+      const plain: JsonObjectType<TestDTO> = {
         stringField: 'test',
         bigIntField: '1000',
         numberField: 1000,
@@ -168,9 +168,9 @@ describe(path.basename(__filename, '.test.ts'), () => {
         booleanField: true,
       };
 
-      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDto);
+      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDTO);
 
-      const expected = TestDto.cs({
+      const expected = TestDTO.cs({
         stringField: 'test',
         bigIntField: 1000n,
         booleanField: true,
@@ -183,10 +183,10 @@ describe(path.basename(__filename, '.test.ts'), () => {
     test('when invalid should return issue', () => {
       const plain = 1000;
 
-      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDto);
+      const current = ArrayPlainParseHelper.parseHObjectArray([plain], TestDTO);
 
       const expected = new InvalidArrayElementsPlainParseIssue([
-        new InvalidHObjectPlainParseIssue(TestDto.HOBJ_META, [
+        new InvalidHObjectPlainParseIssue(TestDTO.HOBJ_META, [
           new InvalidTypePlainParseIssue('object', 'number')
         ], '0')
       ]);

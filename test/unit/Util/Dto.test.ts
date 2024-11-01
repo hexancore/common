@@ -1,4 +1,4 @@
-import { OtherTestDto, TestDto, TestValueObject } from "@test/helper/TestDto";
+import { OtherTestDTO, TestDTO, TestValueObject } from "@test/helper/TestDto";
 
 /**
  * @group unit
@@ -6,13 +6,13 @@ import { OtherTestDto, TestDto, TestValueObject } from "@test/helper/TestDto";
 
 describe("Dto", () => {
   test("toJSON", () => {
-    const dto = TestDto.cs({
+    const dto = TestDTO.cs({
       booleanField: true,
       numberArrayField: [1, 2],
       numberField: 1,
       stringField: "test",
-      optionalDtoArrayField: [OtherTestDto.cs({ primitiveField: 1 })],
-      optionalDtoField: OtherTestDto.cs({ primitiveField: 2 }),
+      optionalDtoArrayField: [OtherTestDTO.cs({ primitiveField: 1 })],
+      optionalDtoField: OtherTestDTO.cs({ primitiveField: 2 }),
       bigIntField: 1000n,
       optionalValueObjectField: TestValueObject.cs(2),
       optionalValueObjectArrayField: [TestValueObject.cs(3), TestValueObject.cs(4)],

@@ -1,5 +1,5 @@
 import { AppErrorCode } from "../Error/AppError";
-import { HObjectTypeMeta, type HObjectType, type PlainParsableHObjectType } from "../Feature";
+import { HObjectTypeMeta, type HObjectType, type PlainParsableHObjectType } from "../Feature/HObjectTypeMeta";
 import { ERR, type R } from "../Result";
 import { InvalidHObjectPlainParseIssue, InvalidTypePlainParseIssue, PlainParseIssue, TooSmallPlainParseIssue } from "./PlainParseIssue";
 

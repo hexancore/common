@@ -1,4 +1,4 @@
-import type { HObjectTypeMeta } from "../Feature";
+import type { HObjectTypeMeta } from "../Feature/HObjectTypeMeta";
 import type { JsonSerialize } from "../Json/JsonSerialize";
 import type { JsonExcluded, JsonObjectType } from "../types";
 
