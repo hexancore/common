@@ -49,6 +49,15 @@ export function wrapToIterable<T>(value: T | T[] | Iterable<T>): Iterable<T> {
   return (isIterable(value) ? value : Array.isArray(value) ? value : [value]) as any;
 }
 
+export async function arrayFromAsyncIterable<T>(it: AsyncIterable<T>): Promise<T[]> {
+  const collected: T[] = [];
+  for await (const item of it) {
+    collected.push(item);
+  }
+
+  return collected;
+}
+
 export function stripAnsiColors(s: string): string {
   // eslint-disable-next-line no-control-regex
   return s.replace(/\x1B[[(?);]{0,2}(;?\d)*./g, '');
