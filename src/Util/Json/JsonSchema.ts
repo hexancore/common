@@ -39,6 +39,7 @@ export interface ObjectJsonSchema extends JsonSchemaBase {
   type: "object";
   properties: Record<string, JsonSchema>;
   required?: string[];
+  additionalProperties?: boolean
 }
 
 export type JsonSchema =
