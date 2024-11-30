@@ -5,6 +5,10 @@ type BulitInJsonSchemaStringFormat = "date" | "time" | "date-time" | "email" | "
 
 interface JsonSchemaBase {
   type: JsonSchemaType;
+  description?: string;
+  deprecated?: boolean;
+  readOnly?: boolean;
+  writeOnly?: boolean;
 }
 
 export interface StringJsonSchema extends JsonSchemaBase {
@@ -13,6 +17,7 @@ export interface StringJsonSchema extends JsonSchemaBase {
   maxLength?: number;
   format?: string | BulitInJsonSchemaStringFormat;
   pattern?: string;
+  default?: string;
 }
 
 export interface NumberJsonSchema extends JsonSchemaBase {
@@ -22,10 +27,13 @@ export interface NumberJsonSchema extends JsonSchemaBase {
 
   maximum?: number;
   exclusiveMaximum?: number;
+
+  default?:  number;
 }
 
 export interface BooleanJsonSchema extends JsonSchemaBase {
   type: "boolean";
+  default?: boolean;
 }
 
 export interface ArrayJsonSchema extends JsonSchemaBase {
@@ -39,6 +47,7 @@ export interface ObjectJsonSchema extends JsonSchemaBase {
   type: "object";
   properties: Record<string, JsonSchema>;
   required?: string[];
+  additionalProperties?: boolean
 }
 
 export type JsonSchema =

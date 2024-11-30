@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,13 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- added 'additionalProperties' option to JsonSchema Object
+- added PlainParseHelper.parseRecord()
+
+### Changed
+
+- changed HDateTime.now() precision to milis
+- changed HDateTime.toJson() return type to ISO 8601
+
 ## [0.16.3] - 2024-11-17
 
 ### Added
 
 - added Uuid ValueObject
 - added UuidBase converters to base62 and base36
-- added JsonSchema prop to HObjects 
+- added JsonSchema prop to HObjects
 - added OrganizationId, OrganizationGroupId, OrganizationMemberId, TenantId
 - added PrimitiveComparable
 - added ObjectFilter
@@ -42,17 +53,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - reworked HObjects(no backward compatible changes)
-- renamed ValueObjects: 
+- renamed ValueObjects:
   - DateTime -> HDateTime
   - UIntValue -> UInt
   - UBigInt -> UBigInt64
   - StringValue -> HString
   - RegexStringValue -> HRegexString
 
-
 ## [0.16.0] - 2024-09-23
 
-### Added 
+### Added
 
 - added HObject concept with parse from unknown method generated from AOT(Transformer in core).
 - added first package benchmark stuff
@@ -66,13 +76,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.15.0] - 2024-06-27
 
-### Added 
+### Added
 
 - extractLoggerFromObject(), extractTestLoggerFromObject(), extractTestLoggerRecordsFromObject
 
 ### Changed
 
-- AppMeta - default EnvProvider in NodeJS env. 
+- AppMeta - default EnvProvider in NodeJS env.
 - separated http exports(/http and ./testing/http).
 - export ./testutil -> ./testing
 - separated Jest matchers export ./testing/jest
@@ -93,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - removed bin docker
 - removed `string.prototype.matchall` dep
 
-### Fixed 
+### Fixed
 
 - small types fixes in strict mode
 
@@ -120,10 +130,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.13.1] - 2024-01-25
 
-### Added 
+### Added
 
 - DateTime.formatRfc1123()
-- ARW() - more meaning name for wrapping Promise with AsyncResult 
+- ARW() - more meaning name for wrapping Promise with AsyncResult
 
 ### Changed
 
@@ -132,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AsyncResult.from() - accepts functions returns Promise(async/await support).
 - RetryHelper.retryAsync() - returns AR.
 
-### Removed 
+### Removed
 
 - AsyncResult.fromSafePromise() - AsyncResult.from supports both.
 
@@ -148,13 +158,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - JsonHelper class.
 - Added optional error type constraint Result and AsyncResult.
-- 
+-
+
 ### Changed
 
 - Handler in [Result|AsyncResult].onOk() and [Result|AsyncResult].onErr() now can return all values(Value will be Wrapped to Result if need).
-- [Result|AsyncResult].onErr() now can filter what fn can handle on first parameter. 
+- [Result|AsyncResult].onErr() now can filter what fn can handle on first parameter.
 
 ### Removed
+
 - Removed Result.onOkA - now onOk can change mode to async.
 - Removed using object event type map to callback in [Result|AsyncResult].onErr().
 - Removed [Result|AsyncResult].map() and [Result|AsyncResult].mapErr();
@@ -174,7 +186,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - function stripAnsiColors().
 - function wrapToIterable().
 - interface GetQueryOptions.
-- class RetryHelper. 
+- class RetryHelper.
 - type DropFirstItem.
 - type TupleTail.
 - type ParamsTail.
@@ -192,18 +204,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.16.3...HEAD   
-[0.16.3] https://github.com/hexancore/common/compare/0.16.2...0.16.3   
-[0.16.2] https://github.com/hexancore/common/compare/0.16.1...0.16.2   
-[0.16.1] https://github.com/hexancore/common/compare/0.16.0...0.16.1    
-[0.16.0] https://github.com/hexancore/common/compare/0.15.0...0.16.0   
-[0.15.0] https://github.com/hexancore/common/compare/0.14.0...0.15.0   
-[0.14.0] https://github.com/hexancore/common/compare/0.13.3...0.14.0   
-[0.13.3] https://github.com/hexancore/common/compare/0.13.2...0.13.3   
-[0.13.2] https://github.com/hexancore/common/compare/0.13.1...0.13.2   
-[0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1   
-[0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0   
-[0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5   
+[unreleased] https://github.com/hexancore/common/compare/0.16.3...HEAD  
+[0.16.3] https://github.com/hexancore/common/compare/0.16.2...0.16.3  
+[0.16.2] https://github.com/hexancore/common/compare/0.16.1...0.16.2  
+[0.16.1] https://github.com/hexancore/common/compare/0.16.0...0.16.1  
+[0.16.0] https://github.com/hexancore/common/compare/0.15.0...0.16.0  
+[0.15.0] https://github.com/hexancore/common/compare/0.14.0...0.15.0  
+[0.14.0] https://github.com/hexancore/common/compare/0.13.3...0.14.0  
+[0.13.3] https://github.com/hexancore/common/compare/0.13.2...0.13.3  
+[0.13.2] https://github.com/hexancore/common/compare/0.13.1...0.13.2  
+[0.13.1] https://github.com/hexancore/common/compare/0.13.0...0.13.1  
+[0.13.0] https://github.com/hexancore/common/compare/0.12.5...0.13.0  
+[0.12.5] https://github.com/hexancore/common/compare/0.12.4...0.12.5  
 [0.12.4] https://github.com/hexancore/common/compare/0.12.3...0.12.4  
-[0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3   
-[0.10.4] https://github.com/hexancore/common/releases/tag/0.10.4      
+[0.12.3] https://github.com/hexancore/common/compare/0.10.4...0.12.3  
+[0.10.4] https://github.com/hexancore/common/releases/tag/0.10.4

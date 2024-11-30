@@ -195,4 +195,33 @@ describe(path.basename(__filename, '.test.ts'), () => {
   });
 
 
+  describe('parseRecord()', () => {
+    test('when valid should return parsed', () => {
+      const plain = {
+        field: 'test',
+      };
+
+      const current = PlainParseHelper.parseRecord(plain);
+
+      expect(current).toEqual(plain);
+    });
+
+    test('when invalid should return issue', () => {
+      const plain = 1000;
+
+      const current = PlainParseHelper.parseRecord(plain);
+
+      const expectedIssue = new InvalidTypePlainParseIssue('object', 'number');
+      expect(current).toEqual(expectedIssue);
+    });
+
+    test('when null should return issue', () => {
+      const plain = null;
+
+      const current = PlainParseHelper.parseRecord(plain);
+
+      const expectedIssue = new InvalidTypePlainParseIssue('object', 'null');
+      expect(current).toEqual(expectedIssue);
+    });
+  });
 });
