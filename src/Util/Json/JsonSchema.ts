@@ -28,7 +28,7 @@ export interface NumberJsonSchema extends JsonSchemaBase {
   maximum?: number;
   exclusiveMaximum?: number;
 
-  default?:  number;
+  default?: number;
 }
 
 export interface BooleanJsonSchema extends JsonSchemaBase {
@@ -47,7 +47,7 @@ export interface ObjectJsonSchema extends JsonSchemaBase {
   type: "object";
   properties: Record<string, JsonSchema>;
   required?: string[];
-  additionalProperties?: boolean
+  additionalProperties?: boolean;
 }
 
 export type JsonSchema =
@@ -85,7 +85,7 @@ export class JsonSchemaFactory {
     };
   }
 
-  public static Object(properties: Record<string, JsonSchema>, options: Pick<ObjectJsonSchema, "required"> = {}): ObjectJsonSchema {
+  public static Object(properties: Record<string, JsonSchema>, options: Pick<ObjectJsonSchema, "required" | "additionalProperties"> = {}): ObjectJsonSchema {
     return {
       type: "object",
       properties,
