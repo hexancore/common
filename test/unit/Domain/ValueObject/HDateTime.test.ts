@@ -16,7 +16,7 @@ describe('HDateTime', () => {
     });
 
     test.each([
-      { name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30" },
+      { name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30.3" },
       { name: "dateTimeSpace", raw: "2024-01-01 10:30:30", expected: "2024-01-01T10:30:30" },
       { name: "dateTimeTSeparator", raw: "2024-01-01T10:30:30", expected: "2024-01-01T10:30:30" },
       { name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00" }
@@ -39,7 +39,7 @@ describe('HDateTime', () => {
     });
 
     test.each([
-      { name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30" },
+      { name: "dateTimeIso", raw: "2024-01-01 10:30:30.300Z", expected: "2024-01-01T10:30:30.3" },
       { name: "dateTimeSpace", raw: "2024-01-01 10:30:30", expected: "2024-01-01T10:30:30" },
       { name: "dateTimeTSeparator", raw: "2024-01-01T10:30:30", expected: "2024-01-01T10:30:30" },
       { name: "onlyDate", raw: "2024-01-01", expected: "2024-01-01T00:00:00" }

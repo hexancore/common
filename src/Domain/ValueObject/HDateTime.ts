@@ -1,10 +1,10 @@
 import { ValueObject, type ValueObjectType } from './ValueObject';
 import { OK, R } from '../../Util/Result';
-import { DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
+import { ChronoUnit, DateTimeFormatter, Duration, Instant, LocalDateTime, Period, ZoneId, ZoneOffset, convert } from '@js-joda/core';
 import { HObjectTypeMeta, InvalidStringPlainParseIssue, InvalidTypePlainParseIssue, PlainParseHelper, TooSmallPlainParseIssue, type PlainParseError } from "../../Util";
 import { JsonSchemaFactory } from "../../Util/Json/JsonSchema";
 
-export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+export const DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 function createJsJodaFromString(v: string): LocalDateTime | InvalidStringPlainParseIssue {
   if (!v.includes("T")) {
     v = v.includes(" ") ? v.replace(" ", "T") : v + "T00:00:00";
@@ -45,11 +45,11 @@ export class HDateTime extends ValueObject {
   }
 
   public static now(): HDateTime {
-    return new this(LocalDateTime.now(ZoneOffset.UTC).withNano(0));
+    return new this(LocalDateTime.now(ZoneOffset.UTC));
   }
 
-  public static nowWithNano(): HDateTime {
-    return new this(LocalDateTime.now(ZoneOffset.UTC));
+  public static nowTruncatedToSeconds(): HDateTime {
+    return new this(LocalDateTime.now(ZoneOffset.UTC).withNano(0));
   }
 
   public static parse<T extends ValueObject>(this: ValueObjectType<T>, plain: unknown): R<T, PlainParseError> {
@@ -138,6 +138,10 @@ export class HDateTime extends ValueObject {
     return new HDateTime(this.value.minus(amount));
   }
 
+  public truncatedToSeconds(): HDateTime {
+    return new HDateTime(this.value.truncatedTo(ChronoUnit.SECONDS));
+  }
+
   public equals(o: HDateTime): boolean {
     return this.value.equals(o.value);
   }
@@ -162,6 +166,9 @@ export class HDateTime extends ValueObject {
     return this.format(DateTimeFormatter.ISO_LOCAL_TIME);
   }
 
+  /**
+   * ISO 8601 YYYY-MM-DDThh:mm:ss.ssssss
+   */
   public formatDateTime(): string {
     return this.format(DEFAULT_DATE_TIME_FORMAT);
   }
@@ -178,7 +185,11 @@ export class HDateTime extends ValueObject {
     return this.formatDateTime();
   }
 
-  public toJSON(): number {
-    return this.t;
+  public toJSON(): string {
+    return this.formatDateTime();
+  }
+
+  public valueOf(): string {
+    return this.formatDateTime();
   }
 }
