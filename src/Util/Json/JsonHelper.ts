@@ -1,5 +1,7 @@
 import { AppErrorCode, DefineErrorsUnion } from '../Error';
 import { ERR, OK, R } from '../Result/Result';
+import type { JsonObjectType } from "../types";
+import type { JsonSerialize } from "./JsonSerialize";
 
 export type JsonTraverserFn = (this: any, key: string, value: any) => any;
 
@@ -24,5 +26,27 @@ export class JsonHelper {
     } catch (e) {
       return ERR({ type: JsonErrors.stringify, code: AppErrorCode.BAD_REQUEST, error: e as any });
     }
+  }
+
+  public static mapJsonSerializableArrayToJson<T extends JsonSerialize>(input: T[]): JsonObjectType<T>[] {
+    const out: JsonObjectType<T>[] = [];
+    input.forEach(v => {
+      out.push(v.toJSON());
+    });
+
+    return out;
+  }
+
+  public static mapJsonSerializableMapToJson<K, V extends JsonSerialize>(input: Map<K, V>): [K, JsonObjectType<V>][] {
+    const out: [K, JsonObjectType<V>][] = [];
+    input.forEach((v, k) => {
+      out.push([k, v.toJSON()]);
+    });
+
+    return out;
+  }
+
+  public static mapPrimitiveMapToJson<K, V>(input: Map<K, V>): [K, V][] {
+    return Array.from(input.entries());
   }
 }
