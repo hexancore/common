@@ -103,4 +103,17 @@ export class PlainParseHelper {
 
     return issue;
   }
+
+  public static parseMap<T extends Record<string, unknown>>(plain: unknown, path?: string, issues?: PlainParseIssue[]): PlainParseIssue | T {
+    if (typeof plain === 'object' && plain !== null) {
+      return plain as T;
+    }
+
+    const issue = new InvalidTypePlainParseIssue('object', plain === null ? 'null' : typeof plain, path);
+    if (issues) {
+      issues.push(issue);
+    }
+
+    return issue;
+  }
 }

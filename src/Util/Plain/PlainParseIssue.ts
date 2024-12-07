@@ -10,6 +10,8 @@ export enum PlainParseIssueCode {
   out_of_range = 'out_of_range',
   invalid_enum_value = 'invalid_enum_value',
   invalid_array_elements = 'invalid_array_elements',
+  invalid_map_entries = 'invalid_map_entries',
+  invalid_map_entry = 'invalid_map_entry',
   invalid_hobject = 'invalid_hobject',
   custom = 'custom',
 }
@@ -62,7 +64,7 @@ export abstract class PlainParseIssue implements JsonSerialize {
   }
 }
 
-export type PlainParsePrimitiveType = 'string' | 'number' | 'int' | 'uint' | 'bigint' | 'bigint_string' | "uint64_string" | 'boolean' | 'object' | 'array' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
+export type PlainParsePrimitiveType = 'string' | 'number' | 'int' | 'uint' | 'bigint' | 'bigint_string' | "uint64_string" | 'boolean' | 'object' | 'array' | 'map_entries' | 'map_entry' | 'symbol' | 'undefined' | 'null' | 'function' | 'Date';
 
 export class InvalidTypePlainParseIssue extends PlainParseIssue {
   public constructor(
@@ -96,7 +98,7 @@ export class InvalidStringPlainParseIssue extends PlainParseIssue {
   }
 
   public static uuid(path?: string): InvalidStringPlainParseIssue {
-    return new this('uuid', { }, "String must be UUID", path);
+    return new this('uuid', {}, "String must be UUID", path);
   }
 
   public static regex(regex: RegExp, path?: string): InvalidStringPlainParseIssue {
@@ -354,6 +356,48 @@ export class InvalidArrayElementsPlainParseIssue extends PlainParseIssue {
   }
 
   public toJSON(): JsonObjectType<InvalidArrayElementsPlainParseIssue> {
+    return {
+      code: this.code,
+      message: this.message,
+      path: this.path,
+      i18n: this.i18n,
+
+      issues: this.issues.map(v => v.toJSON() as any),
+    };
+  }
+}
+
+export class InvalidMapEntryPlainParseIssue extends PlainParseIssue {
+  public constructor(
+    public keyIssue?: PlainParseIssue,
+    public valueIssue?: PlainParseIssue,
+    path?: string
+  ) {
+    super(PlainParseIssueCode.invalid_map_entry, 'Invalid map entry', path);
+  }
+
+  public toJSON(): JsonObjectType<InvalidMapEntryPlainParseIssue> {
+    return {
+      code: this.code,
+      message: this.message,
+      path: this.path,
+      i18n: this.i18n,
+
+      keyIssue: this.keyIssue?.toJSON(),
+      valueIssue: this.valueIssue?.toJSON(),
+    };
+  }
+}
+
+export class InvalidMapEntriesPlainParseIssue extends PlainParseIssue {
+  public constructor(
+    public issues: (InvalidMapEntryPlainParseIssue | InvalidTypePlainParseIssue)[],
+    path?: string
+  ) {
+    super(PlainParseIssueCode.invalid_map_entries, 'Invalid map entries', path);
+  }
+
+  public toJSON(): JsonObjectType<InvalidMapEntriesPlainParseIssue> {
     return {
       code: this.code,
       message: this.message,

@@ -18,6 +18,8 @@ import type { v } from "@/Util/Plain/types";
 export class TestValueObject extends UInt { }
 
 export class OtherTestDTO extends DTO {
+  public static HOBJ_META = HObjectTypeMeta.application('core', 'core', 'dto', 'OtherTestDTO', OtherTestDTO);
+
   public primitiveField!: v.int.between<10, 100>;
 
   // generate constructor in AOT
