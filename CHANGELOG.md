@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- added MapPlainParseHelper
+- added JsonHelper methods: mapJsonSerializableMapToJson(), mapPrimitiveMapToJson(), mapJsonSerializableArrayToJson()
+
+### Fixed
+
+- JsonSchemaFactory.Object() add missing 'additionalProperties' option
+
 ## [0.16.4] - 2024-11-30
 
 ### Added
@@ -206,8 +215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - many changes.
 
-[unreleased] https://github.com/hexancore/common/compare/0.16.4...HEAD   
-[0.16.4] https://github.com/hexancore/common/compare/0.16.3...0.16.4   
+[unreleased] https://github.com/hexancore/common/compare/0.16.4...HEAD  
+[0.16.4] https://github.com/hexancore/common/compare/0.16.3...0.16.4  
 [0.16.3] https://github.com/hexancore/common/compare/0.16.2...0.16.3  
 [0.16.2] https://github.com/hexancore/common/compare/0.16.1...0.16.2  
 [0.16.1] https://github.com/hexancore/common/compare/0.16.0...0.16.1  
